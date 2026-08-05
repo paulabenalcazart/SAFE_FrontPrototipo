@@ -82,6 +82,7 @@
 
 :root {
   --radius: 0.75rem;
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Marca */
   --safe-primary-900: oklch(0.28 0.076 253.5);
@@ -230,6 +231,34 @@
   animation: safe-fade-up 550ms ease-out both;
 }
 
+@keyframes safe-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-safe-pop-in {
+  animation: safe-pop-in 320ms var(--ease-expo-out) both;
+}
+
+@keyframes safe-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-safe-fade-in {
+  animation: safe-fade-in 200ms ease-out both;
+}
+
 @keyframes safe-drift-a {
   0%,
   100% {
@@ -311,4 +340,30 @@
   .animate-safe-shard-b {
     animation: none;
   }
+}
+
+@keyframes safe-accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes safe-accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-safe-accordion-down {
+  animation: safe-accordion-down 200ms ease-out;
+}
+
+.animate-safe-accordion-up {
+  animation: safe-accordion-up 200ms ease-out;
 }

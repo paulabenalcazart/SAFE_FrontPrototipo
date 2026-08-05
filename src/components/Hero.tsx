@@ -85,7 +85,7 @@ const RIGHT_SHARD_FILLS = [
   'fill-amber-soft/70',
 ]
 
-export function Hero() {
+export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const [started, setStarted] = useState(false)
 
   useEffect(() => {
@@ -155,6 +155,7 @@ export function Hero() {
             size="lg"
             variant="outline"
             className="border-navy-500 text-navy-500 hover:scale-[1.02] hover:bg-navy-100 hover:text-navy-600"
+            onClick={onVerPlanes}
           >
             Ver planes
           </Button>
