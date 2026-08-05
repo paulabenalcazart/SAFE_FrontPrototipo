@@ -6,17 +6,18 @@ import { FeatureHighlightsSection } from './components/FeatureHighlightsSection'
 import { ModulesSection } from './components/ModulesSection'
 import { PlansSection } from './components/PlansSection'
 import { PlanesPage } from './components/PlanesPage'
+import { AcercaDePage } from './components/AcercaDePage'
 import { ReasonsSection } from './components/ReasonsSection'
 import { FinalCtaSection } from './components/FinalCtaSection'
 import { Footer } from './components/Footer'
 
-type Page = 'inicio' | 'como' | 'planes'
+type Page = 'inicio' | 'como' | 'planes' | 'acerca'
 
 export default function App() {
   const [page, setPage] = useState<Page>('inicio')
 
   const handleNavigate = (key: string) => {
-    if (key !== 'inicio' && key !== 'como' && key !== 'planes') return
+    if (key !== 'inicio' && key !== 'como' && key !== 'planes' && key !== 'acerca') return
     setPage(key)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -43,6 +44,12 @@ export default function App() {
         </>
       )}
       {page === 'planes' && <PlanesPage />}
+      {page === 'acerca' && (
+        <>
+          <AcercaDePage />
+          <FinalCtaSection />
+        </>
+      )}
       <Footer />
     </div>
   )
