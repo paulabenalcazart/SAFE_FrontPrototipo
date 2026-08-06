@@ -250,7 +250,15 @@ function PasoAtencion() {
   )
 }
 
-function PasoConfirmacion({ onEnviar }: { onEnviar: () => void }) {
+function PasoConfirmacion({
+  onEnviar,
+  onIrPrivacidad,
+}: {
+  onEnviar: () => void
+  onIrPrivacidad?: () => void
+}) {
+  const [acepto, setAcepto] = useState(false)
+
   return (
     <div className="space-y-6 text-center">
       <span className="animate-safe-pop-in mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-soft text-emerald-deep">
@@ -289,7 +297,31 @@ function PasoConfirmacion({ onEnviar }: { onEnviar: () => void }) {
         hasta recibir una respuesta.
       </p>
 
-      <Button size="lg" className="hover:scale-[1.01]" onClick={onEnviar}>
+      <div className="mx-auto flex max-w-xl items-start gap-2.5 text-left">
+        <Checkbox
+          id="postulacion-acepto"
+          checked={acepto}
+          onCheckedChange={(v) => setAcepto(v === true)}
+          className="mt-0.5"
+        />
+        <Label
+          htmlFor="postulacion-acepto"
+          className="text-sm font-normal leading-relaxed text-ink-700"
+        >
+          He leído y acepto la{' '}
+          <button
+            type="button"
+            onClick={onIrPrivacidad}
+            className="font-semibold text-navy-500 hover:text-navy-600 hover:underline"
+          >
+            Política de Privacidad
+          </button>{' '}
+          y autorizo el tratamiento de mis datos personales y de mi hoja de vida para fines de
+          validación profesional.
+        </Label>
+      </div>
+
+      <Button size="lg" className="hover:scale-[1.01]" disabled={!acepto} onClick={onEnviar}>
         Enviar postulación
       </Button>
     </div>
@@ -314,7 +346,13 @@ function PasoEnviado({ onVolver }: { onVolver: () => void }) {
   )
 }
 
-export function PostulacionPage({ onVolver }: { onVolver?: () => void }) {
+export function PostulacionPage({
+  onVolver,
+  onIrPrivacidad,
+}: {
+  onVolver?: () => void
+  onIrPrivacidad?: () => void
+}) {
   const [paso, setPaso] = useState(0)
   const [enviado, setEnviado] = useState(false)
 
@@ -340,7 +378,9 @@ export function PostulacionPage({ onVolver }: { onVolver?: () => void }) {
                 {paso === 0 && <PasoDatosPersonales />}
                 {paso === 1 && <PasoPerfilProfesional />}
                 {paso === 2 && <PasoAtencion />}
-                {paso === 3 && <PasoConfirmacion onEnviar={() => setEnviado(true)} />}
+                {paso === 3 && (
+                  <PasoConfirmacion onEnviar={() => setEnviado(true)} onIrPrivacidad={onIrPrivacidad} />
+                )}
               </div>
 
               {paso < pasos.length - 1 && (

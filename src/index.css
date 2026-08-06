@@ -357,12 +357,42 @@
   animation: safe-marquee 32s linear infinite;
 }
 
+@keyframes safe-auth-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+.animate-safe-auth-zoom {
+  animation: safe-auth-zoom 9s ease-in-out infinite alternate;
+}
+
+@keyframes safe-auth-caption {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-safe-auth-caption {
+  animation: safe-auth-caption 600ms var(--ease-expo-out) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-safe-drift-a,
   .animate-safe-drift-b,
   .animate-safe-shard-a,
   .animate-safe-shard-b,
-  .animate-safe-marquee {
+  .animate-safe-marquee,
+  .animate-safe-auth-zoom,
+  .animate-safe-auth-caption {
     animation: none;
   }
 }

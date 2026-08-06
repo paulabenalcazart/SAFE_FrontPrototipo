@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { key: 'planes', label: 'Planes' },
   { key: 'acerca', label: 'Acerca de' },
   { key: 'trabaja', label: 'Trabaja con SAFE' },
+  { key: 'contacto', label: 'Contacto' },
 ] as const
 
 export function Navbar({
@@ -49,10 +50,16 @@ export function Navbar({
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <Button variant="ghost" className="text-navy-500 hover:scale-[1.02] hover:text-navy-600">
+        <Button
+          variant="ghost"
+          className="text-navy-500 hover:scale-[1.02] hover:text-navy-600"
+          onClick={() => handleNavClick('login')}
+        >
           Iniciar sesión
         </Button>
-        <Button className="hover:scale-[1.02]">Crear cuenta</Button>
+        <Button className="hover:scale-[1.02]" onClick={() => handleNavClick('signup')}>
+          Crear cuenta
+        </Button>
       </div>
     </div>
   )

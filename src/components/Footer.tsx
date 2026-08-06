@@ -1,4 +1,4 @@
-import { Globe, Mail, MessageCircle } from 'lucide-react'
+import { FacebookIcon, InstagramIcon, LinkedinIcon, YoutubeIcon } from '@/components/SocialIcons'
 
 const columnas = [
   {
@@ -7,7 +7,7 @@ const columnas = [
   },
   {
     titulo: 'Empresa',
-    enlaces: ['Acerca de', 'Trabaja con SAFE'],
+    enlaces: ['Acerca de', 'Trabaja con SAFE', 'Términos y condiciones', 'Política de privacidad'],
   },
   {
     titulo: 'Soporte',
@@ -20,6 +20,9 @@ const ENLACE_PAGE: Record<string, string> = {
   Planes: 'planes',
   'Acerca de': 'acerca',
   'Trabaja con SAFE': 'trabaja',
+  Contacto: 'contacto',
+  'Términos y condiciones': 'terminos',
+  'Política de privacidad': 'privacidad',
 }
 
 export function Footer({ onNavigate }: { onNavigate?: (key: string) => void }) {
@@ -44,14 +47,17 @@ export function Footer({ onNavigate }: { onNavigate?: (key: string) => void }) {
             trámites legales en un solo lugar.
           </p>
           <div className="mt-4 flex gap-3 text-navy-100/60">
-            <a href="#" aria-label="Sitio web" className="transition-colors hover:text-white">
-              <Globe className="h-[18px] w-[18px]" />
+            <a href="#" aria-label="Instagram" className="transition-colors hover:text-white">
+              <InstagramIcon className="h-[18px] w-[18px]" />
             </a>
-            <a href="#" aria-label="Correo" className="transition-colors hover:text-white">
-              <Mail className="h-[18px] w-[18px]" />
+            <a href="#" aria-label="LinkedIn" className="transition-colors hover:text-white">
+              <LinkedinIcon className="h-[18px] w-[18px]" />
             </a>
-            <a href="#" aria-label="Chat" className="transition-colors hover:text-white">
-              <MessageCircle className="h-[18px] w-[18px]" />
+            <a href="#" aria-label="Facebook" className="transition-colors hover:text-white">
+              <FacebookIcon className="h-[18px] w-[18px]" />
+            </a>
+            <a href="#" aria-label="YouTube" className="transition-colors hover:text-white">
+              <YoutubeIcon className="h-[18px] w-[18px]" />
             </a>
           </div>
         </div>
@@ -88,7 +94,7 @@ export function Footer({ onNavigate }: { onNavigate?: (key: string) => void }) {
 
       <div className="relative mx-auto mt-10 flex max-w-6xl flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-6 text-xs text-navy-100/50">
         <span>© 2026 SAFE. Todos los derechos reservados.</span>
-        <span>Quito, Ecuador</span>
+        <span>Samborondón, Ecuador</span>
       </div>
     </footer>
   )

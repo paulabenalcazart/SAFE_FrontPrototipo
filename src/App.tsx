@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
 import { ComoFuncionaSection } from './components/ComoFuncionaSection'
@@ -10,11 +10,42 @@ import { AcercaDePage } from './components/AcercaDePage'
 import { ReasonsSection } from './components/ReasonsSection'
 import { TrabajaConSafePage } from './components/TrabajaConSafePage'
 import { PostulacionPage } from './components/PostulacionPage'
+import { LoginPage } from './components/LoginPage'
+import { ForgotPasswordPage } from './components/ForgotPasswordPage'
+import { SignupPage } from './components/SignupPage'
+import { ContactoPage } from './components/ContactoPage'
+import { TerminosPage } from './components/TerminosPage'
+import { PrivacidadPage } from './components/PrivacidadPage'
 import { Footer } from './components/Footer'
 
-type Page = 'inicio' | 'como' | 'planes' | 'acerca' | 'trabaja' | 'postulacion'
+type Page =
+  | 'inicio'
+  | 'como'
+  | 'planes'
+  | 'acerca'
+  | 'trabaja'
+  | 'postulacion'
+  | 'login'
+  | 'recuperar'
+  | 'signup'
+  | 'contacto'
+  | 'terminos'
+  | 'privacidad'
 
-const PAGES: Page[] = ['inicio', 'como', 'planes', 'acerca', 'trabaja', 'postulacion']
+const PAGES: Page[] = [
+  'inicio',
+  'como',
+  'planes',
+  'acerca',
+  'trabaja',
+  'postulacion',
+  'login',
+  'recuperar',
+  'signup',
+  'contacto',
+  'terminos',
+  'privacidad',
+]
 
 export default function App() {
   const [page, setPage] = useState<Page>('inicio')
@@ -22,15 +53,19 @@ export default function App() {
   const handleNavigate = (key: string) => {
     if (!PAGES.includes(key as Page)) return
     setPage(key as Page)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [page])
 
   const goToPlanes = () => handleNavigate('planes')
   const goToPostulacion = () => handleNavigate('postulacion')
+  const isAuthPage = page === 'login' || page === 'recuperar' || page === 'signup'
 
   return (
     <div className="min-h-screen bg-white font-sans text-foreground">
-      <Navbar activePage={page} onNavigate={handleNavigate} />
+      {!isAuthPage && <Navbar activePage={page} onNavigate={handleNavigate} />}
       {page === 'inicio' && (
         <>
           <Hero onVerPlanes={goToPlanes} />
@@ -46,8 +81,41 @@ export default function App() {
       {page === 'planes' && <PlanesPage />}
       {page === 'acerca' && <AcercaDePage />}
       {page === 'trabaja' && <TrabajaConSafePage onPostular={goToPostulacion} />}
-      {page === 'postulacion' && <PostulacionPage onVolver={() => handleNavigate('inicio')} />}
-      <Footer onNavigate={handleNavigate} />
+      {page === 'contacto' && (
+        <ContactoPage onIrPrivacidad={() => handleNavigate('privacidad')} />
+      )}
+      {page === 'terminos' && <TerminosPage />}
+      {page === 'privacidad' && <PrivacidadPage />}
+      {page === 'postulacion' && (
+        <PostulacionPage
+          onVolver={() => handleNavigate('inicio')}
+          onIrPrivacidad={() => handleNavigate('privacidad')}
+        />
+      )}
+      {page === 'login' && (
+        <LoginPage
+          onIngresar={() => handleNavigate('inicio')}
+          onRecuperar={() => handleNavigate('recuperar')}
+          onIrInicio={() => handleNavigate('inicio')}
+          onIrCrearCuenta={() => handleNavigate('signup')}
+        />
+      )}
+      {page === 'recuperar' && (
+        <ForgotPasswordPage
+          onVolver={() => handleNavigate('login')}
+          onIrInicio={() => handleNavigate('inicio')}
+        />
+      )}
+      {page === 'signup' && (
+        <SignupPage
+          onCrearCuenta={() => handleNavigate('inicio')}
+          onIrLogin={() => handleNavigate('login')}
+          onIrInicio={() => handleNavigate('inicio')}
+          onIrTerminos={() => handleNavigate('terminos')}
+          onIrPrivacidad={() => handleNavigate('privacidad')}
+        />
+      )}
+      {!isAuthPage && <Footer onNavigate={handleNavigate} />}
     </div>
   )
 }
