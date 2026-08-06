@@ -8,6 +8,9 @@
 /build
 /out
 
+# No se porque se genera pero lo ignoro
+tsconfig.tsbuildinfo
+
 # Testing and coverage
 /coverage
 

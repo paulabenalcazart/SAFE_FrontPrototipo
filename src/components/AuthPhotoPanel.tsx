@@ -35,7 +35,7 @@ export function AuthPhotoPanel({
   }, [photos])
 
   return (
-    <div className="relative hidden overflow-hidden bg-navy-900 lg:block">
+    <aside className="relative hidden min-h-[100dvh] overflow-hidden bg-navy-900 lg:block">
       {photos.map((src, i) => (
         <img
           key={src}
@@ -71,6 +71,6 @@ export function AuthPhotoPanel({
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   )
 }

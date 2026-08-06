@@ -23,15 +23,15 @@ export function SignupPage({
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-[100dvh] bg-surface/60 lg:grid-cols-2">
       <AuthPhotoPanel
         heading="Ordena las finanzas, los impuestos y lo legal de tu PYME"
         subheading="Crea tu cuenta primero; puedes registrar tu empresa cuando tengas los datos a la mano."
         photos={SIGNUP_PHOTOS}
       />
 
-      <div className="flex items-center justify-center px-6 py-12 sm:px-10">
-        <div className="animate-safe-fade-up w-full max-w-md">
+      <div className="flex items-center justify-center px-5 py-8 sm:px-10 sm:py-12 lg:bg-white lg:px-16 xl:px-24">
+        <div className="animate-safe-fade-up w-full max-w-md rounded-2xl border border-line/80 bg-white p-6 shadow-[var(--shadow-card)] sm:p-8 lg:border-0 lg:p-0 lg:shadow-none">
           <button
             type="button"
             onClick={onIrInicio}
@@ -55,7 +55,7 @@ export function SignupPage({
               onCrearCuenta?.()
             }}
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <Label htmlFor="signup-nombres">Nombres</Label>
                 <Input id="signup-nombres" placeholder="Mateo" className="mt-1.5 h-11" required />
@@ -126,6 +126,12 @@ export function SignupPage({
             <Button type="submit" size="lg" className="w-full hover:scale-[1.01]">
               Crear cuenta
             </Button>
+
+            <div className="flex items-center gap-3 text-xs text-ink-500">
+              <span className="h-px flex-1 bg-line" />
+              o continúa con
+              <span className="h-px flex-1 bg-line" />
+            </div>
 
             <Button
               type="button"

@@ -16,9 +16,9 @@ export function ForgotPasswordPage({
   const [sent, setSent] = useState(false)
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
-      <div className="flex items-center justify-center px-6 py-12 sm:px-10">
-        <div className="animate-safe-fade-up w-full max-w-md">
+    <div className="grid min-h-[100dvh] bg-surface/60 lg:grid-cols-2">
+      <div className="flex items-center justify-center px-5 py-8 sm:px-10 sm:py-12 lg:bg-white lg:px-16 xl:px-24">
+        <div className="animate-safe-fade-up w-full max-w-md rounded-2xl border border-line/80 bg-white p-6 shadow-[var(--shadow-card)] sm:p-8 lg:border-0 lg:p-0 lg:shadow-none">
           <button
             type="button"
             onClick={onIrInicio}
