@@ -216,6 +216,17 @@
   );
 }
 
+@utility view-tint {
+  background-image: radial-gradient(
+      60% 32% at 15% 16%,
+      rgba(227, 237, 247, 0.55) 0%,
+      rgba(227, 237, 247, 0) 72%
+    ),
+    radial-gradient(55% 30% at 87% 38%, rgba(227, 237, 247, 0.5) 0%, rgba(227, 237, 247, 0) 70%),
+    radial-gradient(60% 32% at 18% 66%, rgba(227, 237, 247, 0.45) 0%, rgba(227, 237, 247, 0) 70%),
+    radial-gradient(55% 30% at 84% 90%, rgba(227, 237, 247, 0.4) 0%, rgba(227, 237, 247, 0) 70%);
+}
+
 @keyframes safe-fade-up {
   from {
     opacity: 0;
@@ -333,11 +344,25 @@
   animation: safe-shard-drift-hue-b 17s ease-in-out infinite;
 }
 
+@keyframes safe-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-safe-marquee {
+  animation: safe-marquee 32s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-safe-drift-a,
   .animate-safe-drift-b,
   .animate-safe-shard-a,
-  .animate-safe-shard-b {
+  .animate-safe-shard-b,
+  .animate-safe-marquee {
     animation: none;
   }
 }

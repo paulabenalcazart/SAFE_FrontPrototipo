@@ -336,7 +336,7 @@ export function ComoFuncionaSection() {
   const activeDemo = openDemoIndex !== null ? demos[openDemoIndex] : null
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section className="view-tint relative w-full overflow-hidden">
       <AmbientBackdrop />
       <div className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:py-28">
         <div ref={ref} className="mx-auto max-w-xl text-center">

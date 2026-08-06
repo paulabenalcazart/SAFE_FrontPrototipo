@@ -121,6 +121,7 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const previewScale = Math.min(boxW / PREVIEW_NATURAL_W, boxH / previewNaturalH)
   const previewScaledW = PREVIEW_NATURAL_W * previewScale
   const previewScaledH = previewNaturalH * previewScale
+  const boxTopPercent = lerp(36, 50, progress)
 
   return (
     <div className="relative w-full bg-white">
@@ -168,7 +169,7 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
           <div
             className="absolute left-1/2 overflow-hidden rounded-xl bg-surface"
             style={{
-              top: '36%',
+              top: `${boxTopPercent}%`,
               width: `${boxW}px`,
               height: `${boxH}px`,
               transform: 'translate(-50%, -50%)',

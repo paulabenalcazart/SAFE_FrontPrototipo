@@ -249,7 +249,7 @@ function MissionVisionSection() {
           className="pointer-events-none absolute inset-0 opacity-[0.06]"
           style={{ backgroundImage: 'radial-gradient(white 1px, transparent 1px)', backgroundSize: '22px 22px' }}
         />
-        <div className="animate-safe-drift-b pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-emerald-brand/20 blur-3xl" />
+        <div className="animate-safe-drift-b pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-navy-100/20 blur-3xl" />
         <div className="animate-safe-drift-a pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-navy-500/25 blur-3xl" />
 
         <div className="relative grid gap-10 p-8 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-white/10 sm:p-12 lg:p-14">
@@ -258,7 +258,7 @@ function MissionVisionSection() {
               <span
                 className={cn(
                   'grid h-12 w-12 place-items-center rounded-2xl',
-                  i === 0 ? 'bg-navy-500/40 text-white' : 'bg-emerald-brand/20 text-emerald-brand',
+                  i === 0 ? 'bg-navy-500/40 text-white' : 'bg-navy-100/25 text-navy-100',
                   inView ? 'animate-safe-pop-in' : 'opacity-0',
                 )}
                 style={inView ? { animationDelay: `${160 + i * 100}ms` } : undefined}
@@ -411,10 +411,12 @@ export function AcercaDePage() {
   return (
     <>
       <AboutHero />
-      <FounderLetterSection />
-      <WhyExistsSection />
-      <MissionVisionSection />
-      <TeamSection />
+      <div className="view-tint relative">
+        <FounderLetterSection />
+        <WhyExistsSection />
+        <MissionVisionSection />
+        <TeamSection />
+      </div>
     </>
   )
 }

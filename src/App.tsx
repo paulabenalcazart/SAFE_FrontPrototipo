@@ -8,21 +8,25 @@ import { PlansSection } from './components/PlansSection'
 import { PlanesPage } from './components/PlanesPage'
 import { AcercaDePage } from './components/AcercaDePage'
 import { ReasonsSection } from './components/ReasonsSection'
-import { FinalCtaSection } from './components/FinalCtaSection'
+import { TrabajaConSafePage } from './components/TrabajaConSafePage'
+import { PostulacionPage } from './components/PostulacionPage'
 import { Footer } from './components/Footer'
 
-type Page = 'inicio' | 'como' | 'planes' | 'acerca'
+type Page = 'inicio' | 'como' | 'planes' | 'acerca' | 'trabaja' | 'postulacion'
+
+const PAGES: Page[] = ['inicio', 'como', 'planes', 'acerca', 'trabaja', 'postulacion']
 
 export default function App() {
   const [page, setPage] = useState<Page>('inicio')
 
   const handleNavigate = (key: string) => {
-    if (key !== 'inicio' && key !== 'como' && key !== 'planes' && key !== 'acerca') return
-    setPage(key)
+    if (!PAGES.includes(key as Page)) return
+    setPage(key as Page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const goToPlanes = () => handleNavigate('planes')
+  const goToPostulacion = () => handleNavigate('postulacion')
 
   return (
     <div className="min-h-screen bg-white font-sans text-foreground">
@@ -30,27 +34,20 @@ export default function App() {
       {page === 'inicio' && (
         <>
           <Hero onVerPlanes={goToPlanes} />
-          <FeatureHighlightsSection />
-          <ModulesSection />
-          <PlansSection onVerPlanes={goToPlanes} />
-          <ReasonsSection />
-          <FinalCtaSection />
+          <div className="view-tint relative">
+            <FeatureHighlightsSection />
+            <ModulesSection />
+            <PlansSection onVerPlanes={goToPlanes} />
+            <ReasonsSection />
+          </div>
         </>
       )}
-      {page === 'como' && (
-        <>
-          <ComoFuncionaSection />
-          <FinalCtaSection />
-        </>
-      )}
+      {page === 'como' && <ComoFuncionaSection />}
       {page === 'planes' && <PlanesPage />}
-      {page === 'acerca' && (
-        <>
-          <AcercaDePage />
-          <FinalCtaSection />
-        </>
-      )}
-      <Footer />
+      {page === 'acerca' && <AcercaDePage />}
+      {page === 'trabaja' && <TrabajaConSafePage onPostular={goToPostulacion} />}
+      {page === 'postulacion' && <PostulacionPage onVolver={() => handleNavigate('inicio')} />}
+      <Footer onNavigate={handleNavigate} />
     </div>
   )
 }

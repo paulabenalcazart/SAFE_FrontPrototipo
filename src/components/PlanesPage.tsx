@@ -19,7 +19,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { AmbientBackdrop } from '@/components/AmbientBackdrop'
 import { PageHero } from '@/components/PageHero'
 import { useReveal } from '@/hooks/useReveal'
 import { useCountUp } from '@/hooks/useCountUp'
@@ -32,10 +31,10 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
   return (
     <article
       className={cn(
-        'group/card relative flex h-full flex-col overflow-hidden p-6 transition-[transform,box-shadow,border-color] duration-300 ease-[var(--ease-expo-out)]',
+        'group/card relative flex h-full flex-col overflow-hidden transition-[transform,box-shadow,border-color] duration-300 ease-[var(--ease-expo-out)]',
         p.destacado
-          ? 'rounded-[var(--radius-xl)] border border-white/10 bg-[linear-gradient(160deg,var(--safe-primary-900)_0%,var(--safe-primary-700)_55%,var(--safe-primary-600)_100%)] text-white shadow-[var(--shadow-float)] hover:-translate-y-1.5 hover:shadow-[0_20px_48px_-14px_oklch(0.28_0.076_253.5/0.55)]'
-          : 'surface-card hover:-translate-y-1 hover:border-navy-500/30 hover:shadow-[var(--shadow-float)]',
+          ? 'rounded-[var(--radius-xl)] border border-white/10 bg-[linear-gradient(160deg,var(--safe-primary-900)_0%,var(--safe-primary-700)_55%,var(--safe-primary-600)_100%)] p-6 text-white shadow-[var(--shadow-float)] sm:p-7 hover:-translate-y-1.5 hover:shadow-[0_20px_48px_-14px_oklch(0.28_0.076_253.5/0.55)]'
+          : 'surface-card p-6 hover:-translate-y-1 hover:border-navy-500/30 hover:shadow-[var(--shadow-float)]',
         inView ? 'animate-safe-fade-up' : 'opacity-0',
       )}
       style={inView ? { animationDelay: `${i * 100}ms` } : undefined}
@@ -44,7 +43,7 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
         <>
           <div
             aria-hidden="true"
-            className="animate-safe-drift-b pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full bg-emerald-brand/25 blur-3xl"
+            className="animate-safe-drift-b pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full bg-navy-100/20 blur-3xl"
           />
           <div
             aria-hidden="true"
@@ -58,7 +57,7 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
       )}
 
       {p.destacado && (
-        <span className="absolute right-6 top-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-brand/90">
+        <span className="absolute right-6 top-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-navy-100">
           Recomendado
         </span>
       )}
@@ -91,7 +90,7 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
         className={cn(
           'group/btn relative mt-6 w-full transition-[transform,box-shadow] duration-200 ease-[var(--ease-expo-out)] hover:-translate-y-0.5',
           p.destacado &&
-            'bg-emerald-brand text-navy-900 shadow-[0_10px_28px_-10px_oklch(0.68_0.14_165/0.5)] hover:bg-emerald-brand/90',
+            'bg-navy-100 text-navy-900 shadow-[0_10px_28px_-10px_oklch(0.28_0.076_253.5/0.5)] hover:bg-white',
         )}
         variant={p.destacado ? 'default' : 'outline'}
       >
@@ -106,9 +105,8 @@ function PlanCards() {
   const { ref, inView } = useReveal<HTMLDivElement>()
 
   return (
-    <section className="relative overflow-hidden py-16">
-      <AmbientBackdrop />
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-8">
+    <section className="py-16">
+      <div className="mx-auto max-w-6xl px-6 sm:px-8">
         <div ref={ref} className="grid gap-5 lg:grid-cols-3">
           {planes.map((p, i) => (
             <PlanCard key={p.nombre} p={p} i={i} inView={inView} />
@@ -141,9 +139,8 @@ function ComparisonTable() {
   const { ref, inView } = useReveal<HTMLDivElement>()
 
   return (
-    <section className="relative overflow-hidden bg-surface py-16">
-      <AmbientBackdrop />
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-8">
+    <section className="py-16">
+      <div className="mx-auto max-w-6xl px-6 sm:px-8">
         <h2 className="font-display text-2xl font-semibold text-ink-900">Comparativa de módulos</h2>
         <div
           ref={ref}
@@ -261,7 +258,7 @@ function PlansFaq() {
   const { ref, inView } = useReveal<HTMLDivElement>()
 
   return (
-    <section className="mx-auto max-w-3xl px-6 py-16 sm:px-8">
+    <section className="mx-auto max-w-6xl px-6 py-16 sm:px-8">
       <h2 className="font-display text-2xl font-semibold text-ink-900">Preguntas frecuentes</h2>
       <div ref={ref} className={cn('mt-6', inView ? 'animate-safe-fade-up' : 'opacity-0')}>
         <Accordion type="single" collapsible>
@@ -287,9 +284,11 @@ export function PlanesPage() {
         titulo="Elige el plan que acompaña el momento de tu empresa"
         texto="Todos los planes incluyen tu dashboard, tu calendario tributario y tu histórico financiero. Sin permanencia."
       />
-      <PlanCards />
-      <ComparisonTable />
-      <PlansFaq />
+      <div className="view-tint relative">
+        <PlanCards />
+        <ComparisonTable />
+        <PlansFaq />
+      </div>
     </>
   )
 }

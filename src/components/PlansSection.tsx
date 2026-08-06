@@ -12,10 +12,10 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
   return (
     <article
       className={cn(
-        'group/card relative flex h-full flex-col overflow-hidden p-6 transition-[transform,box-shadow,border-color] duration-300 ease-[var(--ease-expo-out)]',
+        'group/card relative flex h-full flex-col overflow-hidden transition-[transform,box-shadow,border-color] duration-300 ease-[var(--ease-expo-out)]',
         p.destacado
-          ? 'rounded-[var(--radius-xl)] border border-white/10 bg-[linear-gradient(160deg,var(--safe-primary-900)_0%,var(--safe-primary-700)_55%,var(--safe-primary-600)_100%)] text-white shadow-[0_28px_60px_-20px_oklch(0.28_0.076_253.5/0.5)] lg:-my-3 lg:hover:-translate-y-2 hover:shadow-[0_32px_68px_-16px_oklch(0.28_0.076_253.5/0.6)]'
-          : 'surface-card hover:-translate-y-1 hover:border-navy-500/30 hover:shadow-[var(--shadow-float)]',
+          ? 'rounded-[var(--radius-xl)] border border-white/10 bg-[linear-gradient(160deg,var(--safe-primary-900)_0%,var(--safe-primary-700)_55%,var(--safe-primary-600)_100%)] p-6 text-white shadow-[0_28px_60px_-20px_oklch(0.28_0.076_253.5/0.5)] sm:p-7 lg:-mt-3 lg:hover:-translate-y-2 hover:shadow-[0_32px_68px_-16px_oklch(0.28_0.076_253.5/0.6)]'
+          : 'surface-card p-6 hover:-translate-y-1 hover:border-navy-500/30 hover:shadow-[var(--shadow-float)]',
         inView ? 'animate-safe-fade-up' : 'opacity-0',
       )}
       style={inView ? { animationDelay: `${120 + i * 100}ms` } : undefined}
@@ -24,7 +24,7 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
         <>
           <div
             aria-hidden="true"
-            className="animate-safe-drift-b pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-emerald-brand/25 blur-3xl"
+            className="animate-safe-drift-b pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-navy-100/20 blur-3xl"
           />
           <div
             aria-hidden="true"
@@ -42,7 +42,7 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
       )}
 
       {p.destacado && (
-        <span className="absolute right-6 top-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-brand/90">
+        <span className="absolute right-6 top-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-navy-100">
           Más contratado
         </span>
       )}
@@ -74,7 +74,7 @@ function PlanCard({ p, i, inView }: { p: (typeof planes)[number]; i: number; inV
         className={cn(
           'group/btn relative mt-auto w-full transition-[transform,box-shadow] duration-200 ease-[var(--ease-expo-out)] hover:-translate-y-0.5',
           p.destacado &&
-            'bg-emerald-brand text-navy-900 shadow-[0_10px_28px_-10px_oklch(0.68_0.14_165/0.5)] hover:bg-emerald-brand/90',
+            'bg-navy-100 text-navy-900 shadow-[0_10px_28px_-10px_oklch(0.28_0.076_253.5/0.5)] hover:bg-white',
         )}
         variant={p.destacado ? 'default' : 'outline'}
       >
@@ -89,7 +89,7 @@ export function PlansSection({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const { ref, inView } = useReveal<HTMLElement>()
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-surface py-20">
+    <section ref={ref} className="relative overflow-hidden py-20">
       <AmbientBackdrop />
       <div className="relative mx-auto max-w-6xl px-6 sm:px-8">
         <div

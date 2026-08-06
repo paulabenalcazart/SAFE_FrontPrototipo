@@ -25,7 +25,7 @@ export function Navbar({
   }
 
   return (
-    <div className="flex items-center justify-between px-6 py-5 sm:px-8 lg:px-16">
+    <div className="sticky top-0 z-50 flex items-center justify-between border-b border-line/60 bg-white/85 px-6 py-5 backdrop-blur-md sm:px-8 lg:px-16">
       <div className="flex items-center gap-8">
         <span
           onClick={() => handleNavClick('inicio')}
