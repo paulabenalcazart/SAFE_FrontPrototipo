@@ -8,11 +8,15 @@ export function useReveal<T extends HTMLElement>(options?: IntersectionObserverI
     const node = ref.current
     if (!node) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Content must remain available even when the observer is unavailable.
+    // Do not use the OS motion preference here: this landing has an explicit
+    // animation design and must behave consistently across supported devices.
+    if (!('IntersectionObserver' in window)) {
       setInView(true)
       return
     }
 
+    const revealFallback = window.setTimeout(() => setInView(true), 900)
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -23,7 +27,10 @@ export function useReveal<T extends HTMLElement>(options?: IntersectionObserverI
       { threshold: 0.15, rootMargin: '0px 0px -15% 0px', ...options },
     )
     observer.observe(node)
-    return () => observer.disconnect()
+    return () => {
+      window.clearTimeout(revealFallback)
+      observer.disconnect()
+    }
   }, [])
 
   return { ref, inView }

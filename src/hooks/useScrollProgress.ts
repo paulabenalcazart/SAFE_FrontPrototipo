@@ -9,11 +9,6 @@ export function useScrollProgress<T extends HTMLElement>() {
     const node = ref.current
     if (!node) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setProgress(1)
-      return
-    }
-
     function measure() {
       const rect = node!.getBoundingClientRect()
       const total = rect.height - window.innerHeight

@@ -170,6 +170,7 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
   }
 
   h1,
@@ -292,56 +293,52 @@
 
 .animate-safe-drift-a {
   animation: safe-drift-a 24s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-safe-drift-b {
   animation: safe-drift-b 28s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes safe-shard-drift-hue-a {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
-    filter: hue-rotate(0deg);
   }
   33% {
     transform: translate3d(6%, -8%, 0) scale(1.09);
-    filter: hue-rotate(70deg);
   }
   66% {
     transform: translate3d(-5%, 4%, 0) scale(1.05);
-    filter: hue-rotate(-50deg);
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
-    filter: hue-rotate(0deg);
   }
 }
 
 @keyframes safe-shard-drift-hue-b {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
-    filter: hue-rotate(0deg);
   }
   33% {
     transform: translate3d(-7%, 6%, 0) scale(1.08);
-    filter: hue-rotate(-65deg);
   }
   66% {
     transform: translate3d(4%, -5%, 0) scale(1.04);
-    filter: hue-rotate(45deg);
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
-    filter: hue-rotate(0deg);
   }
 }
 
 .animate-safe-shard-a {
   animation: safe-shard-drift-hue-a 15s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-safe-shard-b {
   animation: safe-shard-drift-hue-b 17s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes safe-marquee {
@@ -383,18 +380,6 @@
 
 .animate-safe-auth-caption {
   animation: safe-auth-caption 600ms var(--ease-expo-out) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-safe-drift-a,
-  .animate-safe-drift-b,
-  .animate-safe-shard-a,
-  .animate-safe-shard-b,
-  .animate-safe-marquee,
-  .animate-safe-auth-zoom,
-  .animate-safe-auth-caption {
-    animation: none;
-  }
 }
 
 @keyframes safe-accordion-down {
