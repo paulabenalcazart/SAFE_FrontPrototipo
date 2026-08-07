@@ -44,3 +44,6 @@ Thumbs.db
 
 # Claude local settings (machine-specific)
 .claude/settings.local.json
+
+# Superpowers subagent-driven-development scratch workspace
+/.superpowers/
