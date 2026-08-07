@@ -98,3 +98,13 @@ empresa activa, registrar una nueva (`/app/empresa/registrar`, wizard de 4 pasos
 (`/app/empresa/editar`), todo en `src/portal/empresa/`. Los datos de empresa, a diferencia de la sesión
 de auth, no persisten en `localStorage` — viven en memoria de React mientras dura la sesión del
 navegador.
+
+**Fase 3 (Financiero):** agrega `src/portal/financiero/`, el módulo de estados financieros — listar
+periodos, cargar uno nuevo (wizard de 10 pasos que espeja el balance/estado de resultados/flujo de
+efectivo), ver el detalle de un registro y comparar dos periodos. Introduce el primer motor de cálculo
+real del portal (`src/portal/financiero/calculo.ts`): magnitudes contables (activo total, patrimonio,
+utilidad neta, etc.) y un catálogo de 23 indicadores financieros (liquidez, solvencia, gestión,
+rentabilidad) con fórmulas reales de la Superintendencia de Compañías del Ecuador, calculados en vivo
+sobre lo que el usuario carga — no son datos mock fijos como en las fases anteriores. `PortalDataContext`
+se extiende con `registrosFinancieros`, indexado por empresa; solo Textiles Andina S.A. arranca con
+historial sembrado (Comercial del Valle Cía. Ltda. usa el estado vacío del mockup).
