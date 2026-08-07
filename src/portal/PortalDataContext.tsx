@@ -1,6 +1,10 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { Empresa } from './types'
-import { empresaActiva as empresaSemilla, empresasDisponibles as empresasSemilla } from './data/mock-portal-data'
+import type { Empresa, RegistroFinanciero } from './types'
+import {
+  empresaActiva as empresaSemilla,
+  empresasDisponibles as empresasSemilla,
+  registrosFinancierosSemilla,
+} from './data/mock-portal-data'
 
 type PortalDataContextValue = {
   empresas: Empresa[]
@@ -9,6 +13,9 @@ type PortalDataContextValue = {
   setEmpresaActiva: (id: string) => void
   addEmpresa: (empresa: Empresa) => void
   updateEmpresa: (id: string, patch: Partial<Empresa>) => void
+  registrosFinancieros: Record<string, RegistroFinanciero[]>
+  addRegistroFinanciero: (empresaId: string, registro: RegistroFinanciero) => void
+  updateRegistroFinanciero: (empresaId: string, id: string, patch: Partial<RegistroFinanciero>) => void
 }
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
@@ -16,6 +23,9 @@ const PortalDataContext = createContext<PortalDataContextValue | null>(null)
 export function PortalDataProvider({ children }: { children: ReactNode }) {
   const [empresas, setEmpresas] = useState<Empresa[]>(empresasSemilla)
   const [empresaActivaId, setEmpresaActivaId] = useState(empresaSemilla.id)
+  const [registrosFinancieros, setRegistrosFinancieros] = useState<Record<string, RegistroFinanciero[]>>(
+    registrosFinancierosSemilla,
+  )
 
   const empresaActiva = useMemo(
     () => empresas.find((e) => e.id === empresaActivaId) ?? empresas[0],
@@ -30,6 +40,20 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     setEmpresas((current) => current.map((e) => (e.id === id ? { ...e, ...patch } : e)))
   }
 
+  const addRegistroFinanciero = (empresaId: string, registro: RegistroFinanciero) => {
+    setRegistrosFinancieros((current) => ({
+      ...current,
+      [empresaId]: [...(current[empresaId] ?? []), registro],
+    }))
+  }
+
+  const updateRegistroFinanciero = (empresaId: string, id: string, patch: Partial<RegistroFinanciero>) => {
+    setRegistrosFinancieros((current) => ({
+      ...current,
+      [empresaId]: (current[empresaId] ?? []).map((r) => (r.id === id ? { ...r, ...patch } : r)),
+    }))
+  }
+
   return (
     <PortalDataContext.Provider
       value={{
@@ -39,6 +63,9 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         setEmpresaActiva: setEmpresaActivaId,
         addEmpresa,
         updateEmpresa,
+        registrosFinancieros,
+        addRegistroFinanciero,
+        updateRegistroFinanciero,
       }}
     >
       {children}
