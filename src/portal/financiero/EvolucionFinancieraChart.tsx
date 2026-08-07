@@ -19,7 +19,7 @@ function buildPoints(values: number[], max: number) {
 
 export function EvolucionFinancieraChart({ registros }: { registros: RegistroFinanciero[] }) {
   const ordenados = [...registros]
-    .filter((r) => r.estado !== 'BORRADOR')
+    .filter((r) => r.estado === 'VIGENTE')
     .sort((a, b) => a.periodo.localeCompare(b.periodo))
     .slice(-12)
 

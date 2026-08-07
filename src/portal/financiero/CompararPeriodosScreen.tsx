@@ -1,23 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
-import type { RegistroFinanciero } from '@/portal/types'
+import type { IndicadorCalculado, RegistroFinanciero } from '@/portal/types'
 import { activoTotal, calcularIndicadores, gastosTotales, utilidadNeta } from './calculo'
 import { formatPeriodo, formatUSD } from './formato'
 import { PASOS_CAMPOS } from './wizard-steps'
 
 const INDICADORES_PRINCIPALES = ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08']
 
+// paso 2 = Activo, paso 5 = Ingreso -> un aumento es positivo
+// paso 3 = Pasivo, paso 7 = Gasto -> un aumento es negativo
 const SECCIONES_CONCEPTO: { titulo: string; pasos: (2 | 3 | 5 | 7)[] }[] = [
   { titulo: 'Activo', pasos: [2] },
   { titulo: 'Pasivo', pasos: [3] },
   { titulo: 'Ingresos y gastos', pasos: [5, 7] },
 ]
 
-function variacion(a: number, b: number): { dif: number; pct: number; fg: string } {
+function variacion(a: number, b: number, mejorSiMayor = true): { dif: number; pct: number; fg: string } {
   const dif = b - a
   const pct = a === 0 ? 0 : dif / Math.abs(a)
-  return { dif, pct, fg: dif >= 0 ? 'text-emerald-deep' : 'text-destructive' }
+  const esFavorable = mejorSiMayor ? dif >= 0 : dif <= 0
+  return { dif, pct, fg: esFavorable ? 'text-emerald-deep' : 'text-destructive' }
+}
+
+function formatVariacionIndicador(dif: number, unidad: IndicadorCalculado['unidad']): string {
+  switch (unidad) {
+    case 'PORCENTAJE':
+      return `${(dif * 100).toFixed(1)} pp`
+    case 'DIAS':
+      return `${Math.round(dif)} días`
+    case 'RATIO':
+    case 'VECES':
+    default:
+      return dif.toFixed(2)
+  }
 }
 
 export function CompararPeriodosScreen() {
@@ -30,6 +46,12 @@ export function CompararPeriodosScreen() {
 
   const [idA, setIdA] = useState(opciones[1]?.id ?? opciones[0]?.id ?? '')
   const [idB, setIdB] = useState(opciones[0]?.id ?? '')
+
+  useEffect(() => {
+    setIdA(opciones[1]?.id ?? opciones[0]?.id ?? '')
+    setIdB(opciones[0]?.id ?? '')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empresaActiva.id])
 
   const registroA = opciones.find((r) => r.id === idA)
   const registroB = opciones.find((r) => r.id === idB)
@@ -55,10 +77,10 @@ export function CompararPeriodosScreen() {
   const mismoRegistro = idA === idB
 
   const kpisResumen = [
-    { titulo: 'Ingresos', a: registroA.ingresosOperacionales, b: registroB.ingresosOperacionales },
-    { titulo: 'Gastos totales', a: gastosTotales(registroA), b: gastosTotales(registroB) },
-    { titulo: 'Utilidad neta', a: utilidadNeta(registroA), b: utilidadNeta(registroB) },
-    { titulo: 'Activo total', a: activoTotal(registroA), b: activoTotal(registroB) },
+    { titulo: 'Ingresos', a: registroA.ingresosOperacionales, b: registroB.ingresosOperacionales, mejorSiMayor: true },
+    { titulo: 'Gastos totales', a: gastosTotales(registroA), b: gastosTotales(registroB), mejorSiMayor: false },
+    { titulo: 'Utilidad neta', a: utilidadNeta(registroA), b: utilidadNeta(registroB), mejorSiMayor: true },
+    { titulo: 'Activo total', a: activoTotal(registroA), b: activoTotal(registroB), mejorSiMayor: true },
   ]
 
   const indicadoresA = calcularIndicadores(registroA)
@@ -66,8 +88,8 @@ export function CompararPeriodosScreen() {
   const filasIndicadores = INDICADORES_PRINCIPALES.map((codigo) => {
     const iA = indicadoresA.find((i) => i.codigo === codigo)!
     const iB = indicadoresB.find((i) => i.codigo === codigo)!
-    const { dif, fg } = variacion(iA.valor, iB.valor)
-    return { nombre: iA.nombre, a: iA.valorFormateado, b: iB.valorFormateado, dif: dif.toFixed(2), fg }
+    const { dif, fg } = variacion(iA.valor, iB.valor, iA.mejorSiMayor)
+    return { nombre: iA.nombre, a: iA.valorFormateado, b: iB.valorFormateado, dif: formatVariacionIndicador(dif, iA.unidad), fg }
   })
 
   return (
@@ -126,7 +148,7 @@ export function CompararPeriodosScreen() {
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
         {kpisResumen.map((k) => {
-          const { dif, fg } = variacion(k.a, k.b)
+          const { dif, fg } = variacion(k.a, k.b, k.mejorSiMayor)
           return (
             <div key={k.titulo} className="rounded-xl border border-line bg-card p-4">
               <p className="text-[12.5px] font-semibold text-ink-500">{k.titulo}</p>
@@ -184,10 +206,14 @@ export function CompararPeriodosScreen() {
                 </tr>
               </thead>
               <tbody>
-                {seccion.pasos.flatMap((paso) => PASOS_CAMPOS[paso]).map((campo) => {
+                {seccion.pasos
+                  .flatMap((paso) => PASOS_CAMPOS[paso].map((campo) => ({ campo, paso })))
+                  .map(({ campo, paso }) => {
                   const a = registroA[campo.key] as number
                   const b = registroB[campo.key] as number
-                  const { dif, fg } = variacion(a, b)
+                  // Activo (2) e Ingreso (5): un aumento es favorable. Pasivo (3) y Gasto (7): un aumento no lo es.
+                  const mejorSiMayor = paso === 2 || paso === 5
+                  const { dif, fg } = variacion(a, b, mejorSiMayor)
                   return (
                     <tr key={campo.key} className="border-t border-line/70">
                       <td className="px-2 py-2 font-medium">{campo.label}</td>

@@ -148,6 +148,7 @@ export function calcularIndicadores(r: RegistroFinanciero): IndicadorCalculado[]
       valor,
       valorFormateado: formatearValor(def.unidad, valor),
       semaforo: calcularSemaforo(valor, def),
+      mejorSiMayor: def.mejorSiMayor,
     }
   })
 }

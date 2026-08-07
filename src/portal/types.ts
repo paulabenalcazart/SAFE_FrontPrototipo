@@ -153,4 +153,5 @@ export type IndicadorCalculado = {
   valor: number
   valorFormateado: string
   semaforo: SemaforoIndicador
+  mejorSiMayor: boolean
 }

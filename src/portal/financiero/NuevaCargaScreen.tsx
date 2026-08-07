@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -76,6 +76,18 @@ export function NuevaCargaScreen() {
   const [step, setStep] = useState<WizardStep>(1)
   const [maxStepReached, setMaxStepReached] = useState<WizardStep>(1)
   const [errores, setErrores] = useState<Record<string, string>>({})
+
+  // Si la empresa activa cambia (p. ej. desde el CompanySwitcher del Topbar) o la ruta
+  // apunta a un :id distinto, el draft local (congelado por useState) queda desincronizado
+  // de `registroExistente` (que sí se recalcula en cada render). Sin este efecto, "Guardar
+  // borrador" podría persistir el draft de la empresa anterior en la empresa nueva.
+  useEffect(() => {
+    setDraft(registroExistente ?? crearRegistroVacio())
+    setStep(1)
+    setMaxStepReached(1)
+    setErrores({})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empresaActiva.id, id])
 
   const esEdicion = Boolean(registroExistente)
 
