@@ -56,6 +56,7 @@
   --color-amber-brand: var(--safe-amber-500);
   --color-amber-deep: var(--safe-amber-600);
   --color-amber-soft: var(--safe-amber-100);
+  --color-danger-soft: var(--safe-danger-soft);
   --color-ink-900: var(--gray-900);
   --color-ink-700: var(--gray-700);
   --color-ink-500: var(--gray-500);
@@ -97,6 +98,7 @@
   --safe-amber-500: oklch(0.7 0.135 79);
   --safe-amber-100: oklch(0.95 0.037 84);
   --safe-danger: oklch(0.58 0.204 22);
+  --safe-danger-soft: oklch(0.95 0.032 22);
 
   --gray-900: oklch(0.25 0.021 250);
   --gray-700: oklch(0.41 0.026 253);
