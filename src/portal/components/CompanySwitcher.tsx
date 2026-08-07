@@ -1,9 +1,12 @@
 import { useState } from 'react'
-import { Check, ChevronDown } from 'lucide-react'
-import { empresaActiva, empresasDisponibles } from '@/portal/data/mock-portal-data'
+import { useNavigate } from 'react-router-dom'
+import { Check, ChevronDown, Plus } from 'lucide-react'
+import { usePortalData } from '@/portal/PortalDataContext'
 
 export function CompanySwitcher() {
   const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
+  const { empresas, empresaActiva, setEmpresaActiva } = usePortalData()
 
   return (
     <div className="relative min-w-0 flex-none">
@@ -32,12 +35,15 @@ export function CompanySwitcher() {
           <div className="px-2.5 pb-1.5 pt-2 text-[11px] font-semibold uppercase tracking-wide text-ink-500">
             Tus empresas
           </div>
-          {empresasDisponibles.map((empresa) => (
+          {empresas.map((empresa) => (
             <button
               key={empresa.id}
               type="button"
               role="menuitem"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setEmpresaActiva(empresa.id)
+                setOpen(false)
+              }}
               className="flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left hover:bg-surface"
             >
               <span className="grid h-6.5 w-6.5 shrink-0 place-items-center rounded-md bg-navy-100 text-[10.5px] font-bold text-navy-700">
@@ -53,14 +59,17 @@ export function CompanySwitcher() {
             </button>
           ))}
           <div className="mt-1 border-t border-line/70 pt-1.5">
-            {/* "Registrar otra empresa" se conecta a /app/empresa/registrar en la Fase 2 */}
             <button
               type="button"
               role="menuitem"
-              onClick={() => setOpen(false)}
-              className="flex min-h-11 w-full items-center rounded-lg px-2.5 text-[13.5px] font-semibold text-navy-600 hover:bg-surface"
+              onClick={() => {
+                setOpen(false)
+                navigate('/app/empresa/registrar')
+              }}
+              className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2.5 text-[13.5px] font-semibold text-navy-600 hover:bg-surface"
             >
-              + Registrar otra empresa
+              <Plus className="h-[17px] w-[17px]" aria-hidden="true" />
+              Registrar otra empresa
             </button>
           </div>
         </div>

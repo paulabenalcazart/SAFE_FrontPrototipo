@@ -1,12 +1,14 @@
 import { useAuth } from '@/auth/AuthContext'
 import { KpiCard } from '@/portal/components/KpiCard'
 import { chartSeries, indicadores, kpis, obligaciones } from '@/portal/data/mock-portal-data'
+import { usePortalData } from '@/portal/PortalDataContext'
 import { FinancialChart } from './FinancialChart'
 import { IndicatorsTable } from './IndicatorsTable'
 import { ObligationsTable } from './ObligationsTable'
 
 export function DashboardScreen() {
   const { user } = useAuth()
+  const { empresaActiva } = usePortalData()
   const firstName = user?.nombre.split(' ')[0] ?? ''
 
   return (
@@ -14,7 +16,7 @@ export function DashboardScreen() {
       <div>
         <h1 className="font-display text-[28px] font-bold leading-tight text-ink-900">Hola, {firstName}</h1>
         <p className="mt-1.5 max-w-[62ch] text-[14.5px] leading-relaxed text-ink-700">
-          Este es el estado financiero y tributario de Textiles Andina S.A. hoy.
+          Este es el estado financiero y tributario de {empresaActiva.nombre} hoy.
         </p>
       </div>
 
