@@ -18,6 +18,10 @@ import { ContactoPage } from './components/ContactoPage'
 import { TerminosPage } from './components/TerminosPage'
 import { PrivacidadPage } from './components/PrivacidadPage'
 import { Footer } from './components/Footer'
+import { useAuth } from './auth/AuthContext'
+import { RequireAuth } from './auth/RequireAuth'
+import { PortalLayout } from './portal/PortalLayout'
+import { DashboardScreen } from './portal/dashboard/DashboardScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -41,6 +45,7 @@ const PATH_TO_NAV_KEY: Record<string, string> = Object.fromEntries(
 function PublicLayout() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { login } = useAuth()
   const activePage = PATH_TO_NAV_KEY[location.pathname] ?? 'inicio'
   const isAuthPage = activePage === 'login' || activePage === 'recuperar' || activePage === 'signup'
 
@@ -97,7 +102,10 @@ function PublicLayout() {
           path="/login"
           element={
             <LoginPage
-              onIngresar={() => handleNavigate('inicio')}
+              onIngresar={() => {
+                login({ nombre: 'María Fernanda Torres', correo: 'maria.torres@textilesandina.ec', iniciales: 'MT' })
+                navigate('/app/dashboard')
+              }}
               onRecuperar={() => handleNavigate('recuperar')}
               onIrInicio={() => handleNavigate('inicio')}
               onIrCrearCuenta={() => handleNavigate('signup')}
@@ -117,7 +125,10 @@ function PublicLayout() {
           path="/signup"
           element={
             <SignupPage
-              onCrearCuenta={() => handleNavigate('inicio')}
+              onCrearCuenta={() => {
+                login({ nombre: 'María Fernanda Torres', correo: 'maria.torres@textilesandina.ec', iniciales: 'MT' })
+                navigate('/app/dashboard')
+              }}
               onIrLogin={() => handleNavigate('login')}
               onIrInicio={() => handleNavigate('inicio')}
               onIrTerminos={() => handleNavigate('terminos')}
@@ -135,6 +146,17 @@ function PublicLayout() {
 export default function App() {
   return (
     <Routes>
+      <Route
+        path="/app"
+        element={
+          <RequireAuth>
+            <PortalLayout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<DashboardScreen />} />
+      </Route>
       <Route path="/*" element={<PublicLayout />} />
     </Routes>
   )
