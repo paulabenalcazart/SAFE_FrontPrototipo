@@ -73,3 +73,21 @@ No hay variables de entorno ni backend — todo el contenido (planes, módulos, 
 
 - Las animaciones de scroll (`useReveal`) usan `IntersectionObserver` con `rootMargin` negativo para que no se disparen apenas la sección asoma en el viewport — solo cuando el usuario realmente se desplaza hacia ella.
 - Los botones "Contratar", "Comparar planes", los enlaces del Footer, etc. son visuales por ahora (no hay routing real ni backend conectado) — es un landing de producto, no la app autenticada.
+
+## Portal privado (`/app`)
+
+A partir de agosto de 2026, el repo también incluye la Fase 1 del **portal privado** (la app
+autenticada de SAFE, post-login), importado como prototipo de alta fidelidad desde Claude Design.
+Ver el spec completo en `docs/superpowers/specs/2026-08-06-portal-privado-fase1-design.md`.
+
+- **Routing real:** todo el sitio (público, auth y portal) usa `react-router-dom`. El portal vive bajo
+  `/app/*` y está protegido por una sesión mock (`src/auth/AuthContext.tsx`, persistida en
+  `localStorage`) — cualquier envío de los formularios de Login/Signup crea la sesión y navega a
+  `/app/dashboard`; sin sesión, `/app/*` redirige a `/login`.
+- **Estructura:** `src/portal/` contiene el shell (`PortalLayout`, `Sidebar`, `Topbar` y sus
+  dropdowns) y `src/portal/dashboard/` la primera pantalla (KPIs, gráfico de resumen financiero,
+  tablas de indicadores y obligaciones). Todo el contenido viene de
+  `src/portal/data/mock-portal-data.ts` — datos de ejemplo, no hay backend conectado.
+- **Pendiente:** las otras 25 pantallas del portal (Mi Empresa, Financiero, Indicadores completos,
+  Obligaciones, Simulador, Marketplace, Plan, Configuración, tutoriales) se implementan en fases
+  posteriores, cada una con su propio spec y plan.
