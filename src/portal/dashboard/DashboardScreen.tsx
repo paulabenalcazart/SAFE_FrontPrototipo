@@ -1,6 +1,7 @@
 import { useAuth } from '@/auth/AuthContext'
 import { KpiCard } from '@/portal/components/KpiCard'
-import { kpis } from '@/portal/data/mock-portal-data'
+import { chartSeries, kpis } from '@/portal/data/mock-portal-data'
+import { FinancialChart } from './FinancialChart'
 
 export function DashboardScreen() {
   const { user } = useAuth()
@@ -20,6 +21,8 @@ export function DashboardScreen() {
           <KpiCard key={kpi.id} kpi={kpi} />
         ))}
       </div>
+
+      <FinancialChart data={chartSeries} />
     </section>
   )
 }
