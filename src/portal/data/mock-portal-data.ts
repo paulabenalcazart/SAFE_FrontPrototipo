@@ -21,6 +21,7 @@ import type {
   NavItem,
   Notificacion,
   Obligacion,
+  RegistroFinanciero,
 } from '../types'
 
 export const empresaActiva: Empresa = {
@@ -192,3 +193,165 @@ export const chartSeries: ChartSeriesPoint[] = [
   { label: 'Nov', ingresos: 50, gastos: 35, utilidad: 15 },
   { label: 'Dic', ingresos: 53, gastos: 37, utilidad: 16 },
 ]
+
+type CamposRegistro = Omit<
+  RegistroFinanciero,
+  'id' | 'periodo' | 'version' | 'estado' | 'observaciones' | 'createdAt' | 'updatedAt'
+>
+
+const REGISTRO_JULIO_BASE: CamposRegistro = {
+  efectivoEquivalentes: 18400,
+  cuentasPorCobrar: 26700,
+  inventarios: 31200,
+  otrosActivosCorrientes: 4100,
+  activoFijoNeto: 96500,
+  otrosActivosNoCorrientes: 8200,
+  cuentasPorPagar: 22300,
+  deudaCortoPlazo: 12000,
+  otrosPasivosCorrientes: 5400,
+  deudaLargoPlazo: 34000,
+  otrosPasivosNoCorrientes: 3600,
+  capitalSocial: 80000,
+  resultadosAcumulados: 27800,
+  ingresosOperacionales: 48200,
+  otrosIngresos: 900,
+  costoVentas: 27600,
+  gastosAdministracion: 6800,
+  gastosVentas: 4200,
+  otrosGastosOperacionales: 1100,
+  gastosFinancieros: 950,
+  impuestoRenta: 1700,
+  flujoOperacion: 9200,
+  flujoInversion: -4500,
+  flujoFinanciamiento: -2100,
+  comprasPeriodo: 25000,
+  capex: 4500,
+  depreciacion: 1800,
+  numeroEmpleadosPeriodo: 38,
+  costoLaboral: 14200,
+  gastoID: 0,
+  unidadesVendidas: 9600,
+}
+
+function escalarCampos(base: CamposRegistro, factor: number): CamposRegistro {
+  const escalado = Object.fromEntries(
+    Object.entries(base).map(([key, valor]) => [key, Math.round(valor * factor)]),
+  ) as unknown as CamposRegistro
+  return { ...escalado, numeroEmpleadosPeriodo: base.numeroEmpleadosPeriodo }
+}
+
+function crearRegistro(params: {
+  periodo: string
+  version: number
+  estado: RegistroFinanciero['estado']
+  observaciones: string
+  campos: CamposRegistro
+  fecha: string
+}): RegistroFinanciero {
+  return {
+    id: crypto.randomUUID(),
+    periodo: params.periodo,
+    version: params.version,
+    estado: params.estado,
+    observaciones: params.observaciones,
+    ...params.campos,
+    createdAt: params.fecha,
+    updatedAt: params.fecha,
+  }
+}
+
+const registrosTextilesAndina: RegistroFinanciero[] = [
+  crearRegistro({
+    periodo: '2026-03-01',
+    version: 1,
+    estado: 'VIGENTE',
+    observaciones: 'Periodo estable, sin novedades.',
+    campos: escalarCampos(REGISTRO_JULIO_BASE, 0.86),
+    fecha: '2026-04-03T15:00:00.000Z',
+  }),
+  crearRegistro({
+    periodo: '2026-04-01',
+    version: 1,
+    estado: 'VIGENTE',
+    observaciones: 'Leve incremento en ventas de temporada.',
+    campos: escalarCampos(REGISTRO_JULIO_BASE, 0.9),
+    fecha: '2026-05-04T15:00:00.000Z',
+  }),
+  crearRegistro({
+    periodo: '2026-05-01',
+    version: 1,
+    estado: 'VIGENTE',
+    observaciones: 'Aumento de inventario para producción de invierno.',
+    campos: escalarCampos(REGISTRO_JULIO_BASE, 0.94),
+    fecha: '2026-06-03T15:00:00.000Z',
+  }),
+  crearRegistro({
+    periodo: '2026-06-01',
+    version: 1,
+    estado: 'REEMPLAZADO',
+    observaciones: 'Carga inicial con cuentas por cobrar subestimadas.',
+    campos: { ...escalarCampos(REGISTRO_JULIO_BASE, 0.97), cuentasPorCobrar: escalarCampos(REGISTRO_JULIO_BASE, 0.97).cuentasPorCobrar - 3000 },
+    fecha: '2026-07-02T14:00:00.000Z',
+  }),
+  crearRegistro({
+    periodo: '2026-06-01',
+    version: 2,
+    estado: 'VIGENTE',
+    observaciones: 'Corrección: cuentas por cobrar ajustadas tras conciliación con contabilidad.',
+    campos: escalarCampos(REGISTRO_JULIO_BASE, 0.97),
+    fecha: '2026-07-05T09:30:00.000Z',
+  }),
+  crearRegistro({
+    periodo: '2026-07-01',
+    version: 1,
+    estado: 'VIGENTE',
+    observaciones: 'Cierre de julio con inventario de temporada alta.',
+    campos: REGISTRO_JULIO_BASE,
+    fecha: '2026-08-03T16:15:00.000Z',
+  }),
+  {
+    id: crypto.randomUUID(),
+    periodo: '2026-08-01',
+    version: 1,
+    estado: 'BORRADOR',
+    observaciones: '',
+    efectivoEquivalentes: 19100,
+    cuentasPorCobrar: 27500,
+    inventarios: 32000,
+    otrosActivosCorrientes: 4200,
+    activoFijoNeto: 0,
+    otrosActivosNoCorrientes: 0,
+    cuentasPorPagar: 0,
+    deudaCortoPlazo: 0,
+    otrosPasivosCorrientes: 0,
+    deudaLargoPlazo: 0,
+    otrosPasivosNoCorrientes: 0,
+    capitalSocial: 0,
+    resultadosAcumulados: 0,
+    ingresosOperacionales: 0,
+    otrosIngresos: 0,
+    costoVentas: 0,
+    gastosAdministracion: 0,
+    gastosVentas: 0,
+    otrosGastosOperacionales: 0,
+    gastosFinancieros: 0,
+    impuestoRenta: 0,
+    flujoOperacion: 0,
+    flujoInversion: 0,
+    flujoFinanciamiento: 0,
+    comprasPeriodo: 0,
+    capex: 0,
+    depreciacion: 0,
+    numeroEmpleadosPeriodo: 0,
+    costoLaboral: 0,
+    gastoID: 0,
+    unidadesVendidas: 0,
+    createdAt: '2026-08-06T11:00:00.000Z',
+    updatedAt: '2026-08-06T11:00:00.000Z',
+  },
+]
+
+export const registrosFinancierosSemilla: Record<string, RegistroFinanciero[]> = {
+  'emp-1': registrosTextilesAndina,
+  'emp-2': [],
+}

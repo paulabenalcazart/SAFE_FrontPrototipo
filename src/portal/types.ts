@@ -92,3 +92,65 @@ export type ChartSeriesPoint = {
   gastos: number
   utilidad: number
 }
+
+export type EstadoRegistroFinanciero = 'BORRADOR' | 'VIGENTE' | 'REEMPLAZADO'
+
+export type RegistroFinanciero = {
+  id: string
+  periodo: string // ISO, primer día del mes: '2026-07-01'
+  version: number
+  estado: EstadoRegistroFinanciero
+  observaciones: string
+  // Activo
+  efectivoEquivalentes: number
+  cuentasPorCobrar: number
+  inventarios: number
+  otrosActivosCorrientes: number
+  activoFijoNeto: number
+  otrosActivosNoCorrientes: number
+  // Pasivo
+  cuentasPorPagar: number
+  deudaCortoPlazo: number
+  otrosPasivosCorrientes: number
+  deudaLargoPlazo: number
+  otrosPasivosNoCorrientes: number
+  // Patrimonio
+  capitalSocial: number
+  resultadosAcumulados: number
+  // Ingreso / Costo / Gasto
+  ingresosOperacionales: number
+  otrosIngresos: number
+  costoVentas: number
+  gastosAdministracion: number
+  gastosVentas: number
+  otrosGastosOperacionales: number
+  gastosFinancieros: number
+  impuestoRenta: number
+  // Flujo de efectivo
+  flujoOperacion: number
+  flujoInversion: number
+  flujoFinanciamiento: number
+  // Complementario
+  comprasPeriodo: number
+  capex: number
+  depreciacion: number
+  numeroEmpleadosPeriodo: number
+  costoLaboral: number
+  gastoID: number
+  unidadesVendidas: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type FactorIndicador = 'LIQUIDEZ' | 'SOLVENCIA' | 'GESTION' | 'RENTABILIDAD'
+export type SemaforoIndicador = 'VERDE' | 'AMARILLO' | 'ROJO'
+
+export type IndicadorCalculado = {
+  codigo: string
+  factor: FactorIndicador
+  nombre: string
+  unidad: 'RATIO' | 'PORCENTAJE' | 'VECES' | 'DIAS'
+  valor: number
+  valorFormateado: string
+  semaforo: SemaforoIndicador
+}
