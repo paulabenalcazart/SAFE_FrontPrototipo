@@ -25,6 +25,7 @@ import { PortalDataProvider } from './portal/PortalDataContext'
 import { DashboardScreen } from './portal/dashboard/DashboardScreen'
 import { EmpresaScreen } from './portal/empresa/EmpresaScreen'
 import { EmpresaRegistrarScreen } from './portal/empresa/EmpresaRegistrarScreen'
+import { EmpresaEditarScreen } from './portal/empresa/EmpresaEditarScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -163,6 +164,7 @@ export default function App() {
         <Route path="dashboard" element={<DashboardScreen />} />
         <Route path="empresa" element={<EmpresaScreen />} />
         <Route path="empresa/registrar" element={<EmpresaRegistrarScreen />} />
+        <Route path="empresa/editar" element={<EmpresaEditarScreen />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
     </Routes>
