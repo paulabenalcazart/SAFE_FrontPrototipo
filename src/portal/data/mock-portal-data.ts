@@ -28,11 +28,82 @@ export const empresaActiva: Empresa = {
   nombre: 'Textiles Andina S.A.',
   ruc: '1792146739001',
   iniciales: 'TA',
+  estado: 'Activa',
+  plan: 'Plan Crecimiento',
+  diagnostico: 'Saludable',
+  diagnosticoFecha: '2 ago 2026',
+  general: {
+    razonSocial: 'Textiles Andina S.A.',
+    tipoContribuyente: 'Persona Jurídica',
+    fechaConstitucion: '14 mar 2016',
+    numeroEmpleados: '38',
+  },
+  fiscal: {
+    regimenTributario: 'Régimen General',
+    actividadEconomica: 'C1410 - Fabricación de prendas de vestir',
+    obligadoContabilidad: 'Sí',
+    agenteRetencion: 'Sí',
+  },
+  contacto: {
+    correo: 'contacto@textilesandina.ec',
+    telefono: '+593 2 298 4410',
+    sitioWeb: 'www.textilesandina.ec',
+  },
+  representante: {
+    nombre: 'María Fernanda Torres',
+    cedula: '1712345678',
+  },
+  ubicacion: {
+    provincia: 'Pichincha',
+    ciudad: 'Quito',
+    direccion: 'Av. Eloy Alfaro N32-15 y Av. Amazonas',
+  },
+  meta: {
+    fechaRegistroSafe: '3 ene 2026',
+  },
 }
 
 export const empresasDisponibles: Empresa[] = [
   empresaActiva,
-  { id: 'emp-2', nombre: 'Comercial del Valle Cía. Ltda.', ruc: '0992345678001', iniciales: 'CV' },
+  {
+    id: 'emp-2',
+    nombre: 'Comercial del Valle Cía. Ltda.',
+    ruc: '0992345678001',
+    iniciales: 'CV',
+    estado: 'Activa',
+    plan: 'Plan Esencial',
+    diagnostico: 'Atención',
+    diagnosticoFecha: '28 jul 2026',
+    general: {
+      razonSocial: 'Comercial del Valle Cía. Ltda.',
+      tipoContribuyente: 'Persona Jurídica',
+      fechaConstitucion: '9 sep 2019',
+      numeroEmpleados: '12',
+    },
+    fiscal: {
+      regimenTributario: 'RIMPE Negocio Popular',
+      actividadEconomica: 'G4711 - Venta al por menor en comercios no especializados',
+      obligadoContabilidad: 'No',
+      agenteRetencion: 'No',
+    },
+    contacto: {
+      correo: 'ventas@comercialdelvalle.ec',
+      telefono: '+593 4 220 5567',
+      sitioWeb: '',
+    },
+    representante: {
+      nombre: 'Jorge Andrés Salazar',
+      cedula: '0912345678',
+    },
+    ubicacion: {
+      provincia: 'Guayas',
+      ciudad: 'Guayaquil',
+      direccion: 'Calle 9na Este 210 y Vía a la Costa',
+    },
+    meta: {
+      fechaRegistroSafe: '12 feb 2026',
+    },
+  },
 ]
 
 export const navItems: NavItem[] = [

@@ -7,6 +7,39 @@ export type Empresa = {
   nombre: string
   ruc: string
   iniciales: string
+  estado: string
+  plan: string
+  diagnostico?: string
+  diagnosticoFecha?: string
+  general: {
+    razonSocial: string
+    tipoContribuyente: 'Persona Natural' | 'Persona Jurídica'
+    fechaConstitucion: string
+    numeroEmpleados: string
+  }
+  fiscal: {
+    regimenTributario: string
+    actividadEconomica: string
+    obligadoContabilidad: 'Sí' | 'No'
+    agenteRetencion: 'Sí' | 'No'
+  }
+  contacto: {
+    correo: string
+    telefono: string
+    sitioWeb: string
+  }
+  representante: {
+    nombre: string
+    cedula: string
+  }
+  ubicacion: {
+    provincia: string
+    ciudad: string
+    direccion: string
+  }
+  meta: {
+    fechaRegistroSafe: string
+  }
 }
 
 export type Kpi = {
