@@ -29,6 +29,7 @@ import { EmpresaEditarScreen } from './portal/empresa/EmpresaEditarScreen'
 import { FinancieroScreen } from './portal/financiero/FinancieroScreen'
 import { NuevaCargaScreen } from './portal/financiero/NuevaCargaScreen'
 import { DetalleRegistroScreen } from './portal/financiero/DetalleRegistroScreen'
+import { CompararPeriodosScreen } from './portal/financiero/CompararPeriodosScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -170,6 +171,7 @@ export default function App() {
         <Route path="empresa/editar" element={<EmpresaEditarScreen />} />
         <Route path="financiero" element={<FinancieroScreen />} />
         <Route path="financiero/nuevo" element={<NuevaCargaScreen />} />
+        <Route path="financiero/comparar" element={<CompararPeriodosScreen />} />
         <Route path="financiero/:id/editar" element={<NuevaCargaScreen />} />
         <Route path="financiero/:id" element={<DetalleRegistroScreen />} />
       </Route>
