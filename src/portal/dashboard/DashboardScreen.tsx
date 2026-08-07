@@ -1,7 +1,9 @@
 import { useAuth } from '@/auth/AuthContext'
 import { KpiCard } from '@/portal/components/KpiCard'
-import { chartSeries, kpis } from '@/portal/data/mock-portal-data'
+import { chartSeries, indicadores, kpis, obligaciones } from '@/portal/data/mock-portal-data'
 import { FinancialChart } from './FinancialChart'
+import { IndicatorsTable } from './IndicatorsTable'
+import { ObligationsTable } from './ObligationsTable'
 
 export function DashboardScreen() {
   const { user } = useAuth()
@@ -23,6 +25,11 @@ export function DashboardScreen() {
       </div>
 
       <FinancialChart data={chartSeries} />
+
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <IndicatorsTable indicadores={indicadores} />
+        <ObligationsTable obligaciones={obligaciones} />
+      </div>
     </section>
   )
 }
