@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
 import { ComoFuncionaSection } from './components/ComoFuncionaSection'
@@ -18,104 +19,123 @@ import { TerminosPage } from './components/TerminosPage'
 import { PrivacidadPage } from './components/PrivacidadPage'
 import { Footer } from './components/Footer'
 
-type Page =
-  | 'inicio'
-  | 'como'
-  | 'planes'
-  | 'acerca'
-  | 'trabaja'
-  | 'postulacion'
-  | 'login'
-  | 'recuperar'
-  | 'signup'
-  | 'contacto'
-  | 'terminos'
-  | 'privacidad'
+export const NAV_KEY_TO_PATH: Record<string, string> = {
+  inicio: '/',
+  como: '/como-funciona',
+  planes: '/planes',
+  acerca: '/acerca',
+  trabaja: '/trabaja-con-safe',
+  postulacion: '/postulacion',
+  login: '/login',
+  recuperar: '/recuperar',
+  signup: '/signup',
+  contacto: '/contacto',
+  terminos: '/terminos',
+  privacidad: '/privacidad',
+}
 
-const PAGES: Page[] = [
-  'inicio',
-  'como',
-  'planes',
-  'acerca',
-  'trabaja',
-  'postulacion',
-  'login',
-  'recuperar',
-  'signup',
-  'contacto',
-  'terminos',
-  'privacidad',
-]
+const PATH_TO_NAV_KEY: Record<string, string> = Object.fromEntries(
+  Object.entries(NAV_KEY_TO_PATH).map(([key, path]) => [path, key]),
+)
 
-export default function App() {
-  const [page, setPage] = useState<Page>('inicio')
-
-  const handleNavigate = (key: string) => {
-    if (!PAGES.includes(key as Page)) return
-    setPage(key as Page)
-  }
+function PublicLayout() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const activePage = PATH_TO_NAV_KEY[location.pathname] ?? 'inicio'
+  const isAuthPage = activePage === 'login' || activePage === 'recuperar' || activePage === 'signup'
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [page])
+  }, [location.pathname])
+
+  const handleNavigate = (key: string) => {
+    const path = NAV_KEY_TO_PATH[key]
+    if (path) navigate(path)
+  }
 
   const goToPlanes = () => handleNavigate('planes')
   const goToPostulacion = () => handleNavigate('postulacion')
-  const isAuthPage = page === 'login' || page === 'recuperar' || page === 'signup'
 
   return (
     <div className="min-h-screen bg-white font-sans text-foreground">
-      {!isAuthPage && <Navbar activePage={page} onNavigate={handleNavigate} />}
-      {page === 'inicio' && (
-        <>
-          <Hero onVerPlanes={goToPlanes} />
-          <div className="view-tint relative">
-            <FeatureHighlightsSection />
-            <ModulesSection />
-            <PlansSection onVerPlanes={goToPlanes} />
-            <ReasonsSection />
-          </div>
-        </>
-      )}
-      {page === 'como' && <ComoFuncionaSection />}
-      {page === 'planes' && <PlanesPage />}
-      {page === 'acerca' && <AcercaDePage />}
-      {page === 'trabaja' && <TrabajaConSafePage onPostular={goToPostulacion} />}
-      {page === 'contacto' && (
-        <ContactoPage onIrPrivacidad={() => handleNavigate('privacidad')} />
-      )}
-      {page === 'terminos' && <TerminosPage />}
-      {page === 'privacidad' && <PrivacidadPage />}
-      {page === 'postulacion' && (
-        <PostulacionPage
-          onVolver={() => handleNavigate('inicio')}
-          onIrPrivacidad={() => handleNavigate('privacidad')}
+      {!isAuthPage && <Navbar activePage={activePage} onNavigate={handleNavigate} />}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero onVerPlanes={goToPlanes} />
+              <div className="view-tint relative">
+                <FeatureHighlightsSection />
+                <ModulesSection />
+                <PlansSection onVerPlanes={goToPlanes} />
+                <ReasonsSection />
+              </div>
+            </>
+          }
         />
-      )}
-      {page === 'login' && (
-        <LoginPage
-          onIngresar={() => handleNavigate('inicio')}
-          onRecuperar={() => handleNavigate('recuperar')}
-          onIrInicio={() => handleNavigate('inicio')}
-          onIrCrearCuenta={() => handleNavigate('signup')}
+        <Route path="/como-funciona" element={<ComoFuncionaSection />} />
+        <Route path="/planes" element={<PlanesPage />} />
+        <Route path="/acerca" element={<AcercaDePage />} />
+        <Route path="/trabaja-con-safe" element={<TrabajaConSafePage onPostular={goToPostulacion} />} />
+        <Route
+          path="/postulacion"
+          element={
+            <PostulacionPage
+              onVolver={() => handleNavigate('inicio')}
+              onIrPrivacidad={() => handleNavigate('privacidad')}
+            />
+          }
         />
-      )}
-      {page === 'recuperar' && (
-        <ForgotPasswordPage
-          onVolver={() => handleNavigate('login')}
-          onIrInicio={() => handleNavigate('inicio')}
+        <Route
+          path="/contacto"
+          element={<ContactoPage onIrPrivacidad={() => handleNavigate('privacidad')} />}
         />
-      )}
-      {page === 'signup' && (
-        <SignupPage
-          onCrearCuenta={() => handleNavigate('inicio')}
-          onIrLogin={() => handleNavigate('login')}
-          onIrInicio={() => handleNavigate('inicio')}
-          onIrTerminos={() => handleNavigate('terminos')}
-          onIrPrivacidad={() => handleNavigate('privacidad')}
+        <Route path="/terminos" element={<TerminosPage />} />
+        <Route path="/privacidad" element={<PrivacidadPage />} />
+        <Route
+          path="/login"
+          element={
+            <LoginPage
+              onIngresar={() => handleNavigate('inicio')}
+              onRecuperar={() => handleNavigate('recuperar')}
+              onIrInicio={() => handleNavigate('inicio')}
+              onIrCrearCuenta={() => handleNavigate('signup')}
+            />
+          }
         />
-      )}
+        <Route
+          path="/recuperar"
+          element={
+            <ForgotPasswordPage
+              onVolver={() => handleNavigate('login')}
+              onIrInicio={() => handleNavigate('inicio')}
+            />
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <SignupPage
+              onCrearCuenta={() => handleNavigate('inicio')}
+              onIrLogin={() => handleNavigate('login')}
+              onIrInicio={() => handleNavigate('inicio')}
+              onIrTerminos={() => handleNavigate('terminos')}
+              onIrPrivacidad={() => handleNavigate('privacidad')}
+            />
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       {!isAuthPage && <Footer onNavigate={handleNavigate} />}
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/*" element={<PublicLayout />} />
+    </Routes>
   )
 }
