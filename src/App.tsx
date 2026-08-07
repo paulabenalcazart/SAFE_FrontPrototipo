@@ -21,6 +21,7 @@ import { Footer } from './components/Footer'
 import { useAuth } from './auth/AuthContext'
 import { RequireAuth } from './auth/RequireAuth'
 import { PortalLayout } from './portal/PortalLayout'
+import { PortalDataProvider } from './portal/PortalDataContext'
 import { DashboardScreen } from './portal/dashboard/DashboardScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
@@ -150,7 +151,9 @@ export default function App() {
         path="/app"
         element={
           <RequireAuth>
-            <PortalLayout />
+            <PortalDataProvider>
+              <PortalLayout />
+            </PortalDataProvider>
           </RequireAuth>
         }
       >
