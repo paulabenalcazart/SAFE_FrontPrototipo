@@ -23,6 +23,7 @@ import { RequireAuth } from './auth/RequireAuth'
 import { PortalLayout } from './portal/PortalLayout'
 import { PortalDataProvider } from './portal/PortalDataContext'
 import { DashboardScreen } from './portal/dashboard/DashboardScreen'
+import { EmpresaScreen } from './portal/empresa/EmpresaScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -159,6 +160,7 @@ export default function App() {
       >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<DashboardScreen />} />
+        <Route path="empresa" element={<EmpresaScreen />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
     </Routes>
