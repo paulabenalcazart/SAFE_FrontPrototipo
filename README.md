@@ -91,3 +91,10 @@ Ver el spec completo en `docs/superpowers/specs/2026-08-06-portal-privado-fase1-
 - **Pendiente:** las otras 25 pantallas del portal (Mi Empresa, Financiero, Indicadores completos,
   Obligaciones, Simulador, Marketplace, Plan, Configuración, tutoriales) se implementan en fases
   posteriores, cada una con su propio spec y plan.
+
+**Fase 2 (Mi Empresa):** agrega `src/portal/PortalDataContext.tsx`, el primer estado compartido real
+del portal — reemplaza el mock estático de empresa de la Fase 1 por un contexto que permite cambiar de
+empresa activa, registrar una nueva (`/app/empresa/registrar`, wizard de 4 pasos) y editarla
+(`/app/empresa/editar`), todo en `src/portal/empresa/`. Los datos de empresa, a diferencia de la sesión
+de auth, no persisten en `localStorage` — viven en memoria de React mientras dura la sesión del
+navegador.
