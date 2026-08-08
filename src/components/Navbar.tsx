@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import safeLogoDark from '@/assets/safe-logo-dark.png'
 
 const NAV_LINKS = [
   { key: 'inicio', label: 'Inicio' },
@@ -32,12 +33,12 @@ export function Navbar({
     <nav className="sticky top-0 z-50 border-b border-line/60 bg-white/85 px-6 py-4 backdrop-blur-md sm:px-8 lg:px-16">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-8">
-          <span
+          <img
+            src={safeLogoDark}
+            alt="SAFE"
             onClick={() => handleNavClick('inicio')}
-            className="cursor-pointer font-display text-xl font-extrabold tracking-tight text-navy-900"
-          >
-            SAFE
-          </span>
+            className="h-8 w-auto cursor-pointer"
+          />
           <div className="hidden gap-5 lg:flex">
             {NAV_LINKS.map((link) => (
               <span
