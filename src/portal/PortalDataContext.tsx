@@ -4,6 +4,7 @@ import {
   empresaActiva as empresaSemilla,
   empresasDisponibles as empresasSemilla,
   registrosFinancierosSemilla,
+  indicadoresPrincipalesSemilla,
 } from './data/mock-portal-data'
 
 type PortalDataContextValue = {
@@ -16,6 +17,8 @@ type PortalDataContextValue = {
   registrosFinancieros: Record<string, RegistroFinanciero[]>
   addRegistroFinanciero: (empresaId: string, registro: RegistroFinanciero) => void
   updateRegistroFinanciero: (empresaId: string, id: string, patch: Partial<RegistroFinanciero>) => void
+  indicadoresPrincipales: Record<string, string[]>
+  setIndicadoresPrincipales: (empresaId: string, codigos: string[]) => void
 }
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
@@ -25,6 +28,9 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   const [empresaActivaId, setEmpresaActivaId] = useState(empresaSemilla.id)
   const [registrosFinancieros, setRegistrosFinancieros] = useState<Record<string, RegistroFinanciero[]>>(
     registrosFinancierosSemilla,
+  )
+  const [indicadoresPrincipales, setIndicadoresPrincipalesState] = useState<Record<string, string[]>>(
+    indicadoresPrincipalesSemilla,
   )
 
   const empresaActiva = useMemo(
@@ -54,6 +60,10 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     }))
   }
 
+  const setIndicadoresPrincipales = (empresaId: string, codigos: string[]) => {
+    setIndicadoresPrincipalesState((current) => ({ ...current, [empresaId]: codigos }))
+  }
+
   return (
     <PortalDataContext.Provider
       value={{
@@ -66,6 +76,8 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         registrosFinancieros,
         addRegistroFinanciero,
         updateRegistroFinanciero,
+        indicadoresPrincipales,
+        setIndicadoresPrincipales,
       }}
     >
       {children}
