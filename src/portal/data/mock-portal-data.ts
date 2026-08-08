@@ -233,34 +233,41 @@ const REGISTRO_JULIO_BASE: CamposRegistro = {
   unidadesVendidas: 9600,
 }
 
-type FactoresPeriodo = { activo: number; pasivo: number; ingresos: number }
+type FactoresPeriodo = {
+  activo: number
+  pasivoCorriente: number
+  pasivoNoCorriente: number
+  ingresos: number
+  gastos: number
+}
 
 function construirCampos(base: CamposRegistro, factores: FactoresPeriodo): CamposRegistro {
   const activoFields = [
     'efectivoEquivalentes', 'cuentasPorCobrar', 'inventarios', 'otrosActivosCorrientes',
     'activoFijoNeto', 'otrosActivosNoCorrientes',
   ] as const
-  const pasivoFields = [
-    'cuentasPorPagar', 'deudaCortoPlazo', 'otrosPasivosCorrientes',
-    'deudaLargoPlazo', 'otrosPasivosNoCorrientes',
-  ] as const
-  const ingresoFields = [
-    'ingresosOperacionales', 'otrosIngresos', 'costoVentas', 'gastosAdministracion',
-    'gastosVentas', 'otrosGastosOperacionales', 'gastosFinancieros', 'impuestoRenta',
+  const pasivoCorrienteFields = ['cuentasPorPagar', 'deudaCortoPlazo', 'otrosPasivosCorrientes'] as const
+  const pasivoNoCorrienteFields = ['deudaLargoPlazo', 'otrosPasivosNoCorrientes'] as const
+  const ingresoFields = ['ingresosOperacionales', 'otrosIngresos'] as const
+  const gastoFields = [
+    'costoVentas', 'gastosAdministracion', 'gastosVentas',
+    'otrosGastosOperacionales', 'gastosFinancieros', 'impuestoRenta',
   ] as const
 
   const resultado = { ...base }
   for (const k of activoFields) resultado[k] = Math.round(base[k] * factores.activo)
-  for (const k of pasivoFields) resultado[k] = Math.round(base[k] * factores.pasivo)
+  for (const k of pasivoCorrienteFields) resultado[k] = Math.round(base[k] * factores.pasivoCorriente)
+  for (const k of pasivoNoCorrienteFields) resultado[k] = Math.round(base[k] * factores.pasivoNoCorriente)
   for (const k of ingresoFields) resultado[k] = Math.round(base[k] * factores.ingresos)
+  for (const k of gastoFields) resultado[k] = Math.round(base[k] * factores.gastos)
 
   resultado.flujoOperacion = Math.round(base.flujoOperacion * factores.ingresos)
   resultado.flujoInversion = Math.round(base.flujoInversion * factores.activo)
-  resultado.flujoFinanciamiento = Math.round(base.flujoFinanciamiento * factores.pasivo)
-  resultado.comprasPeriodo = Math.round(base.comprasPeriodo * factores.ingresos)
+  resultado.flujoFinanciamiento = Math.round(base.flujoFinanciamiento * factores.pasivoNoCorriente)
+  resultado.comprasPeriodo = Math.round(base.comprasPeriodo * factores.gastos)
   resultado.capex = Math.round(base.capex * factores.activo)
   resultado.depreciacion = Math.round(base.depreciacion * factores.activo)
-  resultado.costoLaboral = Math.round(base.costoLaboral * factores.ingresos)
+  resultado.costoLaboral = Math.round(base.costoLaboral * factores.gastos)
   resultado.unidadesVendidas = Math.round(base.unidadesVendidas * factores.ingresos)
   // numeroEmpleadosPeriodo y gastoID quedan sin escalar (igual que en el esquema anterior)
 
@@ -297,7 +304,7 @@ function crearRegistro(params: {
   }
 }
 
-const CAMPOS_JUNIO_V2 = construirCampos(REGISTRO_JULIO_BASE, { activo: 0.96, pasivo: 0.98, ingresos: 0.96 })
+const CAMPOS_JUNIO_V2 = construirCampos(REGISTRO_JULIO_BASE, { activo: 0.96, pasivoCorriente: 0.97, pasivoNoCorriente: 0.98, ingresos: 0.95, gastos: 0.965 })
 
 const registrosTextilesAndina: RegistroFinanciero[] = [
   crearRegistro({
@@ -305,7 +312,7 @@ const registrosTextilesAndina: RegistroFinanciero[] = [
     version: 1,
     estado: 'VIGENTE',
     observaciones: 'Periodo estable, sin novedades.',
-    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 0.84, pasivo: 0.90, ingresos: 0.82 }),
+    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 0.84, pasivoCorriente: 0.88, pasivoNoCorriente: 0.91, ingresos: 0.80, gastos: 0.83 }),
     fecha: '2026-04-03T15:00:00.000Z',
   }),
   crearRegistro({
@@ -313,7 +320,7 @@ const registrosTextilesAndina: RegistroFinanciero[] = [
     version: 1,
     estado: 'VIGENTE',
     observaciones: 'Leve incremento en ventas de temporada.',
-    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 0.89, pasivo: 0.92, ingresos: 0.88 }),
+    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 0.89, pasivoCorriente: 0.91, pasivoNoCorriente: 0.93, ingresos: 0.86, gastos: 0.90 }),
     fecha: '2026-05-04T15:00:00.000Z',
   }),
   crearRegistro({
@@ -321,7 +328,7 @@ const registrosTextilesAndina: RegistroFinanciero[] = [
     version: 1,
     estado: 'VIGENTE',
     observaciones: 'Aumento de inventario para producción de invierno.',
-    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 0.93, pasivo: 0.95, ingresos: 0.93 }),
+    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 0.93, pasivoCorriente: 0.94, pasivoNoCorriente: 0.96, ingresos: 0.91, gastos: 0.95 }),
     fecha: '2026-06-03T15:00:00.000Z',
   }),
   crearRegistro({
@@ -345,7 +352,7 @@ const registrosTextilesAndina: RegistroFinanciero[] = [
     version: 1,
     estado: 'VIGENTE',
     observaciones: 'Cierre de julio con inventario de temporada alta.',
-    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 1.0, pasivo: 1.0, ingresos: 1.0 }),
+    campos: construirCampos(REGISTRO_JULIO_BASE, { activo: 1.0, pasivoCorriente: 1.0, pasivoNoCorriente: 1.0, ingresos: 1.0, gastos: 1.0 }),
     fecha: '2026-08-03T16:15:00.000Z',
   }),
   {
