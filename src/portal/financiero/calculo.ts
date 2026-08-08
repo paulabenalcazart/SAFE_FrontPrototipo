@@ -1,4 +1,10 @@
-import type { FactorIndicador, IndicadorCalculado, RegistroFinanciero, SemaforoIndicador } from '@/portal/types'
+import type {
+  FactorIndicador,
+  IndicadorCalculado,
+  RegistroFinanciero,
+  SaludFinanciera,
+  SemaforoIndicador,
+} from '@/portal/types'
 import { formatPorcentaje } from './formato'
 
 function div(a: number, b: number): number {
@@ -177,4 +183,47 @@ export function calcularDiagnostico(r: RegistroFinanciero): string[] {
     lineas.push('El balance de este registro no cuadra — revisa los valores cargados.')
   }
   return lineas
+}
+
+const PESO_FACTOR: Record<FactorIndicador, number> = {
+  LIQUIDEZ: 0.25,
+  SOLVENCIA: 0.25,
+  GESTION: 0.2,
+  RENTABILIDAD: 0.3,
+}
+
+function puntajeSemaforo(semaforo: SemaforoIndicador): number {
+  switch (semaforo) {
+    case 'VERDE':
+      return 100
+    case 'AMARILLO':
+      return 55
+    case 'ROJO':
+      return 15
+  }
+}
+
+export function calcularSaludFinanciera(r: RegistroFinanciero): SaludFinanciera {
+  const indicadores = calcularIndicadores(r)
+  const factores = (Object.keys(PESO_FACTOR) as FactorIndicador[]).map((factor) => {
+    const delFactor = indicadores.filter((i) => i.factor === factor)
+    const puntaje = delFactor.reduce((suma, i) => suma + puntajeSemaforo(i.semaforo), 0) / delFactor.length
+    return { factor, puntaje, peso: PESO_FACTOR[factor] }
+  })
+  const puntaje = factores.reduce((suma, f) => suma + f.puntaje * f.peso, 0)
+  const etiqueta: SaludFinanciera['etiqueta'] =
+    puntaje >= 80 ? 'Saludable' : puntaje >= 60 ? 'Estable' : puntaje >= 40 ? 'En riesgo' : 'Crítico'
+  return { puntaje, etiqueta, factores }
+}
+
+export type DescripcionIndicador = Pick<IndicadorCalculado, 'codigo' | 'factor' | 'nombre' | 'unidad' | 'mejorSiMayor'>
+
+export function listarIndicadores(): DescripcionIndicador[] {
+  return CATALOGO_INDICADORES.map((def) => ({
+    codigo: def.codigo,
+    factor: def.factor,
+    nombre: def.nombre,
+    unidad: def.unidad,
+    mejorSiMayor: def.mejorSiMayor,
+  }))
 }
