@@ -1,4 +1,5 @@
 import { FacebookIcon, InstagramIcon, LinkedinIcon, YoutubeIcon } from '@/components/SocialIcons'
+import safeLogoLight from '@/assets/safe-logo-light.png'
 
 const columnas = [
   {
@@ -41,7 +42,7 @@ export function Footer({ onNavigate }: { onNavigate?: (key: string) => void }) {
 
       <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <span className="font-display text-xl font-extrabold text-white">SAFE</span>
+          <img src={safeLogoLight} alt="SAFE" className="h-8 w-auto" />
           <p className="mt-3 max-w-[260px] text-[13px] leading-relaxed text-navy-100/70">
             La plataforma que ayuda a las PYMEs ecuatorianas a gestionar sus finanzas, impuestos y
             trámites legales en un solo lugar.
