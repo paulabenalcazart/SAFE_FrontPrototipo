@@ -108,3 +108,14 @@ rentabilidad) con fórmulas reales de la Superintendencia de Compañías del Ecu
 sobre lo que el usuario carga — no son datos mock fijos como en las fases anteriores. `PortalDataContext`
 se extiende con `registrosFinancieros`, indexado por empresa; solo Textiles Andina S.A. arranca con
 historial sembrado (Comercial del Valle Cía. Ltda. usa el estado vacío del mockup).
+
+**Fase 4 (Indicadores):** agrega `src/portal/indicadores/`, el módulo de indicadores financieros — un
+resumen con los 4 indicadores principales personalizables por empresa, gráficos históricos de rentabilidad
+y liquidez (esta última contra la mediana del clúster), un puntaje de salud financiera ponderado por factor
+(liquidez/solvencia/gestión/rentabilidad), alertas y recomendaciones con enlace al Marketplace; una tabla
+completa de los 23 indicadores MVP filtrable y agrupada por factor, con tendencia vs. el periodo anterior y
+benchmark sectorial, más una sección "Próximamente" con los 7 indicadores de fase 2 del modelo (mostrados
+sin calcular); y comparación de dos periodos sobre los 23 indicadores. Extiende el motor de cálculo de la
+Fase 3 (`calculo.ts`) con `calcularSaludFinanciera()` y `listarIndicadores()`, y agrega un módulo de datos
+nuevo (`benchmarks.ts`) con la mediana sectorial por indicador — igual que los umbrales de semáforo de la
+Fase 3, son valores inventados para este prototipo, no datos reales de mercado.
