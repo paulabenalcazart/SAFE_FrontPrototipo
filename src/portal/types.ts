@@ -155,3 +155,9 @@ export type IndicadorCalculado = {
   semaforo: SemaforoIndicador
   mejorSiMayor: boolean
 }
+
+export type SaludFinanciera = {
+  puntaje: number // 0-100
+  etiqueta: 'Saludable' | 'Estable' | 'En riesgo' | 'Crítico'
+  factores: { factor: FactorIndicador; puntaje: number; peso: number }[] // 4 entradas
+}

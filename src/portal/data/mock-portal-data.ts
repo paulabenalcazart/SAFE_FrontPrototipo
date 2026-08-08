@@ -355,3 +355,8 @@ export const registrosFinancierosSemilla: Record<string, RegistroFinanciero[]> =
   'emp-1': registrosTextilesAndina,
   'emp-2': [],
 }
+
+export const indicadoresPrincipalesSemilla: Record<string, string[]> = {
+  'emp-1': ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08'],
+  'emp-2': ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08'],
+}
