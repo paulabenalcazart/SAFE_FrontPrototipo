@@ -132,9 +132,9 @@ solo necesita, por cada indicador en ROJO, un texto de alerta + una especialidad
 | RENTABILIDAD | Asesor financiero |
 
 "Buscar profesional" navega a `/app/marketplace` (la Fase 7 de Paula, en curso en paralelo). Esa ruta no
-existe todavía en esta rama — navegar ahí hoy deja el área de contenido del portal en blanco (el `Outlet` de
-`/app` no encuentra ninguna ruta hija que matchee), sin romper nada; en cuanto la rama de Paula se integre,
-el botón funciona sin tocar código de esta fase.
+existe todavía en esta rama; para que navegar ahí no expulse al usuario del portal (el `Outlet` de `/app`
+tiene un catch-all que redirige a `/app/dashboard` en vez de dejar caer la navegación al layout público), en
+cuanto la rama de Paula se integre, el botón funciona sin tocar código de esta fase.
 
 ## Modelo de datos
 
@@ -218,8 +218,8 @@ nueva (mismo criterio YAGNI que ya se aplicó al no unificar los gráficos de Fa
   como fuera de alcance; el botón "Ver detalle" de las 4 cards principales navega a "Todos los indicadores"
   (destino razonable), y la columna/acción "Detalle" de "Todos los indicadores" y "Comparar indicadores"
   se omite directamente (no se renderiza) en vez de dejar un botón sin destino.
-- **"Buscar profesional" navega a una ruta que aún no existe** (`/app/marketplace`, Fase 7 en curso) — sin
-  romper nada, ver arriba.
+- **"Buscar profesional" navega a una ruta que aún no existe** (`/app/marketplace`, Fase 7 en curso) — un
+  catch-all dentro de `/app` la redirige a `/app/dashboard` sin sacar al usuario del portal, ver arriba.
 - **Sin el modelo completo de diagnóstico empresarial** (niveles de riesgo, prioridad, tabla de detalle) —
   solo alertas/recomendaciones heurísticas simples.
 - **Sin recalcular obligaciones ni simulaciones** — Fases 5 y 6.

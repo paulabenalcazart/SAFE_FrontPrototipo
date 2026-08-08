@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
@@ -20,6 +20,12 @@ export function IndicadoresPrincipalesScreen() {
   const { empresaActiva, indicadoresPrincipales, setIndicadoresPrincipales } = usePortalData()
   const [seleccion, setSeleccion] = useState<string[]>(indicadoresPrincipales[empresaActiva.id] ?? [])
   const [mensaje, setMensaje] = useState('')
+
+  useEffect(() => {
+    setSeleccion(indicadoresPrincipales[empresaActiva.id] ?? [])
+    setMensaje('')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empresaActiva.id])
 
   const agregar = (codigo: string) => {
     if (seleccion.includes(codigo) || seleccion.length >= 4) return

@@ -182,6 +182,7 @@ export default function App() {
         <Route path="indicadores/principales" element={<IndicadoresPrincipalesScreen />} />
         <Route path="indicadores/todos" element={<TodosIndicadoresScreen />} />
         <Route path="indicadores/comparar" element={<CompararIndicadoresScreen />} />
+        <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
     </Routes>

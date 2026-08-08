@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
-import type { FactorIndicador } from '@/portal/types'
+import type { FactorIndicador, IndicadorCalculado } from '@/portal/types'
 import { calcularIndicadores, calcularSaludFinanciera } from '@/portal/financiero/calculo'
 import { formatPeriodo } from '@/portal/financiero/formato'
 import { DESCRIPCION_INDICADOR } from './descripciones'
@@ -15,6 +15,8 @@ const FACTOR_LABEL: Record<FactorIndicador, string> = {
   RENTABILIDAD: 'Rentabilidad',
 }
 
+const DEFAULT_INDICADORES_PRINCIPALES = ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08']
+
 const SEMAFORO_BADGE: Record<'VERDE' | 'AMARILLO' | 'ROJO', string> = {
   VERDE: 'bg-emerald-soft text-emerald-deep',
   AMARILLO: 'bg-amber-soft text-amber-deep',
@@ -26,6 +28,17 @@ const ESPECIALIDAD_POR_FACTOR: Record<FactorIndicador, string> = {
   SOLVENCIA: 'Asesor financiero',
   GESTION: 'Contador',
   RENTABILIDAD: 'Asesor financiero',
+}
+
+function formatVariacion(dif: number, unidad: IndicadorCalculado['unidad']): string {
+  switch (unidad) {
+    case 'PORCENTAJE':
+      return `${dif >= 0 ? '+' : ''}${(dif * 100).toFixed(1)} pp`
+    case 'DIAS':
+      return `${dif >= 0 ? '+' : ''}${Math.round(dif)} días`
+    default:
+      return `${dif >= 0 ? '+' : ''}${dif.toFixed(2)}`
+  }
 }
 
 function colorPuntaje(puntaje: number): string {
@@ -67,7 +80,7 @@ export function IndicadoresScreen() {
     )
   }
 
-  const codigosPrincipales = indicadoresPrincipales[empresaActiva.id] ?? []
+  const codigosPrincipales = indicadoresPrincipales[empresaActiva.id] ?? DEFAULT_INDICADORES_PRINCIPALES
   const indicadores = calcularIndicadores(registro)
   const principales = codigosPrincipales
     .map((codigo) => indicadores.find((i) => i.codigo === codigo))
@@ -78,13 +91,13 @@ export function IndicadoresScreen() {
     .sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
   const indicadoresAnterior = anterior ? calcularIndicadores(anterior) : []
 
-  const variacionTexto = (codigo: string, valorActual: number, mejorSiMayor: boolean) => {
+  const variacionTexto = (codigo: string, valorActual: number, mejorSiMayor: boolean, unidad: IndicadorCalculado['unidad']) => {
     const previo = indicadoresAnterior.find((i) => i.codigo === codigo)
     if (!previo) return { texto: 'Sin periodo anterior', fg: 'text-ink-500' }
     const dif = valorActual - previo.valor
     const favorable = mejorSiMayor ? dif >= 0 : dif <= 0
     return {
-      texto: `${dif >= 0 ? '+' : ''}${dif.toFixed(2)} vs. periodo anterior`,
+      texto: `${formatVariacion(dif, unidad)} vs. periodo anterior`,
       fg: favorable ? 'text-emerald-deep' : 'text-destructive',
     }
   }
@@ -122,6 +135,13 @@ export function IndicadoresScreen() {
           </button>
           <button
             type="button"
+            onClick={() => navigate('/app/indicadores/comparar')}
+            className="min-h-11 rounded-lg border border-line bg-card px-3.5 text-[13.5px] font-semibold text-ink-700"
+          >
+            Comparar indicadores
+          </button>
+          <button
+            type="button"
             onClick={() => navigate('/app/indicadores/principales')}
             className="min-h-11 rounded-lg border border-line bg-card px-3.5 text-[13.5px] font-semibold text-ink-700"
           >
@@ -139,7 +159,7 @@ export function IndicadoresScreen() {
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
         {principales.map((i) => {
-          const variacion = variacionTexto(i.codigo, i.valor, i.mejorSiMayor)
+          const variacion = variacionTexto(i.codigo, i.valor, i.mejorSiMayor, i.unidad)
           return (
             <div key={i.codigo} className="flex min-h-[216px] flex-col gap-2 rounded-xl border border-line bg-card p-4.5">
               <div className="flex items-center justify-between gap-2">
