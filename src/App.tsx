@@ -32,6 +32,7 @@ import { DetalleRegistroScreen } from './portal/financiero/DetalleRegistroScreen
 import { CompararPeriodosScreen } from './portal/financiero/CompararPeriodosScreen'
 import { IndicadoresScreen } from './portal/indicadores/IndicadoresScreen'
 import { IndicadoresPrincipalesScreen } from './portal/indicadores/IndicadoresPrincipalesScreen'
+import { TodosIndicadoresScreen } from './portal/indicadores/TodosIndicadoresScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -178,6 +179,7 @@ export default function App() {
         <Route path="financiero/:id" element={<DetalleRegistroScreen />} />
         <Route path="indicadores" element={<IndicadoresScreen />} />
         <Route path="indicadores/principales" element={<IndicadoresPrincipalesScreen />} />
+        <Route path="indicadores/todos" element={<TodosIndicadoresScreen />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
     </Routes>
