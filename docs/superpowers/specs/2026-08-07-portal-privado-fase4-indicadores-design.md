@@ -17,8 +17,10 @@ fase)** · 5. Obligaciones tributarias · 6. Simulador · 7. Marketplace (en cur
 suscripción · 9. Configuración + tutoriales.
 
 Sigue siendo un **prototipo de alta fidelidad, solo frontend** — no hay backend ni API real. El motor de
-cálculo de Fase 3 (`calculo.ts`) se reutiliza tal cual, sin duplicar fórmulas; esta fase lo extiende con
-benchmarks y el puntaje de salud, ambos como funciones puras nuevas en el mismo módulo.
+cálculo de Fase 3 (`calculo.ts`) se reutiliza tal cual, sin duplicar fórmulas; esta fase lo extiende con una
+nueva función pura de salud financiera en ese mismo módulo, y con un módulo de datos nuevo (`benchmarks.ts`,
+en `src/portal/indicadores/`) para los valores de benchmark sectorial — son datos, no lógica, así que viven
+aparte del motor de cálculo en vez de mezclarse con él.
 
 ### Fuente de diseño
 
