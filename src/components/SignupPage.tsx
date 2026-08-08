@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import safeLogoDark from '@/assets/safe-logo-dark.png'
 
 export function SignupPage({
   onCrearCuenta,
@@ -35,14 +36,9 @@ export function SignupPage({
           <button
             type="button"
             onClick={onIrInicio}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+            className="flex items-center transition-opacity hover:opacity-80"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-navy-900 font-display text-sm font-extrabold text-white">
-              S
-            </span>
-            <span className="font-display text-xl font-extrabold tracking-tight text-navy-900">
-              SAFE
-            </span>
+            <img src={safeLogoDark} alt="SAFE" className="h-8 w-auto" />
           </button>
 
           <h1 className="mt-8 font-display text-3xl font-extrabold text-navy-900">Crear cuenta</h1>

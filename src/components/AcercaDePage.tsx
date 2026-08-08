@@ -322,7 +322,7 @@ function WhyExistsSection() {
 }
 
 const equipo = [
-  { nombre: 'Paula Benalcázar', base: 'paula', rol: 'Desarrollador' },
+  { nombre: 'Paula Benalcázar', base: 'paula', rol: 'Desarrolladora' },
   { nombre: 'Fabián Rodas', base: 'fabian', rol: 'Desarrollador' },
   { nombre: 'Dylan Drouet', base: 'dylan', rol: 'Desarrollador' },
   { nombre: 'César Moreta', base: 'cesar', rol: 'CEO de Producto' },
