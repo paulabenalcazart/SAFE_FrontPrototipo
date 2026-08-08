@@ -50,6 +50,28 @@ export function TodosIndicadoresScreen() {
   const registros = registrosFinancieros[empresaActiva.id] ?? []
   const registro = [...registros].filter((r) => r.estado === 'VIGENTE').sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
 
+  // Compute anterior before early return (plain derivation, safe when registro is undefined)
+  const anterior = [...registros]
+    .filter((r) => r.estado === 'VIGENTE' && r.periodo < (registro?.periodo ?? ''))
+    .sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
+  const indicadoresAnterior = anterior ? calcularIndicadores(anterior) : []
+
+  // Memoize calcularIndicadores result on registro (MUST be unconditional, before early return)
+  const indicadores = useMemo(() => {
+    return registro ? calcularIndicadores(registro) : []
+  }, [registro])
+
+  // Memoize filtrados with stable indicadores reference (MUST be unconditional, before early return)
+  const filtrados = useMemo(() => {
+    const q = busqueda.toLowerCase()
+    return indicadores.filter((i) => {
+      if (factorFiltro !== 'todos' && i.factor !== factorFiltro) return false
+      if (semaforoFiltro !== 'todos' && i.semaforo !== semaforoFiltro) return false
+      return !q || i.nombre.toLowerCase().includes(q) || i.codigo.toLowerCase().includes(q)
+    })
+  }, [indicadores, factorFiltro, semaforoFiltro, busqueda])
+
+  // Early return for empty state - now safe because all hooks have already run
   if (!registro) {
     return (
       <section className="flex flex-col gap-4">
@@ -60,21 +82,6 @@ export function TodosIndicadoresScreen() {
       </section>
     )
   }
-
-  const anterior = [...registros]
-    .filter((r) => r.estado === 'VIGENTE' && r.periodo < registro.periodo)
-    .sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
-  const indicadoresAnterior = anterior ? calcularIndicadores(anterior) : []
-
-  const indicadores = calcularIndicadores(registro)
-  const filtrados = useMemo(() => {
-    const q = busqueda.toLowerCase()
-    return indicadores.filter((i) => {
-      if (factorFiltro !== 'todos' && i.factor !== factorFiltro) return false
-      if (semaforoFiltro !== 'todos' && i.semaforo !== semaforoFiltro) return false
-      return !q || i.nombre.toLowerCase().includes(q) || i.codigo.toLowerCase().includes(q)
-    })
-  }, [indicadores, factorFiltro, semaforoFiltro, busqueda])
 
   const grupos = (['LIQUIDEZ', 'SOLVENCIA', 'GESTION', 'RENTABILIDAD'] as FactorIndicador[])
     .map((factor) => ({ factor, items: filtrados.filter((i) => i.factor === factor) }))
