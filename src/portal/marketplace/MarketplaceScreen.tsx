@@ -186,7 +186,7 @@ export function MarketplaceScreen() {
           type="button"
           onClick={limpiarFiltros}
           disabled={!filtrosActivos}
-          className="mt-3 min-h-10 rounded-lg px-2 text-[13px] font-semibold text-navy-600 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40"
+          className="mt-3 min-h-10 w-full rounded-lg px-2 text-[13px] font-semibold text-navy-600 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 sm:w-auto"
         >
           Limpiar filtros
         </button>
@@ -247,7 +247,7 @@ export function MarketplaceScreen() {
             <button
               type="button"
               onClick={limpiarFiltros}
-              className="mt-4 min-h-11 rounded-lg border border-line bg-card px-4 text-[13px] font-semibold text-navy-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40"
+              className="mt-4 min-h-11 w-full rounded-lg border border-line bg-card px-4 text-[13px] font-semibold text-navy-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 sm:w-auto"
             >
               Limpiar filtros
             </button>

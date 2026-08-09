@@ -283,13 +283,9 @@ function minutosAHora(minutosTotales: number): string {
 
 function horarioCompatible(
   horario: HorarioDisponibilidad,
-  servicio: { modalidad: ModalidadAtencion },
+  servicio: { modalidad: ServicioProfesional['modalidad'] },
 ): boolean {
-  return (
-    horario.modalidad === 'AMBAS' ||
-    servicio.modalidad === 'AMBAS' ||
-    horario.modalidad === servicio.modalidad
-  )
+  return horario.modalidad === 'AMBAS' || horario.modalidad === servicio.modalidad
 }
 
 function seSolapan(inicioA: number, finA: number, inicioB: number, finB: number): boolean {

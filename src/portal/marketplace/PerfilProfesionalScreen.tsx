@@ -327,7 +327,7 @@ export function PerfilProfesionalScreen() {
                   className="flex items-start gap-2.5"
                 >
                   <BadgeCheck
-                    className="mt-0.5 h-4.5 w-4.5 shrink-0 text-emerald-deep"
+                    className="mt-0.5 h-4.5 w-4.5 shrink-0 text-navy-600"
                     aria-hidden="true"
                   />
                   <p className="text-[13px] leading-relaxed text-ink-700">

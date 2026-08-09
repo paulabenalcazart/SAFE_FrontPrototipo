@@ -666,12 +666,13 @@ export function ReservaModal({ abierto, profesional, onCerrar }: ReservaModalPro
 
               <div className="mt-5">
                 <label htmlFor="reserva-descripcion" className="text-xs font-semibold text-ink-700">
-                  Describe tu necesidad
+                  Describe tu necesidad <span className="font-normal text-ink-500">(obligatorio)</span>
                 </label>
                 <Textarea
                   ref={descripcionRef}
                   id="reserva-descripcion"
                   value={descripcion}
+                  required
                   maxLength={500}
                   rows={4}
                   onChange={(event) => setDescripcion(event.target.value)}
