@@ -244,3 +244,82 @@ export type Simulacion = {
   entradas: Record<string, number | boolean>
   resultado: ResultadoSimulacion
 }
+
+export type ModalidadAtencion = 'VIRTUAL' | 'PRESENCIAL' | 'AMBAS'
+
+export type EspecialidadProfesional = {
+  id: string
+  codigo: string
+  nombre: string
+  categoria: string
+}
+
+export type ColaboradorMarketplace = {
+  id: string
+  nombres: string
+  apellidos: string
+  areaEspecializacion: string
+  profesion: string
+  trabajoActual?: string
+  numeroLicencia?: string
+  entidadEmisora?: string
+  descripcionProfesional: string
+  modalidadAtencion: ModalidadAtencion
+  paisAtencion: string
+  ciudadAtencion: string
+  zonaHoraria: string
+  tarifaReferencial: number
+  aniosExperiencia: number
+  cvVisible: boolean
+  estadoDisponibilidad: 'DISPONIBLE' | 'NO_DISPONIBLE'
+  visibleMarketplace: boolean
+  estado: 'ACTIVO' | 'SUSPENDIDO' | 'INACTIVO'
+  especialidadIds: string[]
+  especialidadPrincipalId: string
+  calificacionPromedio: number
+  cantidadResenas: number
+}
+
+export type ServicioProfesional = {
+  id: string
+  colaboradorId: string
+  nombre: string
+  descripcion: string
+  duracionEstimadaMinutos: number
+  tarifaReferencial: number
+  modalidad: Exclude<ModalidadAtencion, 'AMBAS'>
+  activo: boolean
+}
+
+export type HorarioDisponibilidad = {
+  id: string
+  colaboradorId: string
+  diaSemana: 1 | 2 | 3 | 4 | 5 | 6 | 7
+  horaInicio: string
+  horaFin: string
+  modalidad: ModalidadAtencion
+  activo: boolean
+}
+
+export type ResenaColaborador = {
+  id: string
+  colaboradorId: string
+  autorEmpresa: string
+  calificacion: 1 | 2 | 3 | 4 | 5
+  comentario: string
+  fecha: string
+  estado: 'PUBLICADA' | 'OCULTA'
+}
+
+export type SolicitudContacto = {
+  id: string
+  colaboradorId: string
+  servicioId: string
+  fechaPreferida: string
+  horaPreferida: string
+  descripcion: string
+  estado: 'ENVIADA'
+  createdAt: string
+}
+
+export type NuevaSolicitudContacto = Omit<SolicitudContacto, 'id' | 'estado' | 'createdAt'>
