@@ -166,9 +166,14 @@ El resto del portal usa `Tono` (`positivo`→emerald, `atencion`→amber, `criti
 ver `tone.ts`). La leyenda del calendario en el mockup, sin embargo, pinta **"Cumplida" en navy** (no
 emerald) — `var(--sf-navy-100)`/`var(--sf-navy-600)`, junto a Próxima=amber, Vencida=red, Pendiente/No
 aplica=gris con borde. Por fidelidad exacta al mockup (no es un accidente de placeholder — el HTML fija esos
-4 colores literales, no variables `{{ }}`), esta fase define su propio mapa
-`ESTADO_OBLIGACION_STYLE: Record<EstadoObligacion, { bg: string; fg: string }>` en vez de reusar
-`TONE_BADGE_CLASSES`, y lo usa consistentemente en calendario, lista, prioridad y alertas de este módulo:
+4 colores literales, no variables `{{ }}`), esta fase define su propio mapa de colores en vez de reusar
+`TONE_BADGE_CLASSES`, y lo usa consistentemente en calendario, lista, prioridad y alertas de este módulo.
+Implementado como tres `Record<EstadoObligacion, string>` separados en `obligaciones/estado-estilo.ts` —
+`ESTADO_OBLIGACION_LABEL` (etiqueta), `ESTADO_OBLIGACION_BADGE` (clases `bg-*`+`text-*` combinadas, para
+badges) y `ESTADO_OBLIGACION_SWATCH` (clases `bg-*`+`border-*`, para los cuadros de la leyenda) — strings de
+clases Tailwind listas para `className`, en vez de un único `{ bg, fg }` por entrada como se planteó
+originalmente aquí; el cambio se hizo en el plan de implementación porque alimenta `className` directamente
+sin una capa de mapeo adicional y separa el caso badge (bg+text) del caso leyenda (bg+border).
 
 | Estado | Color |
 |---|---|
@@ -224,13 +229,16 @@ Fase 1 (`navItems`), solo falta la pantalla.
 ### 1. Resumen (`ObligacionesScreen.tsx`, `/app/obligaciones`)
 
 - 3 KPIs (`oblKpis`): **Cumplimiento** (% de obligaciones con `fechaLimite` pasada que están CUMPLIDA, sub:
-  "N de M cumplidas a tiempo"), **Próximas a vencer** (conteo de PROXIMA, sub: nombre + fecha de la más
-  cercana), **Vencidas** (conteo de VENCIDA + suma de `montoEstimado`, sub: monto total; si 0, mensaje
-  positivo "Sin obligaciones vencidas").
+  "N de M cumplidas" — sin afirmar puntualidad, ya que el cálculo solo compara contra el estado derivado, no
+  contra si `fechaCumplimiento` quedó antes o después de `fechaLimite`), **Próximas a vencer** (conteo de
+  PROXIMA, sub: nombre + fecha de la más cercana), **Vencidas** (conteo de VENCIDA + suma de
+  `montoEstimado`, sub: monto total; si 0, mensaje positivo "Sin obligaciones vencidas").
 - Toggle de vista (`oblVistas`, 2 botones: Calendario / Lista), Calendario por defecto.
   - **Calendario**: navegación mes anterior/siguiente (por defecto agosto 2026, mes de `HOY`), grilla de
     semanas Lun–Dom con un botón-badge por obligación cuyo `fechaLimite` cae ese día, coloreado por
-    `ESTADO_OBLIGACION_STYLE`; leyenda de los 4 colores debajo. La grilla es dinámica (5 o 6 semanas según el
+    `ESTADO_OBLIGACION_BADGE`; leyenda de los 4 colores debajo (con `ESTADO_OBLIGACION_SWATCH`). La grilla
+    tiene un contenedor `overflow-x-auto` con `min-w-[420px]` para no romperse en viewports angostos, mismo
+    patrón que las demás tablas anchas del portal. La grilla es dinámica (5 o 6 semanas según el
     mes) — el `hint-placeholder-count="35"` del mockup es solo un tamaño de skeleton, no un contrato de 5
     semanas fijas.
   - **Lista**: tarjetas ordenadas por `fechaLimite` ascendente, cada una con nombre, formulario, periodo,
