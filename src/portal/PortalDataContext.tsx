@@ -1,11 +1,12 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { Empresa, ObligacionEmpresa, RegistroFinanciero } from './types'
+import type { Empresa, ObligacionEmpresa, RegistroFinanciero, Simulacion } from './types'
 import {
   empresaActiva as empresaSemilla,
   empresasDisponibles as empresasSemilla,
   registrosFinancierosSemilla,
   indicadoresPrincipalesSemilla,
   obligacionesEmpresaSemilla,
+  simulacionesSemilla,
 } from './data/mock-portal-data'
 import { HOY_OBLIGACIONES } from './obligaciones/calculo'
 
@@ -24,6 +25,8 @@ type PortalDataContextValue = {
   obligacionesEmpresa: Record<string, ObligacionEmpresa[]>
   marcarObligacionCumplida: (empresaId: string, id: string) => void
   toggleRecordatorioObligacion: (empresaId: string, id: string) => void
+  simulaciones: Record<string, Simulacion[]>
+  guardarSimulacion: (empresaId: string, sim: Simulacion) => void
 }
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
@@ -40,6 +43,7 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   const [obligacionesEmpresa, setObligacionesEmpresa] = useState<Record<string, ObligacionEmpresa[]>>(
     obligacionesEmpresaSemilla,
   )
+  const [simulaciones, setSimulaciones] = useState<Record<string, Simulacion[]>>(simulacionesSemilla)
 
   const empresaActiva = useMemo(
     () => empresas.find((e) => e.id === empresaActivaId) ?? empresas[0],
@@ -90,6 +94,13 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     }))
   }
 
+  const guardarSimulacion = (empresaId: string, sim: Simulacion) => {
+    setSimulaciones((current) => ({
+      ...current,
+      [empresaId]: [...(current[empresaId] ?? []), sim],
+    }))
+  }
+
   return (
     <PortalDataContext.Provider
       value={{
@@ -107,6 +118,8 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         obligacionesEmpresa,
         marcarObligacionCumplida,
         toggleRecordatorioObligacion,
+        simulaciones,
+        guardarSimulacion,
       }}
     >
       {children}
