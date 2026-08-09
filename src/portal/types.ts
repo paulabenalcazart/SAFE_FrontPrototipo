@@ -161,3 +161,30 @@ export type SaludFinanciera = {
   etiqueta: 'Saludable' | 'Estable' | 'En riesgo' | 'Crítico'
   factores: { factor: FactorIndicador; puntaje: number; peso: number }[] // 4 entradas
 }
+
+export type CategoriaObligacion = 'TRIBUTARIA' | 'LABORAL' | 'SOCIETARIA' | 'MUNICIPAL'
+export type PeriodicidadObligacion = 'MENSUAL' | 'BIMESTRAL' | 'TRIMESTRAL' | 'SEMESTRAL' | 'ANUAL' | 'EVENTUAL'
+export type EstadoObligacion = 'PENDIENTE' | 'PROXIMA' | 'VENCIDA' | 'CUMPLIDA' | 'NO_APLICA'
+
+export type ObligacionCatalogo = {
+  codigo: string
+  nombre: string
+  categoria: CategoriaObligacion
+  institucion: string
+  periodicidad: PeriodicidadObligacion
+  formulario: string
+  usaNovenoDigito: boolean
+  permiteMontoEstimado: boolean
+}
+
+export type ObligacionEmpresa = {
+  id: string
+  obligacionCodigo: string // FK -> ObligacionCatalogo.codigo
+  periodo: string // ISO, primer día de mes
+  fechaLimite: string // ISO 'YYYY-MM-DD'
+  baseCalculo?: number
+  montoEstimado?: number
+  fechaCumplimiento?: string // ISO 'YYYY-MM-DD'; presencia = fue marcada cumplida
+  recordatorioActivo: boolean
+  notas?: string
+}
