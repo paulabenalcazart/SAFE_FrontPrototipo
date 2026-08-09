@@ -1,11 +1,13 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { Empresa, RegistroFinanciero } from './types'
+import type { Empresa, ObligacionEmpresa, RegistroFinanciero } from './types'
 import {
   empresaActiva as empresaSemilla,
   empresasDisponibles as empresasSemilla,
   registrosFinancierosSemilla,
   indicadoresPrincipalesSemilla,
+  obligacionesEmpresaSemilla,
 } from './data/mock-portal-data'
+import { HOY_OBLIGACIONES } from './obligaciones/calculo'
 
 type PortalDataContextValue = {
   empresas: Empresa[]
@@ -19,6 +21,9 @@ type PortalDataContextValue = {
   updateRegistroFinanciero: (empresaId: string, id: string, patch: Partial<RegistroFinanciero>) => void
   indicadoresPrincipales: Record<string, string[]>
   setIndicadoresPrincipales: (empresaId: string, codigos: string[]) => void
+  obligacionesEmpresa: Record<string, ObligacionEmpresa[]>
+  marcarObligacionCumplida: (empresaId: string, id: string) => void
+  toggleRecordatorioObligacion: (empresaId: string, id: string) => void
 }
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
@@ -31,6 +36,9 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   )
   const [indicadoresPrincipales, setIndicadoresPrincipalesState] = useState<Record<string, string[]>>(
     indicadoresPrincipalesSemilla,
+  )
+  const [obligacionesEmpresa, setObligacionesEmpresa] = useState<Record<string, ObligacionEmpresa[]>>(
+    obligacionesEmpresaSemilla,
   )
 
   const empresaActiva = useMemo(
@@ -64,6 +72,24 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     setIndicadoresPrincipalesState((current) => ({ ...current, [empresaId]: codigos }))
   }
 
+  const marcarObligacionCumplida = (empresaId: string, id: string) => {
+    setObligacionesEmpresa((current) => ({
+      ...current,
+      [empresaId]: (current[empresaId] ?? []).map((o) =>
+        o.id === id ? { ...o, fechaCumplimiento: HOY_OBLIGACIONES } : o,
+      ),
+    }))
+  }
+
+  const toggleRecordatorioObligacion = (empresaId: string, id: string) => {
+    setObligacionesEmpresa((current) => ({
+      ...current,
+      [empresaId]: (current[empresaId] ?? []).map((o) =>
+        o.id === id ? { ...o, recordatorioActivo: !o.recordatorioActivo } : o,
+      ),
+    }))
+  }
+
   return (
     <PortalDataContext.Provider
       value={{
@@ -78,6 +104,9 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         updateRegistroFinanciero,
         indicadoresPrincipales,
         setIndicadoresPrincipales,
+        obligacionesEmpresa,
+        marcarObligacionCumplida,
+        toggleRecordatorioObligacion,
       }}
     >
       {children}
