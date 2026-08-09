@@ -2,19 +2,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatPeriodo, formatUSD } from '@/portal/financiero/formato'
 import { obligacionPorCodigo } from './catalogo'
-import { diasHasta, estadoObligacion, HOY_OBLIGACIONES } from './calculo'
+import { diasHasta, estadoObligacion, HOY_OBLIGACIONES, novenoDigito } from './calculo'
 import { ESTADO_OBLIGACION_BADGE, ESTADO_OBLIGACION_LABEL } from './estado-estilo'
-
-const MESES_CORTO = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-
-function formatFecha(iso: string): string {
-  const [anio, mes, dia] = iso.split('-').map(Number)
-  return `${dia} ${MESES_CORTO[mes - 1]} ${anio}`
-}
-
-function capitalizar(texto: string): string {
-  return texto.charAt(0) + texto.slice(1).toLowerCase()
-}
+import { capitalizar, formatDias, formatFecha } from './formato'
 
 export function DetalleObligacionScreen() {
   const navigate = useNavigate()
@@ -40,7 +30,9 @@ export function DetalleObligacionScreen() {
   }
 
   const catalogo = obligacionPorCodigo(obligacion.obligacionCodigo)
-  const titulo = catalogo ? (obligacion.notas ? `${catalogo.nombre} (${obligacion.notas})` : catalogo.nombre) : obligacion.obligacionCodigo
+  const nombreBase = catalogo?.nombre ?? obligacion.obligacionCodigo
+  const tituloBase = obligacion.notas ? `${nombreBase} (${obligacion.notas})` : nombreBase
+  const titulo = `${tituloBase} — ${formatPeriodo(obligacion.periodo)}`
   const estado = estadoObligacion(obligacion, HOY_OBLIGACIONES)
   const dias = diasHasta(obligacion.fechaLimite, HOY_OBLIGACIONES)
   const puedeCumplir = estado !== 'CUMPLIDA' && estado !== 'NO_APLICA'
@@ -63,8 +55,11 @@ export function DetalleObligacionScreen() {
         { label: 'Fecha límite', valor: formatFecha(obligacion.fechaLimite) },
         {
           label: dias < 0 ? 'Vencida hace' : 'Días restantes',
-          valor: `${Math.abs(dias)} días`,
+          valor: formatDias(dias),
         },
+        ...(catalogo?.usaNovenoDigito
+          ? [{ label: 'Noveno dígito del RUC aplicado', valor: String(novenoDigito(empresaActiva.ruc)) }]
+          : []),
       ],
     },
     {
@@ -112,7 +107,7 @@ export function DetalleObligacionScreen() {
             <button
               type="button"
               onClick={() => marcarObligacionCumplida(empresaActiva.id, obligacion.id)}
-              className="min-h-11 rounded-lg bg-emerald-deep px-4 text-[13.5px] font-semibold text-white"
+              className="min-h-11 rounded-lg bg-navy-600 px-4 text-[13.5px] font-semibold text-white"
             >
               Marcar como cumplida
             </button>
@@ -120,6 +115,7 @@ export function DetalleObligacionScreen() {
           <button
             type="button"
             onClick={() => toggleRecordatorioObligacion(empresaActiva.id, obligacion.id)}
+            aria-pressed={obligacion.recordatorioActivo}
             className="min-h-11 rounded-lg border border-line bg-card px-4 text-[13.5px] font-semibold text-ink-700"
           >
             {obligacion.recordatorioActivo ? 'Recordatorio activado ✓' : 'Configurar recordatorio'}

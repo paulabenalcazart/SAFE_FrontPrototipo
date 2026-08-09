@@ -7,6 +7,7 @@ import { obligacionPorCodigo } from './catalogo'
 import { diasHasta, estadoObligacion, HOY_OBLIGACIONES } from './calculo'
 import { ESTADO_OBLIGACION_BADGE, ESTADO_OBLIGACION_LABEL, ESTADO_OBLIGACION_SWATCH } from './estado-estilo'
 import { construirCeldasMes, diasSemanaLabels } from './calendario'
+import { formatDias, formatFecha } from './formato'
 
 type ObligacionVista = {
   obligacion: ObligacionEmpresa
@@ -15,15 +16,11 @@ type ObligacionVista = {
   estado: EstadoObligacion
 }
 
+// Solo para la etiqueta del mes del calendario (mesLabel) — no se comparte con formatFecha en ./formato.
 const MESES = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
 ]
-
-function formatFecha(iso: string): string {
-  const [anio, mes, dia] = iso.split('-').map(Number)
-  return `${dia} ${MESES[mes - 1].slice(0, 3)} ${anio}`
-}
 
 export function ObligacionesScreen() {
   const navigate = useNavigate()
@@ -36,17 +33,16 @@ export function ObligacionesScreen() {
   const items: ObligacionVista[] = useMemo(() => {
     const lista = obligacionesEmpresa[empresaActiva.id] ?? []
     return lista
-      .map((o) => {
+      .map((o): ObligacionVista => {
         const catalogo = obligacionPorCodigo(o.obligacionCodigo)
-        if (!catalogo) return null
+        const nombreBase = catalogo?.nombre ?? o.obligacionCodigo
         return {
           obligacion: o,
-          titulo: o.notas ? `${catalogo.nombre} (${o.notas})` : catalogo.nombre,
-          formulario: catalogo.formulario,
+          titulo: o.notas ? `${nombreBase} (${o.notas})` : nombreBase,
+          formulario: catalogo?.formulario ?? '—',
           estado: estadoObligacion(o, HOY_OBLIGACIONES),
         }
       })
-      .filter((i): i is ObligacionVista => i !== null)
       .sort((a, b) => a.obligacion.fechaLimite.localeCompare(b.obligacion.fechaLimite))
   }, [obligacionesEmpresa, empresaActiva.id])
 
@@ -62,7 +58,7 @@ export function ObligacionesScreen() {
     {
       titulo: 'Cumplimiento',
       valor: `${cumplimientoPct}%`,
-      sub: `${cumplidasATiempo.length} de ${pasadas.length} cumplidas a tiempo`,
+      sub: `${cumplidasATiempo.length} de ${pasadas.length} cumplidas`,
     },
     {
       titulo: 'Próximas a vencer',
@@ -93,18 +89,16 @@ export function ObligacionesScreen() {
     ...vencidas.map((i) => ({
       id: i.obligacion.id,
       etiqueta: 'Vencida',
-      texto: `${i.titulo} venció hace ${Math.abs(diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES))} días.`,
-      bg: 'bg-danger-soft',
-      fg: 'text-destructive',
+      texto: `${i.titulo} venció hace ${formatDias(diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES))}.`,
+      estado: i.estado,
     })),
     ...proximas
       .filter((i) => diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES) <= 5)
       .map((i) => ({
         id: i.obligacion.id,
         etiqueta: 'Próxima',
-        texto: `${i.titulo} vence en ${diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES)} días.`,
-        bg: 'bg-amber-soft',
-        fg: 'text-amber-deep',
+        texto: `${i.titulo} vence en ${formatDias(diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES))}.`,
+        estado: i.estado,
       })),
   ].slice(0, 4)
 
@@ -154,7 +148,10 @@ export function ObligacionesScreen() {
               </button>
               <button
                 type="button"
-                onClick={() => setVista('lista')}
+                onClick={() => {
+                  setVista('lista')
+                  setFiltroLista('todas')
+                }}
                 aria-pressed={vista === 'lista'}
                 className={`min-h-9.5 rounded-lg px-3.5 text-[12.5px] font-semibold ${vista === 'lista' ? 'border border-navy-600 bg-navy-100 text-navy-700' : 'border border-line bg-card text-ink-700'}`}
               >
@@ -174,30 +171,33 @@ export function ObligacionesScreen() {
                   →
                 </button>
               </div>
-              <div className="mt-3 grid grid-cols-7 gap-1.5">
-                {diasSemanaLabels().map((d) => (
-                  <span key={d} className="pb-1 text-center text-[11px] font-semibold uppercase tracking-wide text-ink-500">
-                    {d}
-                  </span>
-                ))}
-                {celdasConItems.map((c) => (
-                  <div
-                    key={c.fecha}
-                    className={`flex min-h-16 flex-col gap-0.5 rounded-lg border border-line/70 p-1 ${c.delMes ? 'bg-card' : 'bg-surface/60'}`}
-                  >
-                    <span className="text-[11px] text-ink-500">{c.numero}</span>
-                    {c.items.map((i) => (
-                      <button
-                        key={i.obligacion.id}
-                        type="button"
-                        onClick={() => irADetalle(i.obligacion.id)}
-                        className={`truncate rounded px-1 py-0.5 text-left text-[10px] font-semibold ${ESTADO_OBLIGACION_BADGE[i.estado]}`}
-                      >
-                        {i.titulo}
-                      </button>
-                    ))}
-                  </div>
-                ))}
+              <div className="mt-3 overflow-x-auto">
+                <div className="grid min-w-[420px] grid-cols-7 gap-1.5">
+                  {diasSemanaLabels().map((d) => (
+                    <span key={d} className="pb-1 text-center text-[11px] font-semibold uppercase tracking-wide text-ink-500">
+                      {d}
+                    </span>
+                  ))}
+                  {celdasConItems.map((c) => (
+                    <div
+                      key={c.fecha}
+                      className={`flex min-h-16 flex-col gap-0.5 rounded-lg border border-line/70 p-1 ${c.delMes ? 'bg-card' : 'bg-surface/60'}`}
+                    >
+                      <span className="text-[11px] text-ink-500">{c.numero}</span>
+                      {c.items.map((i) => (
+                        <button
+                          key={i.obligacion.id}
+                          type="button"
+                          onClick={() => irADetalle(i.obligacion.id)}
+                          aria-label={`${i.titulo}, vence ${formatFecha(i.obligacion.fechaLimite)}, ${ESTADO_OBLIGACION_LABEL[i.estado]}`}
+                          className={`truncate rounded px-1 py-0.5 text-left text-[10px] font-semibold ${ESTADO_OBLIGACION_BADGE[i.estado]}`}
+                        >
+                          {i.titulo}
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-3 text-[11.5px] text-ink-700">
                 {(['CUMPLIDA', 'PROXIMA', 'VENCIDA', 'PENDIENTE'] as EstadoObligacion[]).map((estado) => (
@@ -210,8 +210,34 @@ export function ObligacionesScreen() {
             </div>
           ) : (
             <div className="mt-3.5 flex flex-col gap-2.5">
+              {filtroLista !== 'todas' && (
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-navy-100 px-2.5 py-1 text-[12px] font-semibold text-navy-700">
+                    {ESTADO_OBLIGACION_LABEL[filtroLista]}
+                    <button
+                      type="button"
+                      onClick={() => setFiltroLista('todas')}
+                      aria-label="Quitar filtro y ver todas"
+                      className="ml-0.5 text-navy-700"
+                    >
+                      ×
+                    </button>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setFiltroLista('todas')}
+                    className="text-[12px] font-semibold text-navy-500"
+                  >
+                    Ver todas
+                  </button>
+                </div>
+              )}
               {listaFiltrada.length === 0 ? (
-                <p className="py-6 text-center text-[13px] text-ink-500">No existen obligaciones generadas</p>
+                <p className="py-6 text-center text-[13px] text-ink-500">
+                  {items.length === 0
+                    ? 'No existen obligaciones generadas'
+                    : 'Ninguna obligación coincide con el filtro seleccionado.'}
+                </p>
               ) : (
                 listaFiltrada.map((i) => (
                   <div key={i.obligacion.id} className="flex flex-wrap items-center gap-2.5 rounded-lg border border-line/70 bg-card p-3.5">
@@ -248,19 +274,22 @@ export function ObligacionesScreen() {
               {prioridad.length === 0 ? (
                 <p className="text-[13px] text-ink-500">Sin obligaciones urgentes por ahora.</p>
               ) : (
-                prioridad.map((i) => (
-                  <div key={i.obligacion.id} className={`flex flex-wrap items-center gap-2.5 rounded-lg p-3 ${i.estado === 'VENCIDA' ? 'bg-danger-soft' : 'bg-amber-soft'}`}>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[13px] font-semibold leading-snug">{i.titulo}</p>
-                      <p className={`mt-0.5 text-[12px] font-semibold ${i.estado === 'VENCIDA' ? 'text-destructive' : 'text-amber-deep'}`}>
-                        {i.estado === 'VENCIDA' ? 'Venció' : 'Vence'} {formatFecha(i.obligacion.fechaLimite)}
-                      </p>
+                prioridad.map((i) => {
+                  const [bg, fg] = ESTADO_OBLIGACION_BADGE[i.estado].split(' ')
+                  return (
+                    <div key={i.obligacion.id} className={`flex flex-wrap items-center gap-2.5 rounded-lg p-3 ${bg}`}>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-semibold leading-snug">{i.titulo}</p>
+                        <p className={`mt-0.5 text-[12px] font-semibold ${fg}`}>
+                          {i.estado === 'VENCIDA' ? 'Venció' : 'Vence'} {formatFecha(i.obligacion.fechaLimite)}
+                        </p>
+                      </div>
+                      <button type="button" onClick={() => irADetalle(i.obligacion.id)} className="min-h-9.5 rounded-lg bg-card px-3 text-[12.5px] font-semibold text-navy-700">
+                        Ver detalle
+                      </button>
                     </div>
-                    <button type="button" onClick={() => irADetalle(i.obligacion.id)} className="min-h-9.5 rounded-lg bg-card px-3 text-[12.5px] font-semibold text-navy-700">
-                      Ver detalle
-                    </button>
-                  </div>
-                ))
+                  )
+                })
               )}
             </div>
           </section>
@@ -288,12 +317,15 @@ export function ObligacionesScreen() {
           {alertas.length === 0 ? (
             <p className="text-[13px] text-ink-500 sm:col-span-2">Estás al día con tus obligaciones tributarias.</p>
           ) : (
-            alertas.map((a) => (
-              <div key={a.id} className={`flex flex-wrap items-center gap-2.5 rounded-lg p-3 ${a.bg}`}>
-                <span className={`rounded-full bg-card px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${a.fg}`}>{a.etiqueta}</span>
-                <p className="min-w-0 flex-1 text-[13px] leading-snug">{a.texto}</p>
-              </div>
-            ))
+            alertas.map((a) => {
+              const [bg, fg] = ESTADO_OBLIGACION_BADGE[a.estado].split(' ')
+              return (
+                <div key={a.id} className={`flex flex-wrap items-center gap-2.5 rounded-lg p-3 ${bg}`}>
+                  <span className={`rounded-full bg-card px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${fg}`}>{a.etiqueta}</span>
+                  <p className="min-w-0 flex-1 text-[13px] leading-snug">{a.texto}</p>
+                </div>
+              )
+            })
           )}
         </div>
       </section>
