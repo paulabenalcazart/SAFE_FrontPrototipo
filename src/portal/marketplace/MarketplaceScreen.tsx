@@ -63,9 +63,12 @@ export function MarketplaceScreen() {
     [ordenados, pagina],
   )
 
-  const actualizarFiltros = (patch: Partial<FiltrosMarketplace>) => {
+  const actualizarFiltros = (
+    patch: Partial<FiltrosMarketplace>,
+    reiniciarPagina = true,
+  ) => {
     setFiltros((actuales) => ({ ...actuales, ...patch }))
-    setPagina(1)
+    if (reiniciarPagina) setPagina(1)
   }
 
   const limpiarFiltros = () => {
@@ -217,7 +220,7 @@ export function MarketplaceScreen() {
               id="marketplace-orden"
               value={filtros.orden}
               onChange={(event) =>
-                actualizarFiltros({ orden: event.target.value as OrdenMarketplace })
+                actualizarFiltros({ orden: event.target.value as OrdenMarketplace }, false)
               }
               className="min-h-10 w-full rounded-lg border border-line bg-card px-3 text-[13px] focus:outline-none focus:ring-2 focus:ring-navy-500/40 sm:w-auto"
             >
