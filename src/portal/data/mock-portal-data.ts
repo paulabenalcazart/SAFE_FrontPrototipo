@@ -23,8 +23,11 @@ import type {
   Obligacion,
   ObligacionEmpresa,
   RegistroFinanciero,
+  Simulacion,
 } from '../types'
 import { diaPorNovenoDigito, diasHasta, novenoDigito, HOY_OBLIGACIONES } from '../obligaciones/calculo'
+import { simularAumentoVentas, simularContratacionPersonal } from '../simulador/calculo'
+import { utilidadNeta } from '../financiero/calculo'
 
 export const empresaActiva: Empresa = {
   id: 'emp-1',
@@ -514,4 +517,96 @@ const obligacionesComercialDelValle: ObligacionEmpresa[] = [
 export const obligacionesEmpresaSemilla: Record<string, ObligacionEmpresa[]> = {
   'emp-1': obligacionesTextilesAndina,
   'emp-2': obligacionesComercialDelValle,
+}
+
+const registroBaseTextiles = registrosFinancierosSemilla['emp-1']
+  .filter((r) => r.estado === 'VIGENTE')
+  .sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
+
+const pctCostoVariableBaseTextiles = Math.round(
+  (registroBaseTextiles.costoVentas / registroBaseTextiles.ingresosOperacionales) * 100,
+)
+
+const entradasLaboralBajo = {
+  numeroContrataciones: 2,
+  salarioMensual: 500,
+  mesesSimular: 12,
+  costoReclutamiento: 400,
+  otrosBeneficios: 20,
+  incluyeFondosReserva: false,
+  ingresoAdicionalEsperado: 1400,
+  mesesProductividadPlena: 2,
+}
+
+const entradasLaboralCritico = {
+  numeroContrataciones: 3,
+  salarioMensual: 600,
+  mesesSimular: 6,
+  costoReclutamiento: 500,
+  otrosBeneficios: 0,
+  incluyeFondosReserva: true,
+  ingresoAdicionalEsperado: 0,
+  mesesProductividadPlena: 1,
+}
+
+const entradasFinancieroTextiles = {
+  incrementoPct: 8,
+  mesesSimular: 12,
+  inversionInicial: 800,
+  gastoOperativoAdicional: 100,
+  pctCostoVariable: pctCostoVariableBaseTextiles,
+}
+
+const simulacionesTextilesAndina: Simulacion[] = [
+  {
+    id: crypto.randomUUID(),
+    escenarioCodigo: 'CONTRATACION_PERSONAL',
+    fecha: '2026-08-05',
+    entradas: entradasLaboralBajo,
+    resultado: simularContratacionPersonal(entradasLaboralBajo),
+  },
+  {
+    id: crypto.randomUUID(),
+    escenarioCodigo: 'CONTRATACION_PERSONAL',
+    fecha: '2026-07-20',
+    entradas: entradasLaboralCritico,
+    resultado: simularContratacionPersonal(entradasLaboralCritico),
+  },
+  {
+    id: crypto.randomUUID(),
+    escenarioCodigo: 'AUMENTO_VENTAS',
+    fecha: '2026-08-10',
+    entradas: entradasFinancieroTextiles,
+    resultado: simularAumentoVentas(
+      entradasFinancieroTextiles,
+      registroBaseTextiles.ingresosOperacionales,
+      utilidadNeta(registroBaseTextiles),
+    ),
+  },
+]
+
+const entradasLaboralComercialDelValle = {
+  numeroContrataciones: 1,
+  salarioMensual: 460,
+  mesesSimular: 6,
+  costoReclutamiento: 150,
+  otrosBeneficios: 0,
+  incluyeFondosReserva: false,
+  ingresoAdicionalEsperado: 300,
+  mesesProductividadPlena: 2,
+}
+
+const simulacionesComercialDelValle: Simulacion[] = [
+  {
+    id: crypto.randomUUID(),
+    escenarioCodigo: 'CONTRATACION_PERSONAL',
+    fecha: '2026-07-28',
+    entradas: entradasLaboralComercialDelValle,
+    resultado: simularContratacionPersonal(entradasLaboralComercialDelValle),
+  },
+]
+
+export const simulacionesSemilla: Record<string, Simulacion[]> = {
+  'emp-1': simulacionesTextilesAndina,
+  'emp-2': simulacionesComercialDelValle,
 }
