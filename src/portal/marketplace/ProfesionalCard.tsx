@@ -49,7 +49,8 @@ export function ProfesionalCard({
           <p className="mt-0.5 truncate text-[12px] text-ink-500">{especialidadPrincipal}</p>
           <p className="mt-1 flex flex-wrap items-center gap-1 text-[12px] text-ink-700">
             <Star className="h-3.5 w-3.5 fill-amber-deep text-amber-deep" aria-hidden="true" />
-            <span aria-label={resumenCalificacion}>
+            <span className="sr-only">{resumenCalificacion}</span>
+            <span aria-hidden="true">
               {profesional.calificacionPromedio.toFixed(1)} ({profesional.cantidadResenas})
             </span>
             <span aria-hidden="true">·</span>
@@ -94,7 +95,7 @@ export function ProfesionalCard({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-1.5" aria-label="Especialidades">
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Especialidades">
         {especialidades.map((especialidad) => (
           <span
             key={especialidad.id}
@@ -109,7 +110,7 @@ export function ProfesionalCard({
         <span>{profesional.aniosExperiencia} años de experiencia</span>
         <span aria-hidden="true">·</span>
         <Star className="h-3.5 w-3.5 fill-amber-deep text-amber-deep" aria-hidden="true" />
-        <span aria-label={resumenCalificacion}>
+        <span>
           {profesional.calificacionPromedio.toFixed(1)} ({profesional.cantidadResenas} reseñas)
         </span>
       </p>
