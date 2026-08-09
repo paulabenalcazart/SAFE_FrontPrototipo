@@ -188,3 +188,59 @@ export type ObligacionEmpresa = {
   recordatorioActivo: boolean
   notas?: string
 }
+
+export type CategoriaEscenario = 'FINANCIERO' | 'TRIBUTARIO' | 'LABORAL' | 'SOCIETARIO'
+export type TipoVariableEscenario = 'NUMERO' | 'PORCENTAJE' | 'MONEDA' | 'FECHA' | 'TEXTO' | 'BOOLEANO'
+export type NivelRiesgo = 'BAJO' | 'MEDIO' | 'ALTO' | 'CRITICO'
+
+export type EscenarioSimulacion = {
+  codigo: string
+  nombre: string
+  categoria: CategoriaEscenario
+  descripcion: string
+  implementado: boolean
+}
+
+export type VariableEscenario = {
+  codigo: string
+  label: string
+  tipoDato: TipoVariableEscenario
+  unidad?: string
+  valorMinimo?: number
+  valorMaximo?: number
+  hint?: string
+  default: number | boolean
+}
+
+export type SerieMensualSimulacion = {
+  mes: string
+  costoAcumulado: number
+  ingresoAcumulado: number
+  utilidadActual: number
+  utilidadProyectada: number
+}
+
+export type CardResultadoSimulacion = {
+  titulo: string
+  valor: number
+  formato: 'USD' | 'PORCENTAJE'
+  sub: string
+}
+
+export type ResultadoSimulacion = {
+  cards: CardResultadoSimulacion[]
+  serie: SerieMensualSimulacion[]
+  nivelRiesgo: NivelRiesgo
+  riesgoTexto: string
+  recomendaciones: string[]
+  supuestos: string[]
+  limitaciones: string[]
+}
+
+export type Simulacion = {
+  id: string
+  escenarioCodigo: string
+  fecha: string // ISO 'YYYY-MM-DD'
+  entradas: Record<string, number | boolean>
+  resultado: ResultadoSimulacion
+}
