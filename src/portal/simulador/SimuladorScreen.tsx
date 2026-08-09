@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { EscenarioSimulacion, RegistroFinanciero, Simulacion } from '@/portal/types'
@@ -32,6 +32,21 @@ export function SimuladorScreen() {
   const [escenarioCodigo, setEscenarioCodigo] = useState<string | null>(null)
   const [entradas, setEntradas] = useState<Record<string, number | boolean>>({})
   const [resultadoActual, setResultadoActual] = useState<Simulacion['resultado'] | null>(null)
+
+  // Si la empresa activa cambia (p. ej. desde el CompanySwitcher del Topbar) mientras el wizard
+  // está en el paso 2 o 3, el estado local (congelado por useState) queda desincronizado de la
+  // empresa nueva — mismo problema que NuevaCargaScreen.tsx resuelve para su draft. Sin este
+  // efecto, "Ejecutar simulación" podría ser un no-op silencioso (p. ej. AUMENTO_VENTAS sin
+  // registro financiero vigente en la empresa nueva) o el paso 3 podría seguir mostrando el
+  // resultado de la empresa anterior mientras el Historial de abajo ya muestra la empresa nueva.
+  useEffect(() => {
+    setStep(1)
+    setMaxStepReached(1)
+    setEscenarioCodigo(null)
+    setEntradas({})
+    setResultadoActual(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empresaActiva.id])
 
   const registroBase = [...(registrosFinancieros[empresaActiva.id] ?? [])]
     .filter((r) => r.estado === 'VIGENTE')
@@ -229,7 +244,10 @@ export function SimuladorScreen() {
                       value={typeof entradas[v.codigo] === 'number' ? (entradas[v.codigo] as number) : 0}
                       min={v.valorMinimo}
                       max={v.valorMaximo}
-                      onChange={(e) => actualizarVariable(v.codigo, Number(e.target.value))}
+                      onChange={(e) => {
+                        const parsed = Number(e.target.value)
+                        actualizarVariable(v.codigo, Number.isFinite(parsed) ? parsed : 0)
+                      }}
                       className="min-h-11 w-full rounded-lg border border-line bg-card px-3 text-[14px]"
                     />
                     {v.unidad && <span className="min-w-7 shrink-0 text-[12px] text-ink-500">{v.unidad}</span>}
