@@ -191,10 +191,11 @@ export function PerfilProfesionalScreen() {
           >
             {profesional.nombres} {profesional.apellidos}
           </h1>
-          <p className="mt-1 text-[13px] font-medium text-ink-500">
-            {profesional.profesion} · {profesional.ciudadAtencion}, {profesional.paisAtencion}
+          <p className="mt-1.5 max-w-[70ch] text-[13.5px] leading-relaxed text-ink-700">
+            {profesional.descripcionProfesional}
           </p>
           <div
+            role="group"
             className="mt-2.5 flex flex-wrap items-center gap-1.5"
             aria-label="Especialidades y calificación"
           >
@@ -209,7 +210,9 @@ export function PerfilProfesionalScreen() {
             <span
               role="img"
               className="ml-1 flex items-center gap-1 text-[12.5px] text-ink-700"
-              aria-label={resumenCalificacion}
+              aria-label={`Calificación ${profesional.calificacionPromedio.toFixed(1)} de 5, ${
+                profesional.cantidadResenas
+              } ${profesional.cantidadResenas === 1 ? 'reseña' : 'reseñas'}`}
             >
               <Star
                 className="h-3.5 w-3.5 fill-amber-deep text-amber-deep"
@@ -235,18 +238,7 @@ export function PerfilProfesionalScreen() {
       </header>
 
       <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Acerca de</h2>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-ink-700">
-          {profesional.descripcionProfesional}
-        </p>
-        <p className="mt-4 rounded-lg bg-surface px-3.5 py-3 text-[12.5px] leading-relaxed text-ink-700">
-          Tus datos de contacto se mantienen protegidos; SAFE facilitará el contacto cuando el
-          profesional acepte la solicitud.
-        </p>
-      </section>
-
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Resumen profesional</h2>
+        <h2 className="text-[16px] font-semibold text-ink-900">Información profesional</h2>
         <dl className="mt-3 grid grid-cols-1 gap-x-5.5 gap-y-3 md:grid-cols-2 lg:grid-cols-3">
           {campos.map((campo) => (
             <div key={campo.label} className="min-w-0">
@@ -257,6 +249,10 @@ export function PerfilProfesionalScreen() {
             </div>
           ))}
         </dl>
+        <p className="mt-4 rounded-lg bg-surface px-3.5 py-3 text-[12.5px] leading-relaxed text-ink-700">
+          Tus datos de contacto se mantienen protegidos; SAFE facilitará el contacto cuando el
+          profesional acepte la solicitud.
+        </p>
       </section>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -320,24 +316,6 @@ export function PerfilProfesionalScreen() {
                 ))}
               </dl>
             )}
-          </section>
-
-          <section className="rounded-xl border border-line bg-card p-4.5">
-            <h2 className="text-[16px] font-semibold text-ink-900">Experiencia</h2>
-            <p className="mt-2 text-[13.5px] text-ink-900">
-              {profesional.aniosExperiencia} años de experiencia
-            </p>
-            <p className="mt-1 text-[12.5px] text-ink-500">
-              {profesional.trabajoActual ?? 'Profesional independiente'}
-            </p>
-          </section>
-
-          <section className="rounded-xl border border-line bg-card p-4.5">
-            <h2 className="text-[16px] font-semibold text-ink-900">Formación</h2>
-            <p className="mt-2 text-[13.5px] text-ink-900">{profesional.profesion}</p>
-            <p className="mt-1 text-[12.5px] text-ink-500">
-              Área de especialización: {profesional.areaEspecializacion}
-            </p>
           </section>
 
           <section className="rounded-xl border border-line bg-card p-4.5">
