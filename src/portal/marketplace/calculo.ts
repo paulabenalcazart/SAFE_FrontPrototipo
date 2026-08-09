@@ -133,7 +133,11 @@ export function filtrarProfesionales({
 }
 
 function compararNombre(a: ColaboradorMarketplace, b: ColaboradorMarketplace): number {
-  return nombreCompleto(a).localeCompare(nombreCompleto(b), 'es', { sensitivity: 'base' })
+  const comparacionNombre = nombreCompleto(a).localeCompare(nombreCompleto(b), 'es', {
+    sensitivity: 'base',
+  })
+  if (comparacionNombre !== 0) return comparacionNombre
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0
 }
 
 function compararRanking(a: ColaboradorMarketplace, b: ColaboradorMarketplace): number {
@@ -279,9 +283,13 @@ function minutosAHora(minutosTotales: number): string {
 
 function horarioCompatible(
   horario: HorarioDisponibilidad,
-  servicio: ServicioProfesional,
+  servicio: { modalidad: ModalidadAtencion },
 ): boolean {
-  return horario.modalidad === 'AMBAS' || horario.modalidad === servicio.modalidad
+  return (
+    horario.modalidad === 'AMBAS' ||
+    servicio.modalidad === 'AMBAS' ||
+    horario.modalidad === servicio.modalidad
+  )
 }
 
 function seSolapan(inicioA: number, finA: number, inicioB: number, finB: number): boolean {
