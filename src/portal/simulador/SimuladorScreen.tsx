@@ -6,7 +6,13 @@ import { formatUSD } from '@/portal/financiero/formato'
 import { utilidadNeta } from '@/portal/financiero/calculo'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { ESCENARIOS_SIMULACION, escenarioPorCodigo, VARIABLES_POR_ESCENARIO } from './catalogo'
-import { HOY_SIMULADOR, simularAumentoVentas, simularContratacionPersonal } from './calculo'
+import {
+  HOY_SIMULADOR,
+  pctCostoVariableSugerido,
+  simularAumentoVentas,
+  simularContratacionPersonal,
+  ultimoRegistroVigente,
+} from './calculo'
 import { NIVEL_RIESGO_BADGE, NIVEL_RIESGO_LABEL } from './estilo'
 import { SimulacionChart } from './SimulacionChart'
 
@@ -48,9 +54,7 @@ export function SimuladorScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [empresaActiva.id])
 
-  const registroBase = [...(registrosFinancieros[empresaActiva.id] ?? [])]
-    .filter((r) => r.estado === 'VIGENTE')
-    .sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
+  const registroBase = ultimoRegistroVigente(registrosFinancieros[empresaActiva.id] ?? [])
 
   const historial = [...(simulaciones[empresaActiva.id] ?? [])].sort((a, b) => b.fecha.localeCompare(a.fecha))
 
@@ -61,8 +65,8 @@ export function SimuladorScreen() {
     const variables = VARIABLES_POR_ESCENARIO[codigo] ?? []
     const draft: Record<string, number | boolean> = {}
     for (const v of variables) draft[v.codigo] = v.default
-    if (codigo === 'AUMENTO_VENTAS' && registroBase && registroBase.ingresosOperacionales !== 0) {
-      draft.pctCostoVariable = Math.round((registroBase.costoVentas / registroBase.ingresosOperacionales) * 100)
+    if (codigo === 'AUMENTO_VENTAS' && registroBase) {
+      draft.pctCostoVariable = pctCostoVariableSugerido(registroBase)
     }
     setEscenarioCodigo(codigo)
     setEntradas(draft)
@@ -106,7 +110,7 @@ export function SimuladorScreen() {
   }
 
   const irAPaso = (n: Paso) => {
-    if (n > maxStepReached) return
+    if (n > maxStepReached || (n === 3 && !resultadoActual)) return
     setStep(n)
   }
 

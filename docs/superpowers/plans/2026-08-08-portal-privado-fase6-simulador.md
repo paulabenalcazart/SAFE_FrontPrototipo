@@ -1586,7 +1586,7 @@ git commit -m "feat: agregar pantalla Detalle de simulacion"
   8 variables) → "Ejecutar simulación" → paso 3 (4 cards, gráfico, riesgo, recomendaciones/supuestos/
   limitaciones) → aparece en Historial.
 - [ ] **Paso 3:** Repetir el flujo completo con "Aumento de ventas" (baseline = ingresos mensuales base,
-  7 variables, % de costo variable precargado desde el registro financiero).
+  5 variables, % de costo variable precargado desde el registro financiero).
 - [ ] **Paso 4:** Cambiar a Comercial del Valle: confirmar que "Aumento de ventas" está deshabilitada con
   motivo "Requiere registro financiero vigente", "Contratación de personal" sigue funcional de punta a
   punta, y el historial muestra su simulación sembrada.

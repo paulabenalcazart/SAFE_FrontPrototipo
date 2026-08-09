@@ -97,7 +97,7 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   const guardarSimulacion = (empresaId: string, sim: Simulacion) => {
     setSimulaciones((current) => ({
       ...current,
-      [empresaId]: [...(current[empresaId] ?? []), sim],
+      [empresaId]: [sim, ...(current[empresaId] ?? [])],
     }))
   }
 

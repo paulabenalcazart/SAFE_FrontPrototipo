@@ -114,7 +114,7 @@ utilidadActualBase = 0   // baseline: no contratar no cuesta ni genera nada adic
 
 ### Fórmula FINANCIERO — "Aumento de ventas"
 
-7 variables:
+5 variables:
 
 | Código | Label | Tipo | Default | Rango |
 |---|---|---|---|---|

@@ -26,7 +26,12 @@ import type {
   Simulacion,
 } from '../types'
 import { diaPorNovenoDigito, diasHasta, novenoDigito, HOY_OBLIGACIONES } from '../obligaciones/calculo'
-import { simularAumentoVentas, simularContratacionPersonal } from '../simulador/calculo'
+import {
+  pctCostoVariableSugerido,
+  simularAumentoVentas,
+  simularContratacionPersonal,
+  ultimoRegistroVigente,
+} from '../simulador/calculo'
 import { utilidadNeta } from '../financiero/calculo'
 
 export const empresaActiva: Empresa = {
@@ -519,13 +524,12 @@ export const obligacionesEmpresaSemilla: Record<string, ObligacionEmpresa[]> = {
   'emp-2': obligacionesComercialDelValle,
 }
 
-const registroBaseTextiles = registrosFinancierosSemilla['emp-1']
-  .filter((r) => r.estado === 'VIGENTE')
-  .sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
+const registroBaseTextiles = ultimoRegistroVigente(registrosFinancierosSemilla['emp-1'])
+if (!registroBaseTextiles) {
+  throw new Error('Se esperaba al menos un registro financiero VIGENTE para emp-1 en la semilla')
+}
 
-const pctCostoVariableBaseTextiles = Math.round(
-  (registroBaseTextiles.costoVentas / registroBaseTextiles.ingresosOperacionales) * 100,
-)
+const pctCostoVariableBaseTextiles = pctCostoVariableSugerido(registroBaseTextiles)
 
 const entradasLaboralBajo = {
   numeroContrataciones: 2,

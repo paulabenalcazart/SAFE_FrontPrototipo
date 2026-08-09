@@ -1,10 +1,21 @@
-import type { NivelRiesgo, ResultadoSimulacion, SerieMensualSimulacion } from '@/portal/types'
+import type { NivelRiesgo, RegistroFinanciero, ResultadoSimulacion, SerieMensualSimulacion } from '@/portal/types'
 
 export const HOY_SIMULADOR = '2026-08-13'
 
 const SBU_REFERENCIA = 460
 const APORTE_PATRONAL_IESS = 0.1115
 const FONDOS_RESERVA = 0.0833
+
+export function ultimoRegistroVigente(registros: RegistroFinanciero[]): RegistroFinanciero | undefined {
+  return [...registros]
+    .filter((r) => r.estado === 'VIGENTE')
+    .sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
+}
+
+export function pctCostoVariableSugerido(registro: RegistroFinanciero): number {
+  if (registro.ingresosOperacionales === 0) return 0
+  return Math.round((registro.costoVentas / registro.ingresosOperacionales) * 100)
+}
 
 function num(v: number | boolean | undefined, fallback = 0): number {
   return typeof v === 'number' ? v : fallback
