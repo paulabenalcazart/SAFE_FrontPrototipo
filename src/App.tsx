@@ -35,6 +35,7 @@ import { IndicadoresPrincipalesScreen } from './portal/indicadores/IndicadoresPr
 import { TodosIndicadoresScreen } from './portal/indicadores/TodosIndicadoresScreen'
 import { CompararIndicadoresScreen } from './portal/indicadores/CompararIndicadoresScreen'
 import { ObligacionesScreen } from './portal/obligaciones/ObligacionesScreen'
+import { DetalleObligacionScreen } from './portal/obligaciones/DetalleObligacionScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -184,6 +185,7 @@ export default function App() {
         <Route path="indicadores/todos" element={<TodosIndicadoresScreen />} />
         <Route path="indicadores/comparar" element={<CompararIndicadoresScreen />} />
         <Route path="obligaciones" element={<ObligacionesScreen />} />
+        <Route path="obligaciones/:id" element={<DetalleObligacionScreen />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
