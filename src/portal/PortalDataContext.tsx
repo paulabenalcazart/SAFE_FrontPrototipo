@@ -1,5 +1,12 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { Empresa, ObligacionEmpresa, RegistroFinanciero, Simulacion } from './types'
+import type {
+  Empresa,
+  NuevaSolicitudContacto,
+  ObligacionEmpresa,
+  RegistroFinanciero,
+  Simulacion,
+  SolicitudContacto,
+} from './types'
 import {
   empresaActiva as empresaSemilla,
   empresasDisponibles as empresasSemilla,
@@ -7,8 +14,11 @@ import {
   indicadoresPrincipalesSemilla,
   obligacionesEmpresaSemilla,
   simulacionesSemilla,
+  solicitudesContactoSemilla,
 } from './data/mock-portal-data'
 import { HOY_OBLIGACIONES } from './obligaciones/calculo'
+import { SERVICIOS_PROFESIONALES } from './marketplace/catalogo'
+import { AHORA_MARKETPLACE } from './marketplace/calculo'
 
 type PortalDataContextValue = {
   empresas: Empresa[]
@@ -27,6 +37,11 @@ type PortalDataContextValue = {
   toggleRecordatorioObligacion: (empresaId: string, id: string) => void
   simulaciones: Record<string, Simulacion[]>
   guardarSimulacion: (empresaId: string, sim: Simulacion) => void
+  solicitudesContacto: Record<string, SolicitudContacto[]>
+  enviarSolicitudContacto: (
+    empresaId: string,
+    nueva: NuevaSolicitudContacto,
+  ) => SolicitudContacto | null
 }
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
@@ -44,6 +59,9 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     obligacionesEmpresaSemilla,
   )
   const [simulaciones, setSimulaciones] = useState<Record<string, Simulacion[]>>(simulacionesSemilla)
+  const [solicitudesContacto, setSolicitudesContacto] = useState<Record<string, SolicitudContacto[]>>(
+    solicitudesContactoSemilla,
+  )
 
   const empresaActiva = useMemo(
     () => empresas.find((e) => e.id === empresaActivaId) ?? empresas[0],
@@ -101,6 +119,45 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     }))
   }
 
+  const enviarSolicitudContacto = (
+    empresaId: string,
+    nueva: NuevaSolicitudContacto,
+  ): SolicitudContacto | null => {
+    const empresaExiste = empresas.some((empresa) => empresa.id === empresaId)
+    const servicio = SERVICIOS_PROFESIONALES.find(
+      (item) =>
+        item.id === nueva.servicioId &&
+        item.colaboradorId === nueva.colaboradorId &&
+        item.activo,
+    )
+    const descripcion = nueva.descripcion.trim()
+
+    if (
+      !empresaExiste ||
+      !servicio ||
+      !nueva.fechaPreferida ||
+      !nueva.horaPreferida ||
+      !descripcion
+    ) {
+      return null
+    }
+
+    const solicitud: SolicitudContacto = {
+      ...nueva,
+      descripcion,
+      id: crypto.randomUUID(),
+      estado: 'ENVIADA',
+      createdAt: AHORA_MARKETPLACE,
+    }
+
+    setSolicitudesContacto((current) => ({
+      ...current,
+      [empresaId]: [solicitud, ...(current[empresaId] ?? [])],
+    }))
+
+    return solicitud
+  }
+
   return (
     <PortalDataContext.Provider
       value={{
@@ -120,6 +177,8 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         toggleRecordatorioObligacion,
         simulaciones,
         guardarSimulacion,
+        solicitudesContacto,
+        enviarSolicitudContacto,
       }}
     >
       {children}

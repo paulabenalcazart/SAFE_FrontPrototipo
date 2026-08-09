@@ -24,6 +24,7 @@ import type {
   ObligacionEmpresa,
   RegistroFinanciero,
   Simulacion,
+  SolicitudContacto,
 } from '../types'
 import { diaPorNovenoDigito, diasHasta, novenoDigito, HOY_OBLIGACIONES } from '../obligaciones/calculo'
 import {
@@ -613,4 +614,9 @@ const simulacionesComercialDelValle: Simulacion[] = [
 export const simulacionesSemilla: Record<string, Simulacion[]> = {
   'emp-1': simulacionesTextilesAndina,
   'emp-2': simulacionesComercialDelValle,
+}
+
+export const solicitudesContactoSemilla: Record<string, SolicitudContacto[]> = {
+  'emp-1': [],
+  'emp-2': [],
 }
