@@ -1,12 +1,20 @@
+import { useNavigate } from 'react-router-dom'
 import type { Obligacion } from '@/portal/types'
 import { TONE_BADGE_CLASSES } from '@/portal/tone'
 
 export function ObligationsTable({ obligaciones }: { obligaciones: Obligacion[] }) {
+  const navigate = useNavigate()
   return (
     <section className="overflow-x-auto rounded-xl border border-line bg-card">
       <div className="flex items-center justify-between gap-2.5 border-b border-line/70 px-4.5 py-3.5">
         <h2 className="text-[17px] font-semibold">Obligaciones próximas</h2>
-        <span className="text-[12.5px] font-semibold text-navy-500">Ver todas</span>
+        <button
+          type="button"
+          onClick={() => navigate('/app/obligaciones')}
+          className="text-[12.5px] font-semibold text-navy-500"
+        >
+          Ver todas
+        </button>
       </div>
       <table className="w-full min-w-[470px] border-collapse text-[13px]">
         <thead>
