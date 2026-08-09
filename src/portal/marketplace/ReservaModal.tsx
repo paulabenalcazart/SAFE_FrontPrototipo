@@ -235,7 +235,7 @@ export function ReservaModal({ abierto, profesional, onCerrar }: ReservaModalPro
       horarios,
       bloqueos,
     })
-  }, [bloqueos, colaborador, horarios, servicioSeleccionado])
+  }, [bloqueos, horarios, servicioSeleccionado])
 
   useEffect(() => {
     if (!abierto || !servicioSeleccionado) return
@@ -251,7 +251,7 @@ export function ReservaModal({ abierto, profesional, onCerrar }: ReservaModalPro
       horarios,
       bloqueos,
     })
-  }, [bloqueos, colaborador, fechaSeleccionada, horarios, servicioSeleccionado])
+  }, [bloqueos, fechaSeleccionada, horarios, servicioSeleccionado])
 
   const slotSeleccionado = useMemo(
     () => slots.find((slot) => slot.horaInicio === horaSeleccionada && !slot.ocupado),
