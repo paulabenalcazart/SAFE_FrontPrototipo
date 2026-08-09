@@ -21,8 +21,10 @@ import type {
   NavItem,
   Notificacion,
   Obligacion,
+  ObligacionEmpresa,
   RegistroFinanciero,
 } from '../types'
+import { diaPorNovenoDigito, diasHasta, novenoDigito, HOY_OBLIGACIONES } from '../obligaciones/calculo'
 
 export const empresaActiva: Empresa = {
   id: 'emp-1',
@@ -405,4 +407,111 @@ export const registrosFinancierosSemilla: Record<string, RegistroFinanciero[]> =
 export const indicadoresPrincipalesSemilla: Record<string, string[]> = {
   'emp-1': ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08'],
   'emp-2': ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08'],
+}
+
+function fechaISO(anio: number, mes: number, dia: number): string {
+  return `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`
+}
+
+function sumarMes(anio: number, mes: number): { anio: number; mes: number } {
+  return mes === 12 ? { anio: anio + 1, mes: 1 } : { anio, mes: mes + 1 }
+}
+
+const DIA_TEXTILES_ANDINA = diaPorNovenoDigito(novenoDigito(empresaActiva.ruc))
+
+function montoConVariacion(base: number, mes: number): number {
+  // Variación determinística de hasta ±12% por mes, mismo criterio que construirCampos() arriba
+  const factor = 1 + (((mes * 37) % 25) - 12) / 100
+  return Math.round(base * factor)
+}
+
+function crearObligacionMensual(params: {
+  obligacionCodigo: string
+  anioPeriodo: number
+  mesPeriodo: number
+  monto: number
+}): ObligacionEmpresa {
+  const { anio: anioLimite, mes: mesLimite } = sumarMes(params.anioPeriodo, params.mesPeriodo)
+  const fechaLimite = fechaISO(anioLimite, mesLimite, DIA_TEXTILES_ANDINA)
+  const yaVencio = diasHasta(fechaLimite, HOY_OBLIGACIONES) < 0
+  return {
+    id: crypto.randomUUID(),
+    obligacionCodigo: params.obligacionCodigo,
+    periodo: fechaISO(params.anioPeriodo, params.mesPeriodo, 1),
+    fechaLimite,
+    montoEstimado: params.monto,
+    fechaCumplimiento: yaVencio ? fechaLimite : undefined,
+    recordatorioActivo: true,
+  }
+}
+
+const MONTO_IVA_JULIO = 1240
+const MONTO_RET_JULIO = 310
+
+const obligacionesTextilesAndina: ObligacionEmpresa[] = []
+
+for (let mes = 1; mes <= 12; mes++) {
+  const montoIva = mes === 7 ? MONTO_IVA_JULIO : montoConVariacion(MONTO_IVA_JULIO, mes)
+  const montoRet = mes === 7 ? MONTO_RET_JULIO : montoConVariacion(MONTO_RET_JULIO, mes)
+  obligacionesTextilesAndina.push(
+    crearObligacionMensual({ obligacionCodigo: 'IVA_MENSUAL', anioPeriodo: 2026, mesPeriodo: mes, monto: montoIva }),
+    crearObligacionMensual({ obligacionCodigo: 'RET_FUENTE_MENSUAL', anioPeriodo: 2026, mesPeriodo: mes, monto: montoRet }),
+  )
+}
+
+obligacionesTextilesAndina.push(
+  {
+    id: crypto.randomUUID(),
+    obligacionCodigo: 'IR_SOCIEDADES',
+    periodo: '2025-01-01',
+    fechaLimite: '2026-04-14',
+    montoEstimado: 4850,
+    fechaCumplimiento: '2026-04-14',
+    recordatorioActivo: true,
+  },
+  {
+    id: crypto.randomUUID(),
+    obligacionCodigo: 'ANTICIPO_IR',
+    periodo: '2026-07-01',
+    fechaLimite: '2026-07-14',
+    montoEstimado: 960,
+    recordatorioActivo: true,
+    notas: '1ra cuota',
+  },
+  {
+    id: crypto.randomUUID(),
+    obligacionCodigo: 'ANTICIPO_IR',
+    periodo: '2026-09-01',
+    fechaLimite: '2026-09-14',
+    montoEstimado: 960,
+    recordatorioActivo: true,
+    notas: '2da cuota',
+  },
+)
+
+const obligacionesComercialDelValle: ObligacionEmpresa[] = [
+  {
+    id: crypto.randomUUID(),
+    obligacionCodigo: 'CUOTA_RIMPE',
+    periodo: '2026-01-01',
+    fechaLimite: '2026-07-20',
+    montoEstimado: 60,
+    fechaCumplimiento: '2026-07-20',
+    recordatorioActivo: true,
+    notas: '1er semestre 2026',
+  },
+  {
+    id: crypto.randomUUID(),
+    obligacionCodigo: 'CUOTA_RIMPE',
+    periodo: '2026-07-01',
+    fechaLimite: '2027-01-20',
+    montoEstimado: 60,
+    recordatorioActivo: true,
+    notas: '2do semestre 2026',
+  },
+]
+
+export const obligacionesEmpresaSemilla: Record<string, ObligacionEmpresa[]> = {
+  'emp-1': obligacionesTextilesAndina,
+  'emp-2': obligacionesComercialDelValle,
 }
