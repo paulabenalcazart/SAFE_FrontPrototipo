@@ -44,6 +44,7 @@ import { PlanScreen } from './portal/plan/PlanScreen'
 import { AdministrarSuscripcionScreen } from './portal/plan/AdministrarSuscripcionScreen'
 import { CambiarPlanScreen } from './portal/plan/CambiarPlanScreen'
 import { MetodosPagoScreen } from './portal/plan/MetodosPagoScreen'
+import { HistorialPagosScreen } from './portal/plan/HistorialPagosScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -202,6 +203,7 @@ export default function App() {
         <Route path="plan/suscripcion" element={<AdministrarSuscripcionScreen />} />
         <Route path="plan/cambiar" element={<CambiarPlanScreen />} />
         <Route path="plan/metodos-pago" element={<MetodosPagoScreen />} />
+        <Route path="plan/historial-pagos" element={<HistorialPagosScreen />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
