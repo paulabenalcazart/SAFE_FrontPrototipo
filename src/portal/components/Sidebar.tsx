@@ -1,8 +1,14 @@
 import { NavLink } from 'react-router-dom'
 import safeLogoLight from '@/assets/safe-logo-light.png'
-import { navItems, planInfo } from '@/portal/data/mock-portal-data'
+import { navItems, suscripcionSemilla } from '@/portal/data/mock-portal-data'
+import { usePortalData } from '@/portal/PortalDataContext'
+import { formatFecha } from '@/portal/obligaciones/formato'
+import { planPorCodigo } from '@/portal/plan/catalogo'
 
 export function Sidebar() {
+  const { planActivoCodigo, suscripcionCancelada } = usePortalData()
+  const plan = planPorCodigo(planActivoCodigo)
+
   return (
     <nav
       aria-label="Navegación principal"
@@ -30,8 +36,8 @@ export function Sidebar() {
       </div>
 
       <div className="mt-auto border-t border-white/10 px-2.5 pb-1 pt-3.5 text-[11.5px] leading-relaxed text-white/70">
-        <div className="font-semibold text-white">{planInfo.nombre}</div>
-        <div>{planInfo.renovacion}</div>
+        <div className="font-semibold text-white">{plan.nombre}</div>
+        <div>{suscripcionCancelada ? 'Suscripción cancelada' : `Se renueva el ${formatFecha(suscripcionSemilla.proximaRenovacion)}`}</div>
       </div>
     </nav>
   )

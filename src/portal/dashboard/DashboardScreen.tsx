@@ -9,7 +9,7 @@ import { ObligationsTable } from './ObligationsTable'
 export function DashboardScreen() {
   const { user } = useAuth()
   const { empresaActiva } = usePortalData()
-  const firstName = user?.nombre.split(' ')[0] ?? ''
+  const firstName = user?.nombres.split(' ')[0] ?? ''
 
   return (
     <section className="flex flex-col gap-5">

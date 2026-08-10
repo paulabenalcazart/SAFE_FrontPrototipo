@@ -40,6 +40,14 @@ import { SimuladorScreen } from './portal/simulador/SimuladorScreen'
 import { DetalleSimulacionScreen } from './portal/simulador/DetalleSimulacionScreen'
 import { MarketplaceScreen } from './portal/marketplace/MarketplaceScreen'
 import { PerfilProfesionalScreen } from './portal/marketplace/PerfilProfesionalScreen'
+import { PlanScreen } from './portal/plan/PlanScreen'
+import { AdministrarSuscripcionScreen } from './portal/plan/AdministrarSuscripcionScreen'
+import { CambiarPlanScreen } from './portal/plan/CambiarPlanScreen'
+import { MetodosPagoScreen } from './portal/plan/MetodosPagoScreen'
+import { HistorialPagosScreen } from './portal/plan/HistorialPagosScreen'
+import { ConfiguracionScreen } from './portal/configuracion/ConfiguracionScreen'
+import { EditarCuentaScreen } from './portal/configuracion/EditarCuentaScreen'
+import { TutorialesScreen } from './portal/tutoriales/TutorialesScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -121,7 +129,13 @@ function PublicLayout() {
           element={
             <LoginPage
               onIngresar={() => {
-                login({ nombre: 'María Fernanda Torres', correo: 'maria.torres@textilesandina.ec', iniciales: 'MT' })
+                login({
+                  nombres: 'María Fernanda',
+                  apellidos: 'Torres',
+                  correo: 'maria.torres@textilesandina.ec',
+                  iniciales: 'MT',
+                  mfaHabilitado: false,
+                })
                 navigate('/app/dashboard')
               }}
               onRecuperar={() => handleNavigate('recuperar')}
@@ -144,7 +158,13 @@ function PublicLayout() {
           element={
             <SignupPage
               onCrearCuenta={() => {
-                login({ nombre: 'María Fernanda Torres', correo: 'maria.torres@textilesandina.ec', iniciales: 'MT' })
+                login({
+                  nombres: 'María Fernanda',
+                  apellidos: 'Torres',
+                  correo: 'maria.torres@textilesandina.ec',
+                  iniciales: 'MT',
+                  mfaHabilitado: false,
+                })
                 navigate('/app/dashboard')
               }}
               onIrLogin={() => handleNavigate('login')}
@@ -194,6 +214,14 @@ export default function App() {
         <Route path="simulador/:id" element={<DetalleSimulacionScreen />} />
         <Route path="marketplace" element={<MarketplaceScreen />} />
         <Route path="marketplace/:id" element={<PerfilProfesionalScreen />} />
+        <Route path="plan" element={<PlanScreen />} />
+        <Route path="plan/suscripcion" element={<AdministrarSuscripcionScreen />} />
+        <Route path="plan/cambiar" element={<CambiarPlanScreen />} />
+        <Route path="plan/metodos-pago" element={<MetodosPagoScreen />} />
+        <Route path="plan/historial-pagos" element={<HistorialPagosScreen />} />
+        <Route path="configuracion" element={<ConfiguracionScreen />} />
+        <Route path="configuracion/cuenta" element={<EditarCuentaScreen />} />
+        <Route path="tutoriales" element={<TutorialesScreen />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
