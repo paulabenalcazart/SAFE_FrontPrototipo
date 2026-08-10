@@ -13,7 +13,9 @@ export function AccountMenu({ onClose }: { onClose: () => void }) {
       className="animate-safe-fade-in absolute right-0 top-[calc(100%+8px)] z-30 w-64 rounded-xl border border-line bg-card p-1.5 shadow-[var(--shadow-float)]"
     >
       <div className="mb-1 border-b border-line/70 px-2.5 pb-2.5 pt-2">
-        <div className="text-[13.5px] font-semibold text-ink-900">{user.nombre}</div>
+        <div className="text-[13.5px] font-semibold text-ink-900">
+          {user.nombres} {user.apellidos}
+        </div>
         <div className="break-all text-[12px] text-ink-500">{user.correo}</div>
       </div>
       {/* "Configuración de cuenta" navega a /app/configuracion en la Fase 9 */}

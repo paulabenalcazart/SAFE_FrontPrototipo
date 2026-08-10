@@ -87,14 +87,14 @@ export function Topbar() {
             onClick={() => togglePanel('account')}
             aria-haspopup="true"
             aria-expanded={openPanel === 'account'}
-            aria-label={`Menú de cuenta de ${user?.nombre ?? 'usuario'}`}
+            aria-label={`Menú de cuenta de ${user ? `${user.nombres} ${user.apellidos}` : 'usuario'}`}
             className="flex min-h-11 items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-surface"
           >
             <span className="grid h-8 w-8 place-items-center rounded-full bg-navy-600 text-[12px] font-bold text-white">
               {user?.iniciales}
             </span>
             <span className="hidden whitespace-nowrap text-[13.5px] font-semibold text-ink-900 sm:block">
-              {user?.nombre.split(' ')[0]}
+              {user?.nombres.split(' ')[0]}
             </span>
             <ChevronDown className="hidden h-[15px] w-[15px] text-ink-500 sm:block" aria-hidden="true" />
           </button>

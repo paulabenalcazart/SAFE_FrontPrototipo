@@ -126,7 +126,13 @@ function PublicLayout() {
           element={
             <LoginPage
               onIngresar={() => {
-                login({ nombre: 'María Fernanda Torres', correo: 'maria.torres@textilesandina.ec', iniciales: 'MT' })
+                login({
+                  nombres: 'María Fernanda',
+                  apellidos: 'Torres',
+                  correo: 'maria.torres@textilesandina.ec',
+                  iniciales: 'MT',
+                  mfaHabilitado: false,
+                })
                 navigate('/app/dashboard')
               }}
               onRecuperar={() => handleNavigate('recuperar')}
@@ -149,7 +155,13 @@ function PublicLayout() {
           element={
             <SignupPage
               onCrearCuenta={() => {
-                login({ nombre: 'María Fernanda Torres', correo: 'maria.torres@textilesandina.ec', iniciales: 'MT' })
+                login({
+                  nombres: 'María Fernanda',
+                  apellidos: 'Torres',
+                  correo: 'maria.torres@textilesandina.ec',
+                  iniciales: 'MT',
+                  mfaHabilitado: false,
+                })
                 navigate('/app/dashboard')
               }}
               onIrLogin={() => handleNavigate('login')}
