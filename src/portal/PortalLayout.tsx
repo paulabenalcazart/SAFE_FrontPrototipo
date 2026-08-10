@@ -1,10 +1,15 @@
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar'
 import { Topbar } from './components/Topbar'
+import { PORTAL_SHELL_ID, useTemaPreferencia } from './configuracion/useTemaPreferencia'
 
 export function PortalLayout() {
+  // Aplica el tema guardado apenas se monta el portal, sin depender de que el usuario
+  // visite Configuración primero.
+  useTemaPreferencia()
+
   return (
-    <div className="flex min-h-screen bg-background text-ink-900" style={{ fontSize: 14 }}>
+    <div id={PORTAL_SHELL_ID} className="flex min-h-screen bg-background text-ink-900" style={{ fontSize: 14 }}>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
