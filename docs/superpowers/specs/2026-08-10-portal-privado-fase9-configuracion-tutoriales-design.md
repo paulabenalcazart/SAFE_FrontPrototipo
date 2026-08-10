@@ -124,11 +124,21 @@ estado — ver hallazgo 2 y 5 arriba.
 ### Tema: dark mode real, activado por inversión de la escala neutra
 
 Un hook `useTemaPreferencia()` (en `configuracion/`) lee/escribe `localStorage['safe.portal.tema']`
-(`'claro' | 'oscuro'`, default `'claro'`) y expone `[tema, setTema]`; aplica
-`document.documentElement.classList.toggle('dark', ...)` tanto al cargar el módulo (antes del primer
-render, para que no haya parpadeo al entrar directo a otra ruta) como en un `useEffect` sobre `tema`. El
-`<select>` de Preferencias lo usa y conserva la nota "Frontend-only, se guarda en el navegador" del
-mockup — sigue siendo cierto, solo que ahora la preferencia sí repinta la app.
+(`'claro' | 'oscuro'`, default `'claro'`) y expone `[tema, setTema]`; en un `useEffect` sobre `tema`
+aplica `classList.toggle('dark', ...)` **sobre el contenedor raíz de `PortalLayout`**
+(`id="portal-shell"`), no sobre `<html>`. `PortalLayout` también llama el hook (ignorando el setter) para
+aplicar el tema guardado apenas se monta el portal, sin depender de que el usuario visite Configuración
+primero. El `<select>` de Preferencias lo usa y conserva la nota "Frontend-only, se guarda en el
+navegador" del mockup — sigue siendo cierto, solo que ahora la preferencia sí repinta la app.
+
+**Alcance del tema: solo el portal privado (`/app/*`), nunca el sitio público.** Aplicar `.dark` sobre
+`<html>` oscurecía también landing, login, planes, etc. — reportado por la usuaria al probar el toggle.
+Como `.dark` es una clase CSS normal (no `:root`), acotarla al contenedor de `PortalLayout` basta: las
+variables que redefine solo cascadean a sus descendientes en el DOM. El único caso que se escapa de ese
+árbol es el popover de `Select` (Radix lo monta con un portal a `document.body` por defecto), así que
+`SelectContent` pasa `container={document.getElementById('portal-shell') ?? undefined}` para que el
+dropdown también quede dentro del scope oscuro cuando se abre dentro del portal, y sin efecto (`undefined`
+→ fallback a `document.body`) en cualquier `Select` del sitio público.
 
 `src/index.css` gana 5 variables nuevas dentro de `.dark`: `--gray-900/700/500/300/100`, la escala neutra
 detrás de `ink-*`/`line`/`surface` (ver hallazgo 3). Deliberadamente **no** se toca `--safe-primary-*`
