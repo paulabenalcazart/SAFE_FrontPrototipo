@@ -45,6 +45,9 @@ import { AdministrarSuscripcionScreen } from './portal/plan/AdministrarSuscripci
 import { CambiarPlanScreen } from './portal/plan/CambiarPlanScreen'
 import { MetodosPagoScreen } from './portal/plan/MetodosPagoScreen'
 import { HistorialPagosScreen } from './portal/plan/HistorialPagosScreen'
+import { ConfiguracionScreen } from './portal/configuracion/ConfiguracionScreen'
+import { EditarCuentaScreen } from './portal/configuracion/EditarCuentaScreen'
+import { TutorialesScreen } from './portal/tutoriales/TutorialesScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -216,6 +219,9 @@ export default function App() {
         <Route path="plan/cambiar" element={<CambiarPlanScreen />} />
         <Route path="plan/metodos-pago" element={<MetodosPagoScreen />} />
         <Route path="plan/historial-pagos" element={<HistorialPagosScreen />} />
+        <Route path="configuracion" element={<ConfiguracionScreen />} />
+        <Route path="configuracion/cuenta" element={<EditarCuentaScreen />} />
+        <Route path="tutoriales" element={<TutorialesScreen />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
