@@ -254,6 +254,13 @@ export type EspecialidadProfesional = {
   categoria: string
 }
 
+export type EspecialidadColaboradorRelacion = {
+  especialidadId: string
+  esPrincipal: boolean
+  aniosExperiencia: number
+  activo: boolean
+}
+
 export type ColaboradorMarketplace = {
   id: string
   nombres: string
@@ -278,6 +285,10 @@ export type ColaboradorMarketplace = {
   especialidadPrincipalId: string
   calificacionPromedio: number
   cantidadResenas: number
+  fotoPerfilUrl?: string
+  cvUrl?: string
+  archivoCredencialUrl?: string
+  especialidades: EspecialidadColaboradorRelacion[]
 }
 
 export type ServicioProfesional = {
@@ -311,18 +322,47 @@ export type ResenaColaborador = {
   estado: 'PUBLICADA' | 'OCULTA'
 }
 
+export type EstadoSolicitudContacto =
+  | 'PENDIENTE_PAGO'
+  | 'PAGADA'
+  | 'ENVIADA'
+  | 'ACEPTADA'
+  | 'RECHAZADA'
+  | 'CONTACTO_LIBERADO'
+  | 'FINALIZADA'
+
 export type SolicitudContacto = {
   id: string
+  empresaId: string
   colaboradorId: string
   servicioId: string
   fechaPreferida: string
   horaPreferida: string
   descripcion: string
-  estado: 'ENVIADA'
+  estado: EstadoSolicitudContacto
+  fechaRespuesta?: string
+  motivoRechazo?: string
+  contactoLiberadoAt?: string
   createdAt: string
 }
 
-export type NuevaSolicitudContacto = Omit<SolicitudContacto, 'id' | 'estado' | 'createdAt'>
+export type NuevaSolicitudContacto = Omit<SolicitudContacto, 'id' | 'estado' | 'createdAt' | 'empresaId'>
+
+export type EstadoCita = 'PROGRAMADA' | 'CONFIRMADA' | 'COMPLETADA' | 'CANCELADA'
+
+export type Cita = {
+  id: string
+  solicitudContactoId: string
+  colaboradorId: string
+  fechaInicio: string
+  fechaFin: string
+  modalidad: Exclude<ModalidadAtencion, 'AMBAS'>
+  estado: EstadoCita
+  enlaceReunion?: string
+  ubicacion?: string
+  motivoCancelacion?: string
+  createdAt: string
+}
 
 export type PlanCodigo = 'ESENCIAL' | 'CRECIMIENTO' | 'CORPORATIVO'
 
@@ -386,4 +426,32 @@ export type VideoTutorial = {
   categoria: string
   duracion: string
   descripcion: string
+}
+
+export type PrioridadNotificacionColaborador = 'BAJA' | 'NORMAL' | 'ALTA' | 'URGENTE'
+
+export type NotificacionColaborador = {
+  id: string
+  tipo: string
+  titulo: string
+  mensaje: string
+  prioridad: PrioridadNotificacionColaborador
+  leida: boolean
+  enlaceDestino?: string
+  createdAt: string
+}
+
+export type CategoriaNotificacionColaborador =
+  | 'NEW_REQUEST'
+  | 'APPOINTMENT_REMINDER'
+  | 'CANCELLATION_RESCHEDULE'
+  | 'NEW_REVIEW'
+  | 'PRODUCT_UPDATES'
+
+export type FrecuenciaNotificacionColaborador = 'INMEDIATA' | 'DIARIA' | 'SEMANAL' | 'MENSUAL' | 'NINGUNA'
+
+export type PreferenciaNotificacionColaborador = {
+  categoria: CategoriaNotificacionColaborador
+  correoActivo: boolean
+  frecuencia: FrecuenciaNotificacionColaborador
 }
