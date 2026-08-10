@@ -33,7 +33,10 @@ export function CancelarSuscripcionModal({
       <div
         className="animate-safe-fade-in absolute inset-0 bg-navy-900/65 backdrop-blur-sm"
         aria-hidden="true"
-        onMouseDown={onCerrar}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          onCerrar()
+        }}
       />
       <div
         ref={dialogRef}

@@ -63,17 +63,16 @@ export function MetodosPagoScreen() {
               Gateway mock SAFE · el token del proveedor nunca se muestra
             </p>
             <div className="mt-1.5 flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" onClick={() => setModal({ modo: 'editar', metodo: m })}>
+              <Button variant="outline" onClick={() => setModal({ modo: 'editar', metodo: m })}>
                 Editar expiración
               </Button>
               {!m.predeterminado && (
-                <Button variant="outline" size="sm" onClick={() => hacerMetodoPredeterminado(m.id)}>
+                <Button variant="outline" onClick={() => hacerMetodoPredeterminado(m.id)}>
                   Hacer predeterminado
                 </Button>
               )}
               <Button
                 variant="outline"
-                size="sm"
                 className="border-destructive text-destructive hover:bg-danger-soft"
                 onClick={() => eliminar(m.id)}
               >
