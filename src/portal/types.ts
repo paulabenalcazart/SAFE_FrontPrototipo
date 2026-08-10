@@ -323,3 +323,40 @@ export type SolicitudContacto = {
 }
 
 export type NuevaSolicitudContacto = Omit<SolicitudContacto, 'id' | 'estado' | 'createdAt'>
+
+export type PlanCodigo = 'ESENCIAL' | 'CRECIMIENTO' | 'CORPORATIVO'
+
+export type MarcaTarjeta = 'Visa' | 'Mastercard' | 'Tarjeta'
+export type TipoMetodoPago = 'Tarjeta de crédito' | 'Tarjeta de débito'
+
+export type MetodoPago = {
+  id: string
+  marca: MarcaTarjeta
+  tipo: TipoMetodoPago
+  ultimosCuatro: string
+  mesExpiracion: number // 1-12
+  anioExpiracion: number
+  predeterminado: boolean
+  estado: 'ACTIVO'
+}
+
+export type NuevoMetodoPago = {
+  numeroTarjeta: string // solo se usa para derivar marca/ultimosCuatro, nunca se persiste completo
+  mesExpiracion: number
+  anioExpiracion: number
+}
+
+export type EstadoPagoSuscripcion = 'PAGADO' | 'RECHAZADO'
+
+export type PagoSuscripcion = {
+  id: string
+  fecha: string // YYYY-MM-DD
+  monto: number
+  estado: EstadoPagoSuscripcion
+  proveedor: string
+  referencia: string
+  factura: string | null
+  mensaje: string | null
+  planNombre: string
+  createdAt: string // ISO datetime fijo del prototipo
+}
