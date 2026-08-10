@@ -133,11 +133,6 @@ export const navItems: NavItem[] = [
   { key: 'configuracion', label: 'Configuración', path: '/app/configuracion', icon: Settings },
 ]
 
-export const planInfo = {
-  nombre: 'Plan Crecimiento',
-  renovacion: 'Se renueva el 14 de sep. 2026',
-}
-
 export const kpis: Kpi[] = [
   {
     id: 'ingresos',
