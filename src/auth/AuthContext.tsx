@@ -28,7 +28,11 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 function readStoredUser(): AuthUser | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as AuthUser) : null
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as Partial<AuthUser>
+    // Sesiones guardadas antes de separar nombres/apellidos (pre Fase 9) ya no son válidas.
+    if (typeof parsed.nombres !== 'string' || typeof parsed.apellidos !== 'string') return null
+    return parsed as AuthUser
   } catch {
     return null
   }
