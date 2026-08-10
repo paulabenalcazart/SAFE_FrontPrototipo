@@ -30,8 +30,8 @@ export function Switch({
       <span
         aria-hidden="true"
         className={cn(
-          'absolute top-0.5 h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-transform duration-150',
-          checked ? 'translate-x-[22px]' : 'translate-x-0.5',
+          'absolute left-0.5 top-0.5 h-[22px] w-[22px] rounded-full bg-white shadow-sm transition-transform duration-150',
+          checked ? 'translate-x-5' : 'translate-x-0',
         )}
       />
     </button>

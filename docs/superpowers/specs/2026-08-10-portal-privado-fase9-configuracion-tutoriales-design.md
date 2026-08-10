@@ -47,14 +47,17 @@ La lectura completa del HTML y del dump reveló varios hallazgos que fijan el al
    "de settings" que persisten su propio valor y ya está: no hay un sistema de tours contextuales ni un
    re-skin de tema en ninguna parte del prototipo. Esta fase replica ese mismo alcance: los toggles
    funcionan y persisten, pero no gatillan lógica cruzada en otras pantallas ya construidas.
-3. **`.dark` en `src/index.css` no cubre los tokens que usa el portal.** Los componentes del portal usan
-   casi exclusivamente `text-ink-900`, `bg-navy-*`, `border-line`, `bg-surface` (mapeados a
-   `--gray-900`/`--safe-primary-*`/`--gray-300`/`--gray-100`), y el bloque `.dark` no redefine ninguna de
-   esas variables — solo los tokens base de shadcn (`--background`, `--card`, etc., usados por los
-   componentes de `src/components/ui`). Activar `.dark` hoy dejaría el portal a medio re-pintar (los
-   `input`/`textarea`/`select` cambiarían, el resto no). Por eso el selector de Tema se implementa como
-   preferencia persistida en `localStorage` **sin** tocar la clase del documento — igual de "frontend-only"
-   que el propio mockup, sin inventar un dark mode completo que ninguna fase anterior construyó.
+3. **`.dark` en `src/index.css` originalmente no cubría los tokens que usa el portal — corregido durante
+   esta fase, a partir de un reporte de la usuaria de que el selector de Tema no hacía nada.** Los
+   componentes del portal usan casi exclusivamente
+   `text-ink-900`, `bg-navy-*`, `border-line`, `bg-surface` (mapeados a
+   `--gray-900`/`--safe-primary-*`/`--gray-300`/`--gray-100`), y el bloque `.dark` original no redefinía
+   ninguna de esas variables — solo los tokens base de shadcn (`--background`, `--card`, etc.). Como la
+   escala neutra (`--gray-900/700/500/300/100`) es la única que el portal invierte con el tema — la marca
+   (`--safe-primary-*`, sidebar y botones navy) se mantiene igual en ambos temas a propósito — extender
+   `.dark` con esos 5 tokens re-pinta todo el portal sin tocar los ~40 archivos de pantallas. También se
+   corrigieron `input.tsx`/`textarea.tsx`/`select.tsx`/`checkbox.tsx`, que traían `bg-white` fijo en vez del
+   token `bg-card`. Ver decisión "Tema" más abajo.
 4. **No existe una página real de "Descargo de responsabilidad".** El footer del portal ya enlaza
    `/terminos` y `/privacidad` (páginas completas, reutilizadas del sitio público). No hay equivalente
    para el descargo. La sección "Privacidad y legal" enlaza a esas dos páginas reales en vez de duplicar
@@ -118,14 +121,22 @@ agrega como campo plano de cuenta, con `actualizarPreferencia(clave, valor)`. Se
 `DEFAULT` de la tabla `preferencia_usuario`. Ningún otro componente (Topbar, notificaciones) lee este
 estado — ver hallazgo 2 y 5 arriba.
 
-### Tema: preferencia cosmética en `localStorage`, sin re-skin real
+### Tema: dark mode real, activado por inversión de la escala neutra
 
-Un hook pequeño `useTemaPreferencia()` (en `configuracion/`) lee/escribe `localStorage['safe.portal.tema']`
-(`'claro' | 'oscuro'`, default `'claro'`) y expone `[tema, setTema]`. El `<select>` de Preferencias lo usa
-y muestra la nota "Frontend-only, se guarda en el navegador" igual que el mockup. No se aplica ninguna
-clase al `<html>`/`<body>` — ver hallazgo 3. Si una fase futura decide construir dark mode real, este hook
-es el punto de partida (ya persiste el valor); no es responsabilidad de esta fase completar los tokens
-`.dark` que faltan.
+Un hook `useTemaPreferencia()` (en `configuracion/`) lee/escribe `localStorage['safe.portal.tema']`
+(`'claro' | 'oscuro'`, default `'claro'`) y expone `[tema, setTema]`; aplica
+`document.documentElement.classList.toggle('dark', ...)` tanto al cargar el módulo (antes del primer
+render, para que no haya parpadeo al entrar directo a otra ruta) como en un `useEffect` sobre `tema`. El
+`<select>` de Preferencias lo usa y conserva la nota "Frontend-only, se guarda en el navegador" del
+mockup — sigue siendo cierto, solo que ahora la preferencia sí repinta la app.
+
+`src/index.css` gana 5 variables nuevas dentro de `.dark`: `--gray-900/700/500/300/100`, la escala neutra
+detrás de `ink-*`/`line`/`surface` (ver hallazgo 3). Deliberadamente **no** se toca `--safe-primary-*`
+(navy de marca): el sidebar y los botones primarios se mantienen navy en ambos temas, igual que la
+mayoría de dashboards con una marca de color fijo — invertir la marca no estaba pedido ni por el mockup ni
+por la usuaria. `input.tsx`/`textarea.tsx`/`select.tsx`/`checkbox.tsx` cambian `bg-white` fijo por
+`bg-card` para que los controles de formulario también inviertan (en claro `--card` sigue siendo blanco
+puro, cero cambio visual).
 
 ### Privacidad y legal: reutilizar páginas reales cuando existen
 
@@ -338,7 +349,8 @@ Modificados: `src/auth/AuthContext.tsx`, `src/App.tsx` (2 `login(...)` + 3 rutas
 
 ## Alcance recortado deliberadamente
 
-- Sin dark mode real (hallazgo 3): el selector de Tema persiste pero no re-pinta la app.
+- Dark mode invierte la escala neutra (`ink`/`line`/`surface`) y los controles de formulario; la marca
+  (navy/emerald/amber) se mantiene igual en ambos temas a propósito (hallazgo 3).
 - Sin sistema de tours/ayudas contextuales: el switch de Modo guiado persiste pero no dispara nada.
 - Sin filtrado real de notificaciones del header por las preferencias de esta fase (hallazgo 5).
 - Sin página real de "Descargo de responsabilidad": placeholder, igual que el mockup.
@@ -357,9 +369,11 @@ Modificados: `src/auth/AuthContext.tsx`, `src/App.tsx` (2 `login(...)` + 3 rutas
 
 ## Fuera de alcance (Fase 9)
 
-- Dark mode real, tours contextuales, exportación de datos real, backend de autenticación/contraseña,
-  reproductor de video real, filtrado de notificaciones del header por preferencia — todos documentados
-  arriba como decisiones deliberadas, no como pendientes.
+- Tours contextuales, exportación de datos real, backend de autenticación/contraseña, reproductor de
+  video real, filtrado de notificaciones del header por preferencia — todos documentados arriba como
+  decisiones deliberadas, no como pendientes.
 - Cualquier cambio a Fases 1–8 ya revisadas y mergeadas: esta fase es autocontenida, salvo los dos puntos
   de integración que esas fases dejaron pendientes explícitamente (`AccountMenu`, nav item de
-  `configuracion`).
+  `configuracion`) y el fix de dark mode en `src/index.css` + `src/components/ui/{input,textarea,select,checkbox}.tsx`,
+  compartidos por las 9 fases — necesario para que el selector de Tema de esta fase funcione de verdad;
+  no cambia nada visible en tema claro.
