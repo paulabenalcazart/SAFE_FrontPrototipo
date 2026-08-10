@@ -360,3 +360,30 @@ export type PagoSuscripcion = {
   planNombre: string
   createdAt: string // ISO datetime fijo del prototipo
 }
+
+export type FrecuenciaResumen = 'NINGUNA' | 'SEMANAL' | 'MENSUAL'
+
+export type PreferenciaUsuario = {
+  notificacionesInternas: boolean
+  notificacionesCorreo: boolean
+  recordatoriosTributarios: boolean
+  notificacionesContacto: boolean
+  notificacionesSuscripcion: boolean
+  frecuenciaResumen: FrecuenciaResumen
+  modoGuiado: boolean
+}
+
+export type DocumentoLegal = {
+  id: string
+  titulo: string
+  descripcion: string
+  href?: string
+}
+
+export type VideoTutorial = {
+  id: string
+  titulo: string
+  categoria: string
+  duracion: string
+  descripcion: string
+}
