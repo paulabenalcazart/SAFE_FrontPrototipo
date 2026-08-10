@@ -573,20 +573,10 @@ import type {
 } from '../types'
 ```
 
-- [ ] **Step 2: Quitar el export `planInfo` (queda reemplazado por datos reales de suscripción)**
+- [ ] **Step 2: Agregar la semilla de suscripción al final del archivo**
 
-En `src/portal/data/mock-portal-data.ts:133-136`, eliminar:
-
-```ts
-export const planInfo = {
-  nombre: 'Plan Crecimiento',
-  renovacion: 'Se renueva el 14 de sep. 2026',
-}
-```
-
-Sidebar.tsx (Task 6) dejará de importarlo; no queda ningún otro consumidor.
-
-- [ ] **Step 3: Agregar la semilla de suscripción al final del archivo**
+No tocar todavía el export `planInfo` (línea 133-136) — Task 6 lo reemplaza y elimina en el mismo paso
+en que `Sidebar.tsx` deja de importarlo, para que el build nunca quede roto entre tareas.
 
 Después de `solicitudesContactoSemilla` (línea 619-622 actual), agregar:
 
@@ -659,7 +649,7 @@ export const historialPagosSemilla: PagoSuscripcion[] = [
 ]
 ```
 
-- [ ] **Step 4: Verificar la semilla con un script puntual**
+- [ ] **Step 3: Verificar la semilla con un script puntual**
 
 Run:
 
@@ -679,15 +669,14 @@ console.log('OK: semilla de suscripcion valida')
 
 Expected: imprime `OK: semilla de suscripcion valida` sin errores.
 
-- [ ] **Step 5: Verificar TypeScript y producción**
+- [ ] **Step 4: Verificar TypeScript y producción**
 
 Run: `npm run build`
 
-Expected: falla temporalmente porque `Sidebar.tsx` todavía importa `planInfo` (se corrige en Task 6). Si
-el error de build es exactamente ese import roto, es esperado en este punto — continuar; si hay
-cualquier otro error de tipos, corregirlo antes de seguir.
+Expected: exit code 0. `planInfo` (línea 133-136) sigue en el archivo sin usarse todavía fuera de
+`Sidebar.tsx` — no genera error de build, solo queda pendiente de que Task 6 lo reemplace.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 git add src/portal/data/mock-portal-data.ts
@@ -879,9 +868,7 @@ Dentro de `<PortalDataContext.Provider value={{ ... }}>`, después de `enviarSol
 
 Run: `npm run build`
 
-Expected: mismo estado que el final de Task 4 — falla únicamente por el import roto de `planInfo` en
-`Sidebar.tsx` (se corrige en Task 6). Confirmar que no hay ningún otro error de tipos en
-`PortalDataContext.tsx`.
+Expected: exit code 0, sin errores de tipos en `PortalDataContext.tsx`.
 
 - [ ] **Step 7: Commit**
 
@@ -1160,14 +1147,25 @@ export function Sidebar() {
 }
 ```
 
-- [ ] **Step 4: Verificar TypeScript y producción**
+- [ ] **Step 4: Quitar el export `planInfo`, ya sin consumidores**
+
+En `src/portal/data/mock-portal-data.ts:133-136`, eliminar:
+
+```ts
+export const planInfo = {
+  nombre: 'Plan Crecimiento',
+  renovacion: 'Se renueva el 14 de sep. 2026',
+}
+```
+
+- [ ] **Step 5: Verificar TypeScript y producción**
 
 Run: `npm run build`
 
-Expected: exit code 0, sin errores de tipos ni imports rotos (el import de `planInfo` ya no existe en
+Expected: exit code 0, sin errores de tipos ni imports rotos (el export `planInfo` ya no existe en
 ningún archivo).
 
-- [ ] **Step 5: Verificación manual en navegador**
+- [ ] **Step 6: Verificación manual en navegador**
 
 Run: `npm run dev`, iniciar sesión y navegar a `/app/plan`.
 
@@ -1176,10 +1174,10 @@ módulos y límites, las 4 estadísticas de uso con números reales (no todos en
 S.A.), y el acordeón de 5 preguntas frecuentes funcionando. El Sidebar muestra "Plan Crecimiento" y "Se
 renueva el 10 sep 2026" en vez del mock estático anterior.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add src/portal/plan/PlanScreen.tsx src/App.tsx src/portal/components/Sidebar.tsx
+git add src/portal/plan/PlanScreen.tsx src/App.tsx src/portal/components/Sidebar.tsx src/portal/data/mock-portal-data.ts
 git commit -m "feat: agregar pantalla Mi plan y Sidebar dinamico"
 ```
 
