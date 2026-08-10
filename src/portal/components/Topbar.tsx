@@ -27,10 +27,10 @@ export function Topbar() {
   const togglePanel = (panel: OpenPanel) => setOpenPanel((current) => (current === panel ? null : panel))
 
   return (
-    <header className="sticky top-0 z-20 flex min-h-[60px] items-center gap-3 border-b border-line bg-card px-4">
+    <header className="sticky top-0 z-20 flex min-h-[60px] items-center gap-1 border-b border-line bg-card px-2 sm:gap-3 sm:px-4">
       <CompanySwitcher />
 
-      <div className="ml-auto flex items-center gap-1.5">
+      <div className="ml-auto flex shrink-0 items-center gap-1.5">
         <div className="relative">
           <button
             type="button"
@@ -79,7 +79,7 @@ export function Topbar() {
           )}
         </div>
 
-        <span aria-hidden="true" className="mx-1 h-6.5 w-px bg-line" />
+        <span aria-hidden="true" className="mx-1 hidden h-6.5 w-px bg-line sm:block" />
 
         <div className="relative">
           <button
@@ -87,15 +87,16 @@ export function Topbar() {
             onClick={() => togglePanel('account')}
             aria-haspopup="true"
             aria-expanded={openPanel === 'account'}
+            aria-label={`Menú de cuenta de ${user?.nombre ?? 'usuario'}`}
             className="flex min-h-11 items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-surface"
           >
             <span className="grid h-8 w-8 place-items-center rounded-full bg-navy-600 text-[12px] font-bold text-white">
               {user?.iniciales}
             </span>
-            <span className="whitespace-nowrap text-[13.5px] font-semibold text-ink-900">
+            <span className="hidden whitespace-nowrap text-[13.5px] font-semibold text-ink-900 sm:block">
               {user?.nombre.split(' ')[0]}
             </span>
-            <ChevronDown className="h-[15px] w-[15px] text-ink-500" aria-hidden="true" />
+            <ChevronDown className="hidden h-[15px] w-[15px] text-ink-500 sm:block" aria-hidden="true" />
           </button>
           {openPanel === 'account' && <AccountMenu onClose={() => setOpenPanel(null)} />}
         </div>
