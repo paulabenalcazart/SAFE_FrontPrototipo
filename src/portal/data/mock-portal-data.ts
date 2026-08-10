@@ -18,10 +18,13 @@ import type {
   Empresa,
   Indicador,
   Kpi,
+  MetodoPago,
   NavItem,
   Notificacion,
   Obligacion,
   ObligacionEmpresa,
+  PagoSuscripcion,
+  PlanCodigo,
   RegistroFinanciero,
   Simulacion,
   SolicitudContacto,
@@ -620,3 +623,70 @@ export const solicitudesContactoSemilla: Record<string, SolicitudContacto[]> = {
   'emp-1': [],
   'emp-2': [],
 }
+
+export const planActivoCodigoSemilla: PlanCodigo = 'CRECIMIENTO'
+
+export const suscripcionSemilla = {
+  fechaInicio: '2026-02-10',
+  proximaRenovacion: '2026-09-10',
+  renovacionAutomatica: true,
+  cancelada: false,
+}
+
+export const metodosPagoSemilla: MetodoPago[] = [
+  {
+    id: 'mp-1',
+    marca: 'Visa',
+    tipo: 'Tarjeta de crédito',
+    ultimosCuatro: '5601',
+    mesExpiracion: 5,
+    anioExpiracion: 2029,
+    predeterminado: true,
+    estado: 'ACTIVO',
+  },
+  {
+    id: 'mp-2',
+    marca: 'Mastercard',
+    tipo: 'Tarjeta de crédito',
+    ultimosCuatro: '4477',
+    mesExpiracion: 11,
+    anioExpiracion: 2027,
+    predeterminado: false,
+    estado: 'ACTIVO',
+  },
+]
+
+function crearPagoSuscripcion(params: {
+  fecha: string
+  estado: PagoSuscripcion['estado']
+  referencia: string
+  mensaje: string
+}): PagoSuscripcion {
+  return {
+    id: crypto.randomUUID(),
+    fecha: params.fecha,
+    monto: 59,
+    estado: params.estado,
+    proveedor: 'Gateway mock SAFE',
+    referencia: params.referencia,
+    factura: params.estado === 'PAGADO' ? `FAC-${params.referencia.slice(-8)}` : null,
+    mensaje: params.mensaje,
+    planNombre: 'Plan Crecimiento',
+    createdAt: `${params.fecha}T09:00:00-05:00`,
+  }
+}
+
+export const historialPagosSemilla: PagoSuscripcion[] = [
+  crearPagoSuscripcion({ fecha: '2026-08-10', estado: 'PAGADO', referencia: 'TXN-2026-0810', mensaje: 'Pago aprobado.' }),
+  crearPagoSuscripcion({ fecha: '2026-07-10', estado: 'PAGADO', referencia: 'TXN-2026-0710', mensaje: 'Pago aprobado.' }),
+  crearPagoSuscripcion({ fecha: '2026-06-10', estado: 'PAGADO', referencia: 'TXN-2026-0610', mensaje: 'Pago aprobado.' }),
+  crearPagoSuscripcion({
+    fecha: '2026-05-10',
+    estado: 'RECHAZADO',
+    referencia: 'TXN-2026-0510',
+    mensaje: 'Fondos insuficientes. El sistema reintentó automáticamente al mes siguiente.',
+  }),
+  crearPagoSuscripcion({ fecha: '2026-04-10', estado: 'PAGADO', referencia: 'TXN-2026-0410', mensaje: 'Pago aprobado.' }),
+  crearPagoSuscripcion({ fecha: '2026-03-10', estado: 'PAGADO', referencia: 'TXN-2026-0310', mensaje: 'Pago aprobado.' }),
+  crearPagoSuscripcion({ fecha: '2026-02-10', estado: 'PAGADO', referencia: 'TXN-2026-0210', mensaje: 'Pago aprobado.' }),
+]
