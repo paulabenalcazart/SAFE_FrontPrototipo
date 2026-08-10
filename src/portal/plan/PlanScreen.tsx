@@ -27,6 +27,7 @@ export function PlanScreen() {
     registrosFinancieros,
     simulaciones,
     obligacionesEmpresa,
+    suscripcionCancelada,
   } = usePortalData()
 
   const plan = planPorCodigo(planActivoCodigo)
@@ -48,7 +49,7 @@ export function PlanScreen() {
 
   const campos: { label: string; valor: string }[] = [
     { label: 'Plan activo', valor: plan.nombre },
-    { label: 'Estado', valor: 'ACTIVA' },
+    { label: 'Estado', valor: suscripcionCancelada ? 'CANCELADA' : 'ACTIVA' },
     {
       label: 'Método de pago',
       valor: metodoPredeterminado ? metodoPredeterminado.tipo : 'Sin método registrado',
@@ -78,8 +79,12 @@ export function PlanScreen() {
       <section className="rounded-xl border border-line bg-card p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <span className="inline-block rounded-full bg-emerald-soft px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-emerald-deep">
-              Activa
+            <span
+              className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${
+                suscripcionCancelada ? 'bg-surface text-ink-500' : 'bg-emerald-soft text-emerald-deep'
+              }`}
+            >
+              {suscripcionCancelada ? 'Cancelada' : 'Activa'}
             </span>
             <h2 className="mt-2 text-xl font-bold text-ink-900">{plan.nombre}</h2>
             <p className="mt-1 text-sm font-semibold text-navy-600">{formatUSD(plan.precio)} / mes</p>

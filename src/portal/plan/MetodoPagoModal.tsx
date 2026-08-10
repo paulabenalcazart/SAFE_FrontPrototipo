@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { MetodoPago } from '@/portal/types'
 import { parseExpiracion, validarNuevoMetodo } from './calculo'
-import { formatExpiracion } from './formato'
+import { formatExpiracionCorta } from './formato'
 import { useAccessibleDialog } from './useAccessibleDialog'
 
 type Props =
@@ -28,7 +28,7 @@ export function MetodoPagoModal({ modo, metodo, abierto, onCerrar }: Props) {
 
   const [numeroTarjeta, setNumeroTarjeta] = useState('')
   const [expiracion, setExpiracion] = useState(
-    modo === 'editar' ? formatExpiracion(metodo.mesExpiracion, metodo.anioExpiracion) : '',
+    modo === 'editar' ? formatExpiracionCorta(metodo.mesExpiracion, metodo.anioExpiracion) : '',
   )
   const [cvc, setCvc] = useState('')
   const [errores, setErrores] = useState<{ numeroTarjeta?: string; expiracion?: string; cvc?: string }>({})

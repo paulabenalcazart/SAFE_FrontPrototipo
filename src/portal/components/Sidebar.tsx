@@ -6,7 +6,7 @@ import { formatFecha } from '@/portal/obligaciones/formato'
 import { planPorCodigo } from '@/portal/plan/catalogo'
 
 export function Sidebar() {
-  const { planActivoCodigo } = usePortalData()
+  const { planActivoCodigo, suscripcionCancelada } = usePortalData()
   const plan = planPorCodigo(planActivoCodigo)
 
   return (
@@ -37,7 +37,7 @@ export function Sidebar() {
 
       <div className="mt-auto border-t border-white/10 px-2.5 pb-1 pt-3.5 text-[11.5px] leading-relaxed text-white/70">
         <div className="font-semibold text-white">{plan.nombre}</div>
-        <div>Se renueva el {formatFecha(suscripcionSemilla.proximaRenovacion)}</div>
+        <div>{suscripcionCancelada ? 'Suscripción cancelada' : `Se renueva el ${formatFecha(suscripcionSemilla.proximaRenovacion)}`}</div>
       </div>
     </nav>
   )

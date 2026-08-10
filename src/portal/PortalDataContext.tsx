@@ -197,6 +197,7 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   const cancelarSuscripcion = (motivo: string) => {
     setSuscripcionCancelada(true)
     setMotivoCancelacion(motivo.trim() || null)
+    setRenovacionAutomatica(false)
   }
 
   const agregarMetodoPago = (nuevo: NuevoMetodoPago): MetodoPago | null => {
