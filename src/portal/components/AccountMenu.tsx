@@ -18,15 +18,24 @@ export function AccountMenu({ onClose }: { onClose: () => void }) {
         </div>
         <div className="break-all text-[12px] text-ink-500">{user.correo}</div>
       </div>
-      {/* "Configuración de cuenta" navega a /app/configuracion en la Fase 9 */}
-      <button
-        type="button"
-        role="menuitem"
-        onClick={onClose}
-        className="block min-h-11 w-full rounded-lg px-2.5 text-left text-[13.5px] font-medium text-ink-900 hover:bg-surface"
-      >
-        Configuración de cuenta
-      </button>
+      {[
+        { label: 'Mi cuenta', to: '/app/configuracion/cuenta' },
+        { label: 'Mi plan', to: '/app/plan' },
+        { label: 'Video tutoriales', to: '/app/tutoriales' },
+      ].map((item) => (
+        <button
+          key={item.to}
+          type="button"
+          role="menuitem"
+          onClick={() => {
+            onClose()
+            navigate(item.to)
+          }}
+          className="block min-h-11 w-full rounded-lg px-2.5 text-left text-[13.5px] font-medium text-ink-900 hover:bg-surface"
+        >
+          {item.label}
+        </button>
+      ))}
       <button
         type="button"
         role="menuitem"
