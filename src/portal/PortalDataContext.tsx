@@ -7,6 +7,7 @@ import type {
   ObligacionEmpresa,
   PagoSuscripcion,
   PlanCodigo,
+  PreferenciaUsuario,
   RegistroFinanciero,
   Simulacion,
   SolicitudContacto,
@@ -23,6 +24,7 @@ import {
   suscripcionSemilla,
   metodosPagoSemilla,
   historialPagosSemilla,
+  preferenciaUsuarioSemilla,
 } from './data/mock-portal-data'
 import { HOY_OBLIGACIONES } from './obligaciones/calculo'
 import { SERVICIOS_PROFESIONALES } from './marketplace/catalogo'
@@ -64,6 +66,8 @@ type PortalDataContextValue = {
   hacerMetodoPredeterminado: (id: string) => void
   eliminarMetodoPago: (id: string) => boolean
   historialPagos: PagoSuscripcion[]
+  preferencias: PreferenciaUsuario
+  actualizarPreferencia: <K extends keyof PreferenciaUsuario>(clave: K, valor: PreferenciaUsuario[K]) => void
 }
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
@@ -90,6 +94,7 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   const [motivoCancelacion, setMotivoCancelacion] = useState<string | null>(null)
   const [metodosPago, setMetodosPago] = useState<MetodoPago[]>(metodosPagoSemilla)
   const [historialPagos] = useState<PagoSuscripcion[]>(historialPagosSemilla)
+  const [preferencias, setPreferencias] = useState<PreferenciaUsuario>(preferenciaUsuarioSemilla)
 
   const empresaActiva = useMemo(
     () => empresas.find((e) => e.id === empresaActivaId) ?? empresas[0],
@@ -253,6 +258,10 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     return true
   }
 
+  const actualizarPreferencia = <K extends keyof PreferenciaUsuario>(clave: K, valor: PreferenciaUsuario[K]) => {
+    setPreferencias((current) => ({ ...current, [clave]: valor }))
+  }
+
   return (
     <PortalDataContext.Provider
       value={{
@@ -287,6 +296,8 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         hacerMetodoPredeterminado,
         eliminarMetodoPago,
         historialPagos,
+        preferencias,
+        actualizarPreferencia,
       }}
     >
       {children}

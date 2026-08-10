@@ -25,6 +25,7 @@ import type {
   ObligacionEmpresa,
   PagoSuscripcion,
   PlanCodigo,
+  PreferenciaUsuario,
   RegistroFinanciero,
   Simulacion,
   SolicitudContacto,
@@ -626,6 +627,16 @@ export const suscripcionSemilla = {
   proximaRenovacion: '2026-09-10',
   renovacionAutomatica: true,
   cancelada: false,
+}
+
+export const preferenciaUsuarioSemilla: PreferenciaUsuario = {
+  notificacionesInternas: true,
+  notificacionesCorreo: true,
+  recordatoriosTributarios: true,
+  notificacionesContacto: true,
+  notificacionesSuscripcion: true,
+  frecuenciaResumen: 'SEMANAL',
+  modoGuiado: true,
 }
 
 export const metodosPagoSemilla: MetodoPago[] = [
