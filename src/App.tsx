@@ -41,6 +41,7 @@ import { DetalleSimulacionScreen } from './portal/simulador/DetalleSimulacionScr
 import { MarketplaceScreen } from './portal/marketplace/MarketplaceScreen'
 import { PerfilProfesionalScreen } from './portal/marketplace/PerfilProfesionalScreen'
 import { PlanScreen } from './portal/plan/PlanScreen'
+import { AdministrarSuscripcionScreen } from './portal/plan/AdministrarSuscripcionScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -196,6 +197,7 @@ export default function App() {
         <Route path="marketplace" element={<MarketplaceScreen />} />
         <Route path="marketplace/:id" element={<PerfilProfesionalScreen />} />
         <Route path="plan" element={<PlanScreen />} />
+        <Route path="plan/suscripcion" element={<AdministrarSuscripcionScreen />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
