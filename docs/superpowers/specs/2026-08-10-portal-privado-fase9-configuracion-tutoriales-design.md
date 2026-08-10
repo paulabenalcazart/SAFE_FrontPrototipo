@@ -304,8 +304,14 @@ enlaces + logout, calcando `cuentaMenu` del mockup:
 
 ### Sidebar / navegación
 
-`navItems` en `mock-portal-data.ts` ya incluye `configuracion` — sin cambios. **No** se agrega
-`tutoriales` a `navItems`: el mockup solo lo expone desde `cuentaMenu`, igual que esta fase.
+`navItems` en `mock-portal-data.ts` ya incluye `configuracion` — sin cambios. **Corrección tras revisión
+inicial:** `tutoriales` sí va en `navItems`, como último ítem del sidebar. El hallazgo original (que el
+mockup solo exponía Video tutoriales desde `cuentaMenu`) fue un error de lectura — la fuente real del
+sidebar es `navDef()` (líneas 3342–3354 del mockup), no el array `cuentaMenu` que se revisó primero;
+`navDef()` incluye `['tutoriales', 'Video Tutoriales', ...]` como último ítem, después de
+`configuracion`, y alimenta tanto `navItems` (sidebar de escritorio) como `navItemsDrawer` (menú móvil).
+El acceso desde `cuentaMenu` es un atajo adicional, no el único punto de entrada — mismo patrón que
+`plan`, que también está en ambos lados.
 
 ## Rutas nuevas en `App.tsx`
 

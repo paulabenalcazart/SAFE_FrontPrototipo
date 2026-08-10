@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Store,
   TrendingUp,
+  Video,
   Wallet,
 } from 'lucide-react'
 import type {
@@ -132,6 +133,7 @@ export const navItems: NavItem[] = [
   { key: 'marketplace', label: 'Marketplace', path: '/app/marketplace', icon: Store },
   { key: 'plan', label: 'Plan', path: '/app/plan', icon: CreditCard },
   { key: 'configuracion', label: 'Configuración', path: '/app/configuracion', icon: Settings },
+  { key: 'tutoriales', label: 'Video Tutoriales', path: '/app/tutoriales', icon: Video },
 ]
 
 export const kpis: Kpi[] = [
