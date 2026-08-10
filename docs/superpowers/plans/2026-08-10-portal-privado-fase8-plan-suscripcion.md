@@ -1957,13 +1957,11 @@ export function MetodosPagoScreen() {
         ))}
       </div>
 
-      {modal && (
-        <MetodoPagoModal
-          modo={modal.modo}
-          metodo={modal.modo === 'editar' ? modal.metodo : undefined}
-          abierto
-          onCerrar={() => setModal(null)}
-        />
+      {modal?.modo === 'agregar' && (
+        <MetodoPagoModal modo="agregar" abierto onCerrar={() => setModal(null)} />
+      )}
+      {modal?.modo === 'editar' && (
+        <MetodoPagoModal modo="editar" metodo={modal.metodo} abierto onCerrar={() => setModal(null)} />
       )}
     </div>
   )
