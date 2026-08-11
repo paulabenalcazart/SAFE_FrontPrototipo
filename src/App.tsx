@@ -50,6 +50,7 @@ import { ConfiguracionScreen } from './portal/configuracion/ConfiguracionScreen'
 import { EditarCuentaScreen } from './portal/configuracion/EditarCuentaScreen'
 import { TutorialesScreen } from './portal/tutoriales/TutorialesScreen'
 import { PerfilColaboradorScreen } from './portal/colaborador/perfil/PerfilColaboradorScreen'
+import { EditarPerfilScreen } from './portal/colaborador/perfil/EditarPerfilScreen'
 import { VistaPreviaPerfilScreen } from './portal/colaborador/perfil/VistaPreviaPerfilScreen'
 import { TodasLasResenasScreen } from './portal/colaborador/perfil/TodasLasResenasScreen'
 
@@ -231,6 +232,14 @@ export default function App() {
           element={
             <RoleRoute allow={['COLABORADOR']}>
               <PerfilColaboradorScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="perfil/editar"
+          element={
+            <RoleRoute allow={['COLABORADOR']}>
+              <EditarPerfilScreen />
             </RoleRoute>
           }
         />
