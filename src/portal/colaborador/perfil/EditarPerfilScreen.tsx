@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState, type ChangeEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, FileText } from 'lucide-react'
 import { useAuth, type AuthUser } from '@/auth/AuthContext'
 import { usePortalData } from '@/portal/PortalDataContext'
@@ -13,7 +13,13 @@ import { formatEstadoDisponibilidad, formatModalidadEtiqueta } from '@/portal/co
 import { inicialesDeNombre, validarEspecialidades } from '@/portal/colaborador/calculo'
 import { EspecialidadesEditor } from '@/portal/colaborador/perfil/EspecialidadesEditor'
 import { ServiciosEditor } from '@/portal/colaborador/perfil/ServiciosEditor'
-import type { ColaboradorMarketplace, EspecialidadColaboradorRelacion, ModalidadAtencion } from '@/portal/types'
+import { DisponibilidadEditor } from '@/portal/colaborador/perfil/DisponibilidadEditor'
+import type {
+  ColaboradorMarketplace,
+  EspecialidadColaboradorRelacion,
+  HorarioDisponibilidad,
+  ModalidadAtencion,
+} from '@/portal/types'
 
 // Estado local del formulario. Copia editable de los campos de `usuario` y `colaborador` que Sección 13
 // del prompt agrupa como "Editar perfil". Las Tareas 6-8 (especialidades, servicios, disponibilidad) NO
@@ -126,6 +132,25 @@ function especialidadesIguales(a: EspecialidadColaboradorRelacion[], b: Especial
   })
 }
 
+// A diferencia de `especialidadesIguales` (comparación por índice), los horarios pueden reordenarse al
+// agregar/quitar bloques (Tarea 8: `DisponibilidadEditor` hace `filter`/`[...value, nuevo]`), así que la
+// comparación se hace por `id` en vez de por posición.
+function horariosIguales(a: HorarioDisponibilidad[], b: HorarioDisponibilidad[]): boolean {
+  if (a.length !== b.length) return false
+  const porId = new Map(b.map((h) => [h.id, h]))
+  return a.every((h) => {
+    const otro = porId.get(h.id)
+    if (!otro) return false
+    return (
+      h.diaSemana === otro.diaSemana &&
+      h.horaInicio === otro.horaInicio &&
+      h.horaFin === otro.horaFin &&
+      h.modalidad === otro.modalidad &&
+      h.activo === otro.activo
+    )
+  })
+}
+
 function nombreArchivoDesdeUrl(url: string | undefined, fallback: string): string {
   if (!url) return fallback
   if (url.startsWith('blob:')) return fallback
@@ -172,8 +197,15 @@ function FieldError({ message }: { message?: string }) {
 
 export function EditarPerfilScreen() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { user, updateUser } = useAuth()
-  const { colaboradorPerfil, actualizarColaboradorPerfil, actualizarEspecialidadesColaborador } = usePortalData()
+  const {
+    colaboradorPerfil,
+    actualizarColaboradorPerfil,
+    actualizarEspecialidadesColaborador,
+    horariosColaborador,
+    guardarHorariosColaborador,
+  } = usePortalData()
 
   const [formularioInicial] = useState<FormularioPerfil>(() => construirFormulario(user, colaboradorPerfil))
   const [formulario, setFormulario] = useState<FormularioPerfil>(() => construirFormulario(user, colaboradorPerfil))
@@ -185,6 +217,15 @@ export function EditarPerfilScreen() {
   const [especialidades, setEspecialidades] = useState<EspecialidadColaboradorRelacion[]>(
     () => colaboradorPerfil.especialidades,
   )
+
+  // Tarea 8: disponibilidad. Mismo patrón de estado propio + integración a `handleGuardar` que
+  // especialidades. `disponibilidadValida` es la compuerta booleana que reporta `DisponibilidadEditor` vía
+  // `onValidityChange` — a diferencia de especialidades, la validez depende de `formulario.modalidadAtencion`
+  // además del propio arreglo, así que no puede derivarse con una función pura desde aquí.
+  const [horariosIniciales] = useState<HorarioDisponibilidad[]>(() => horariosColaborador)
+  const [horarios, setHorarios] = useState<HorarioDisponibilidad[]>(() => horariosColaborador)
+  const [disponibilidadValida, setDisponibilidadValida] = useState(true)
+  const disponibilidadHeadingRef = useRef<HTMLHeadingElement>(null)
 
   const [errorFoto, setErrorFoto] = useState<string | undefined>(undefined)
   const [errorCv, setErrorCv] = useState<string | undefined>(undefined)
@@ -207,9 +248,23 @@ export function EditarPerfilScreen() {
   const hayCambiosSinGuardar = useMemo(
     () =>
       !formulariosIguales(formulario, formularioInicial) ||
-      !especialidadesIguales(especialidades, especialidadesIniciales),
-    [formulario, formularioInicial, especialidades, especialidadesIniciales],
+      !especialidadesIguales(especialidades, especialidadesIniciales) ||
+      !horariosIguales(horarios, horariosIniciales),
+    [formulario, formularioInicial, especialidades, especialidadesIniciales, horarios, horariosIniciales],
   )
+
+  // Tarea 8: soporte de deep-link con foco (Sección 11.2/13.8). El botón "Administrar disponibilidad" del
+  // Dashboard navega aquí con `?seccion=disponibilidad` — al montar (o si cambia el query param), hace
+  // scroll + foco sobre el `<h2>` de la sección Disponibilidad, mismo patrón de `ref` +
+  // `requestAnimationFrame` que `PerfilProfesionalScreen.tsx` usa para su título.
+  useEffect(() => {
+    if (searchParams.get('seccion') !== 'disponibilidad') return
+    const frame = window.requestAnimationFrame(() => {
+      disponibilidadHeadingRef.current?.scrollIntoView({ behavior: 'smooth' })
+      disponibilidadHeadingRef.current?.focus()
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [searchParams])
 
   if (!user) return null
 
@@ -272,15 +327,19 @@ export function EditarPerfilScreen() {
   const handleGuardar = () => {
     const erroresPersonales = validarInformacionPersonal(formulario)
     const erroresProfesionales = validarInformacionProfesional(formulario)
-    // Las Tareas 7-8 (servicios, disponibilidad) agregan aquí sus propios objetos de errores mediante
-    // spread. Tarea 6 (especialidades) usa `validarEspecialidades`, que devuelve un mensaje único en vez de
-    // un Record — `EspecialidadesEditor` ya muestra ese mensaje en vivo bajo su propia sección, así que aquí
-    // solo se usa como compuerta booleana para bloquear el guardado, sin duplicar el mensaje en `errores`.
+    // Tarea 7 (servicios) no agrega nada aquí — sus mutaciones son inmediatas contra `PortalDataContext`
+    // (ver comentario en el tipo `FormularioPerfil`). Tarea 6 (especialidades) usa `validarEspecialidades`,
+    // que devuelve un mensaje único en vez de un Record — `EspecialidadesEditor` ya muestra ese mensaje en
+    // vivo bajo su propia sección, así que aquí solo se usa como compuerta booleana para bloquear el
+    // guardado, sin duplicar el mensaje en `errores`. Tarea 8 (disponibilidad) sigue el mismo patrón de
+    // compuerta booleana, pero vía `disponibilidadValida` (reportado por `DisponibilidadEditor` a través de
+    // `onValidityChange` — ver comentario junto a su declaración) en vez de una función pura, porque su
+    // validez depende también de `formulario.modalidadAtencion`.
     const errorEspecialidades = validarEspecialidades(especialidades)
     const todosLosErrores: Record<string, string> = { ...erroresPersonales, ...erroresProfesionales }
 
     setErrores(todosLosErrores)
-    if (Object.keys(todosLosErrores).length > 0 || errorEspecialidades) return
+    if (Object.keys(todosLosErrores).length > 0 || errorEspecialidades || !disponibilidadValida) return
 
     updateUser({
       nombres: formulario.nombres,
@@ -313,6 +372,7 @@ export function EditarPerfilScreen() {
       archivoCredencialUrl: formulario.archivoCredencialUrl,
     })
     actualizarEspecialidadesColaborador(especialidades)
+    guardarHorariosColaborador(horarios)
     navigate('/app/perfil')
   }
 
@@ -756,6 +816,16 @@ export function EditarPerfilScreen() {
           <FieldError message={errorCredencial} />
         </div>
       </section>
+
+      {/* 13.8 Disponibilidad */}
+      <DisponibilidadEditor
+        value={horarios}
+        onChange={setHorarios}
+        modalidadAtencion={formulario.modalidadAtencion}
+        colaboradorId={colaboradorPerfil.id}
+        onValidityChange={setDisponibilidadValida}
+        headingRef={disponibilidadHeadingRef}
+      />
 
       <div className="sticky bottom-0 flex flex-wrap justify-end gap-2.5 border-t border-line bg-background py-3.5">
         <Button type="button" variant="outline" onClick={handleCancelar}>

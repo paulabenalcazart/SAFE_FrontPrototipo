@@ -130,7 +130,7 @@ export function CollaboratorDashboardScreen() {
           </div>
           <button
             type="button"
-            onClick={() => navigate('/app/perfil?seccion=disponibilidad')}
+            onClick={() => navigate('/app/perfil/editar?seccion=disponibilidad')}
             className="mt-3.5 min-h-11 rounded-lg border border-line bg-card px-4 text-[13px] font-semibold text-navy-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40"
           >
             Administrar disponibilidad
