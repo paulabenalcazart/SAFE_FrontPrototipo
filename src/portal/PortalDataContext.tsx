@@ -1,14 +1,23 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 import type {
+  Cita,
+  CategoriaNotificacionColaborador,
+  ColaboradorMarketplace,
   Empresa,
+  EspecialidadColaboradorRelacion,
+  HorarioDisponibilidad,
   MetodoPago,
+  ModalidadAtencion,
+  NotificacionColaborador,
   NuevaSolicitudContacto,
   NuevoMetodoPago,
   ObligacionEmpresa,
   PagoSuscripcion,
   PlanCodigo,
+  PreferenciaNotificacionColaborador,
   PreferenciaUsuario,
   RegistroFinanciero,
+  ServicioProfesional,
   Simulacion,
   SolicitudContacto,
 } from './types'
@@ -27,9 +36,19 @@ import {
   preferenciaUsuarioSemilla,
 } from './data/mock-portal-data'
 import { HOY_OBLIGACIONES } from './obligaciones/calculo'
-import { SERVICIOS_PROFESIONALES } from './marketplace/catalogo'
-import { AHORA_MARKETPLACE } from './marketplace/calculo'
+import {
+  COLABORADORES_MARKETPLACE,
+  HORARIOS_DISPONIBILIDAD,
+  SERVICIOS_PROFESIONALES,
+} from './marketplace/catalogo'
+import { AHORA_MARKETPLACE, diaSemanaIso } from './marketplace/calculo'
 import { detectarMarca } from './plan/calculo'
+import {
+  CITAS_COLABORADOR_SEMILLA,
+  NOTIFICACIONES_COLABORADOR_SEMILLA,
+  PREFERENCIAS_NOTIFICACION_COLABORADOR_SEMILLA,
+  SOLICITUDES_COLABORADOR_SEMILLA,
+} from './colaborador/semilla'
 
 type PortalDataContextValue = {
   empresas: Empresa[]
@@ -68,9 +87,102 @@ type PortalDataContextValue = {
   historialPagos: PagoSuscripcion[]
   preferencias: PreferenciaUsuario
   actualizarPreferencia: <K extends keyof PreferenciaUsuario>(clave: K, valor: PreferenciaUsuario[K]) => void
+  colaboradorPerfil: ColaboradorMarketplace
+  actualizarColaboradorPerfil: (patch: Partial<ColaboradorMarketplace>) => void
+  actualizarEspecialidadesColaborador: (especialidades: EspecialidadColaboradorRelacion[]) => void
+  serviciosColaborador: ServicioProfesional[]
+  agregarServicioColaborador: (
+    servicio: Omit<ServicioProfesional, 'id' | 'colaboradorId' | 'activo'>,
+  ) => ServicioProfesional
+  actualizarServicioColaborador: (id: string, patch: Partial<ServicioProfesional>) => void
+  desactivarServicioColaborador: (id: string) => void
+  horariosColaborador: HorarioDisponibilidad[]
+  guardarHorariosColaborador: (horarios: HorarioDisponibilidad[]) => void
+  solicitudesColaborador: SolicitudContacto[]
+  aceptarSolicitudColaborador: (
+    solicitudId: string,
+    modalidadElegida: Exclude<ModalidadAtencion, 'AMBAS'>,
+  ) => { ok: true; cita: Cita } | { ok: false; motivo: string }
+  rechazarSolicitudColaborador: (solicitudId: string, motivoRechazo: string) => boolean
+  citasColaborador: Cita[]
+  notificacionesColaborador: NotificacionColaborador[]
+  marcarNotificacionColaboradorLeida: (id: string) => void
+  marcarTodasNotificacionesColaboradorLeidas: () => void
+  preferenciasNotificacionColaborador: PreferenciaNotificacionColaborador[]
+  actualizarPreferenciaNotificacionColaborador: (
+    categoria: CategoriaNotificacionColaborador,
+    patch: Partial<Pick<PreferenciaNotificacionColaborador, 'correoActivo' | 'frecuencia'>>,
+  ) => void
 }
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
+
+function validarYAceptar({
+  solicitud,
+  servicio,
+  horarios,
+  citasExistentes,
+  modalidadElegida,
+}: {
+  solicitud: SolicitudContacto
+  servicio: ServicioProfesional | undefined
+  horarios: HorarioDisponibilidad[]
+  citasExistentes: Cita[]
+  modalidadElegida: Exclude<ModalidadAtencion, 'AMBAS'>
+}): { ok: true; cita: Cita; solicitudActualizada: SolicitudContacto } | { ok: false; motivo: string } {
+  if (solicitud.estado !== 'ENVIADA') return { ok: false, motivo: 'La solicitud ya fue respondida.' }
+  if (!servicio || !servicio.activo || servicio.colaboradorId !== solicitud.colaboradorId) {
+    return { ok: false, motivo: 'El servicio solicitado ya no está disponible.' }
+  }
+  if (!solicitud.fechaPreferida || !solicitud.horaPreferida) {
+    return { ok: false, motivo: 'La solicitud no tiene fecha u hora preferida.' }
+  }
+  const inicio = new Date(`${solicitud.fechaPreferida}T${solicitud.horaPreferida}:00-05:00`)
+  if (inicio.getTime() < Date.now() - 24 * 3_600_000) {
+    // Margen de 24h para no invalidar seeds "de hoy" por diferencia de reloj del navegador.
+    return { ok: false, motivo: 'La fecha solicitada ya pasó.' }
+  }
+  const fin = new Date(inicio.getTime() + servicio.duracionEstimadaMinutos * 60_000)
+
+  const diaSemana = diaSemanaIso(solicitud.fechaPreferida)
+  const horaHHMM = solicitud.horaPreferida
+  const bloqueValido = horarios.some(
+    (h) =>
+      h.activo &&
+      h.diaSemana === diaSemana &&
+      (h.modalidad === 'AMBAS' || h.modalidad === modalidadElegida) &&
+      h.horaInicio <= horaHHMM &&
+      h.horaFin >= horaHHMM,
+  )
+  if (!bloqueValido) return { ok: false, motivo: 'El horario solicitado ya no está disponible.' }
+
+  const seSolapaConOtraCita = citasExistentes.some((c) => {
+    if (c.estado === 'CANCELADA') return false
+    const inicioC = new Date(c.fechaInicio).getTime()
+    const finC = new Date(c.fechaFin).getTime()
+    return inicio.getTime() < finC && fin.getTime() > inicioC
+  })
+  if (seSolapaConOtraCita) return { ok: false, motivo: 'El horario solicitado ya no está disponible.' }
+
+  const ahora = new Date().toISOString()
+  const cita: Cita = {
+    id: crypto.randomUUID(),
+    solicitudContactoId: solicitud.id,
+    colaboradorId: solicitud.colaboradorId,
+    fechaInicio: inicio.toISOString(),
+    fechaFin: fin.toISOString(),
+    modalidad: modalidadElegida,
+    estado: 'CONFIRMADA',
+    createdAt: ahora,
+  }
+  const solicitudActualizada: SolicitudContacto = {
+    ...solicitud,
+    estado: 'CONTACTO_LIBERADO',
+    fechaRespuesta: ahora,
+    contactoLiberadoAt: ahora,
+  }
+  return { ok: true, cita, solicitudActualizada }
+}
 
 export function PortalDataProvider({ children }: { children: ReactNode }) {
   const [empresas, setEmpresas] = useState<Empresa[]>(empresasSemilla)
@@ -85,9 +197,13 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     obligacionesEmpresaSemilla,
   )
   const [simulaciones, setSimulaciones] = useState<Record<string, Simulacion[]>>(simulacionesSemilla)
-  const [solicitudesContacto, setSolicitudesContacto] = useState<Record<string, SolicitudContacto[]>>(
-    solicitudesContactoSemilla,
-  )
+  const [solicitudesContacto, setSolicitudesContacto] = useState<Record<string, SolicitudContacto[]>>(() => {
+    const inicial: Record<string, SolicitudContacto[]> = { ...solicitudesContactoSemilla }
+    for (const solicitud of SOLICITUDES_COLABORADOR_SEMILLA) {
+      inicial[solicitud.empresaId] = [...(inicial[solicitud.empresaId] ?? []), solicitud]
+    }
+    return inicial
+  })
   const [planActivoCodigo, setPlanActivoCodigo] = useState<PlanCodigo>(planActivoCodigoSemilla)
   const [renovacionAutomatica, setRenovacionAutomatica] = useState(suscripcionSemilla.renovacionAutomatica)
   const [suscripcionCancelada, setSuscripcionCancelada] = useState(suscripcionSemilla.cancelada)
@@ -96,9 +212,34 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   const [historialPagos] = useState<PagoSuscripcion[]>(historialPagosSemilla)
   const [preferencias, setPreferencias] = useState<PreferenciaUsuario>(preferenciaUsuarioSemilla)
 
+  const [colaboradorPerfil, setColaboradorPerfil] = useState(
+    () => COLABORADORES_MARKETPLACE.find((c) => c.id === 'col-mfl') ?? COLABORADORES_MARKETPLACE[0],
+  )
+  const [serviciosColaborador, setServiciosColaborador] = useState<ServicioProfesional[]>(() =>
+    SERVICIOS_PROFESIONALES.filter((s) => s.colaboradorId === colaboradorPerfil.id),
+  )
+  const [horariosColaborador, setHorariosColaborador] = useState<HorarioDisponibilidad[]>(() =>
+    HORARIOS_DISPONIBILIDAD.filter((h) => h.colaboradorId === colaboradorPerfil.id),
+  )
+  const [citasColaborador, setCitasColaborador] = useState<Cita[]>(CITAS_COLABORADOR_SEMILLA)
+  const [notificacionesColaborador, setNotificacionesColaborador] = useState<NotificacionColaborador[]>(
+    NOTIFICACIONES_COLABORADOR_SEMILLA,
+  )
+  const [preferenciasNotificacionColaborador, setPreferenciasNotificacionColaborador] = useState<
+    PreferenciaNotificacionColaborador[]
+  >(PREFERENCIAS_NOTIFICACION_COLABORADOR_SEMILLA)
+
   const empresaActiva = useMemo(
     () => empresas.find((e) => e.id === empresaActivaId) ?? empresas[0],
     [empresas, empresaActivaId],
+  )
+
+  const solicitudesColaborador = useMemo(
+    () =>
+      Object.values(solicitudesContacto)
+        .flat()
+        .filter((s) => s.colaboradorId === colaboradorPerfil.id),
+    [solicitudesContacto, colaboradorPerfil.id],
   )
 
   const addEmpresa = (empresa: Empresa) => {
@@ -177,6 +318,7 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
 
     const solicitud: SolicitudContacto = {
       ...nueva,
+      empresaId,
       descripcion,
       id: crypto.randomUUID(),
       estado: 'ENVIADA',
@@ -262,6 +404,104 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     setPreferencias((current) => ({ ...current, [clave]: valor }))
   }
 
+  const actualizarColaboradorPerfil = (patch: Partial<typeof colaboradorPerfil>) => {
+    setColaboradorPerfil((current) => ({ ...current, ...patch }))
+  }
+
+  const actualizarEspecialidadesColaborador = (especialidades: EspecialidadColaboradorRelacion[]) => {
+    setColaboradorPerfil((current) => ({
+      ...current,
+      especialidades,
+      especialidadIds: especialidades.filter((e) => e.activo).map((e) => e.especialidadId),
+      especialidadPrincipalId:
+        especialidades.find((e) => e.esPrincipal)?.especialidadId ?? current.especialidadPrincipalId,
+    }))
+  }
+
+  const agregarServicioColaborador = (
+    servicio: Omit<ServicioProfesional, 'id' | 'colaboradorId' | 'activo'>,
+  ): ServicioProfesional => {
+    const nuevo: ServicioProfesional = {
+      ...servicio,
+      id: crypto.randomUUID(),
+      colaboradorId: colaboradorPerfil.id,
+      activo: true,
+    }
+    setServiciosColaborador((current) => [...current, nuevo])
+    return nuevo
+  }
+
+  const actualizarServicioColaborador = (id: string, patch: Partial<ServicioProfesional>) => {
+    setServiciosColaborador((current) => current.map((s) => (s.id === id ? { ...s, ...patch } : s)))
+  }
+
+  const desactivarServicioColaborador = (id: string) => {
+    setServiciosColaborador((current) => current.map((s) => (s.id === id ? { ...s, activo: false } : s)))
+  }
+
+  const guardarHorariosColaborador = (horarios: HorarioDisponibilidad[]) => {
+    setHorariosColaborador(horarios)
+  }
+
+  const aceptarSolicitudColaborador = (
+    solicitudId: string,
+    modalidadElegida: Exclude<ModalidadAtencion, 'AMBAS'>,
+  ): { ok: true; cita: Cita } | { ok: false; motivo: string } => {
+    const solicitud = solicitudesColaborador.find((s) => s.id === solicitudId)
+    if (!solicitud) return { ok: false, motivo: 'Solicitud no encontrada.' }
+    const servicio = serviciosColaborador.find((s) => s.id === solicitud.servicioId)
+    const resultado = validarYAceptar({
+      solicitud,
+      servicio,
+      horarios: horariosColaborador,
+      citasExistentes: citasColaborador,
+      modalidadElegida,
+    })
+    if (!resultado.ok) return resultado
+
+    setSolicitudesContacto((current) => ({
+      ...current,
+      [solicitud.empresaId]: current[solicitud.empresaId].map((s) =>
+        s.id === solicitudId ? resultado.solicitudActualizada : s,
+      ),
+    }))
+    setCitasColaborador((current) => [...current, resultado.cita])
+    return { ok: true, cita: resultado.cita }
+  }
+
+  const rechazarSolicitudColaborador = (solicitudId: string, motivoRechazo: string): boolean => {
+    const solicitud = solicitudesColaborador.find((s) => s.id === solicitudId)
+    if (!solicitud || solicitud.estado !== 'ENVIADA') return false
+    if (motivoRechazo.trim().length < 10 || motivoRechazo.trim().length > 500) return false
+
+    setSolicitudesContacto((current) => ({
+      ...current,
+      [solicitud.empresaId]: current[solicitud.empresaId].map((s) =>
+        s.id === solicitudId
+          ? { ...s, estado: 'RECHAZADA' as const, fechaRespuesta: new Date().toISOString(), motivoRechazo: motivoRechazo.trim() }
+          : s,
+      ),
+    }))
+    return true
+  }
+
+  const marcarNotificacionColaboradorLeida = (id: string) => {
+    setNotificacionesColaborador((current) => current.map((n) => (n.id === id ? { ...n, leida: true } : n)))
+  }
+
+  const marcarTodasNotificacionesColaboradorLeidas = () => {
+    setNotificacionesColaborador((current) => current.map((n) => ({ ...n, leida: true })))
+  }
+
+  const actualizarPreferenciaNotificacionColaborador = (
+    categoria: CategoriaNotificacionColaborador,
+    patch: Partial<Pick<PreferenciaNotificacionColaborador, 'correoActivo' | 'frecuencia'>>,
+  ) => {
+    setPreferenciasNotificacionColaborador((current) =>
+      current.map((p) => (p.categoria === categoria ? { ...p, ...patch } : p)),
+    )
+  }
+
   return (
     <PortalDataContext.Provider
       value={{
@@ -298,6 +538,24 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         historialPagos,
         preferencias,
         actualizarPreferencia,
+        colaboradorPerfil,
+        actualizarColaboradorPerfil,
+        actualizarEspecialidadesColaborador,
+        serviciosColaborador,
+        agregarServicioColaborador,
+        actualizarServicioColaborador,
+        desactivarServicioColaborador,
+        horariosColaborador,
+        guardarHorariosColaborador,
+        solicitudesColaborador,
+        aceptarSolicitudColaborador,
+        rechazarSolicitudColaborador,
+        citasColaborador,
+        notificacionesColaborador,
+        marcarNotificacionColaboradorLeida,
+        marcarTodasNotificacionesColaboradorLeidas,
+        preferenciasNotificacionColaborador,
+        actualizarPreferenciaNotificacionColaborador,
       }}
     >
       {children}

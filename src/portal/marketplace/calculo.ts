@@ -255,7 +255,7 @@ function sumarDias(fecha: string, dias: number): string {
   return fechaIso(resultado)
 }
 
-function diaSemanaIso(fecha: string): HorarioDisponibilidad['diaSemana'] {
+export function diaSemanaIso(fecha: string): HorarioDisponibilidad['diaSemana'] {
   const diaUtc = fechaUtc(fecha).getUTCDay()
   return (diaUtc === 0 ? 7 : diaUtc) as HorarioDisponibilidad['diaSemana']
 }
