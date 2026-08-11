@@ -13,3 +13,7 @@ export function formatModalidadEtiqueta(modalidad: ModalidadAtencion): string {
 export function formatEstadoDisponibilidad(estado: 'DISPONIBLE' | 'NO_DISPONIBLE'): string {
   return estado === 'DISPONIBLE' ? 'Disponible' : 'No disponible'
 }
+
+export function formatPrecioServicio(valor: number): string {
+  return new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' }).format(valor)
+}

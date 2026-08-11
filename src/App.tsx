@@ -49,6 +49,7 @@ import { HistorialPagosScreen } from './portal/plan/HistorialPagosScreen'
 import { ConfiguracionScreen } from './portal/configuracion/ConfiguracionScreen'
 import { EditarCuentaScreen } from './portal/configuracion/EditarCuentaScreen'
 import { TutorialesScreen } from './portal/tutoriales/TutorialesScreen'
+import { PerfilColaboradorScreen } from './portal/colaborador/perfil/PerfilColaboradorScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -223,6 +224,14 @@ export default function App() {
       >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<DashboardResolver />} />
+        <Route
+          path="perfil"
+          element={
+            <RoleRoute allow={['COLABORADOR']}>
+              <PerfilColaboradorScreen />
+            </RoleRoute>
+          }
+        />
         <Route
           path="empresa"
           element={
