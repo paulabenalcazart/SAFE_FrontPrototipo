@@ -1,4 +1,4 @@
-import type { Cita, HorarioDisponibilidad, ResenaColaborador, SolicitudContacto } from '@/portal/types'
+import type { Cita, EspecialidadColaboradorRelacion, HorarioDisponibilidad, ModalidadAtencion, ResenaColaborador, SolicitudContacto } from '@/portal/types'
 
 export function inicialesDeNombre(nombre: string): string {
   const palabras = nombre.trim().split(/\s+/).filter(Boolean)
@@ -270,4 +270,50 @@ export function calcularRendimientoMensual({
       menorEsMejor: false,
     },
   ]
+}
+
+export function validarEspecialidades(especialidades: EspecialidadColaboradorRelacion[]): string | null {
+  const activas = especialidades.filter((e) => e.activo)
+  if (activas.length === 0) return 'Debes tener al menos una especialidad activa.'
+  const principales = activas.filter((e) => e.esPrincipal)
+  if (principales.length !== 1) return 'Debes marcar exactamente una especialidad como principal.'
+  const ids = activas.map((e) => e.especialidadId)
+  if (new Set(ids).size !== ids.length) return 'No puedes repetir la misma especialidad.'
+  if (especialidades.some((e) => e.aniosExperiencia < 0)) {
+    return 'Los años de experiencia no pueden ser negativos.'
+  }
+  return null
+}
+
+export function modalidadesCompatibles(modalidadAtencion: ModalidadAtencion): HorarioDisponibilidad['modalidad'][] {
+  if (modalidadAtencion === 'VIRTUAL') return ['VIRTUAL']
+  if (modalidadAtencion === 'PRESENCIAL') return ['PRESENCIAL']
+  return ['VIRTUAL', 'PRESENCIAL', 'AMBAS']
+}
+
+function horaAMinutos(hora: string): number {
+  const [h, m] = hora.split(':').map(Number)
+  return h * 60 + m
+}
+
+export function haySolapamientoHorario(
+  bloques: Pick<HorarioDisponibilidad, 'horaInicio' | 'horaFin'>[],
+  candidato: Pick<HorarioDisponibilidad, 'horaInicio' | 'horaFin'>,
+  ignorarIndice?: number,
+): boolean {
+  const inicioC = horaAMinutos(candidato.horaInicio)
+  const finC = horaAMinutos(candidato.horaFin)
+  return bloques.some((b, i) => {
+    if (i === ignorarIndice) return false
+    const inicio = horaAMinutos(b.horaInicio)
+    const fin = horaAMinutos(b.horaFin)
+    return inicioC < fin && finC > inicio
+  })
+}
+
+export function validarBloqueHorario(bloque: Pick<HorarioDisponibilidad, 'horaInicio' | 'horaFin'>): string | null {
+  if (horaAMinutos(bloque.horaFin) <= horaAMinutos(bloque.horaInicio)) {
+    return 'La hora de fin debe ser posterior a la hora de inicio.'
+  }
+  return null
 }
