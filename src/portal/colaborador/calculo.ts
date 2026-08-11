@@ -130,6 +130,29 @@ function serieSemanal(items: { fecha: string; valor: number }[], mes: string): P
     .map((semana) => ({ semana, valor: Math.round((porSemana.get(semana) ?? 0) * 10) / 10 }))
 }
 
+/**
+ * Variante de `serieSemanal` para métricas que son un promedio (no una suma).
+ * Agrupa por semana del mes y divide entre la cantidad de items de esa semana,
+ * de modo que el punto del gráfico sea comparable con el promedio mensual.
+ */
+function serieSemanalPromedio(items: { fecha: string; valor: number }[], mes: string): PuntoSemanal[] {
+  const porSemana = new Map<number, { suma: number; cantidad: number }>()
+  for (const item of items) {
+    if (mesDeIso(item.fecha) !== mes) continue
+    const semana = semanaDelMes(item.fecha)
+    const actual = porSemana.get(semana) ?? { suma: 0, cantidad: 0 }
+    actual.suma += item.valor
+    actual.cantidad += 1
+    porSemana.set(semana, actual)
+  }
+  return [1, 2, 3, 4]
+    .filter((semana) => porSemana.has(semana))
+    .map((semana) => {
+      const { suma, cantidad } = porSemana.get(semana) as { suma: number; cantidad: number }
+      return { semana, valor: cantidad === 0 ? 0 : Math.round((suma / cantidad) * 10) / 10 }
+    })
+}
+
 function variacionPct(actual: number, anterior: number): number | null {
   if (anterior === 0) return null
   return Math.round(((actual - anterior) / anterior) * 1000) / 10
@@ -173,7 +196,7 @@ export function calcularRendimientoMensual({
     const suma = items.reduce((acc, s) => acc + horasEntre(s.createdAt, s.fechaRespuesta as string), 0)
     return Math.round((suma / items.length) * 10) / 10
   }
-  const tiempoRespuestaSerie = serieSemanal(
+  const tiempoRespuestaSerie = serieSemanalPromedio(
     respondidas.map((s) => ({
       fecha: s.fechaRespuesta as string,
       valor: horasEntre(s.createdAt, s.fechaRespuesta as string),

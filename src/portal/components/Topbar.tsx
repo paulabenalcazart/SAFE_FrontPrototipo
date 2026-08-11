@@ -3,6 +3,7 @@ import { Bell, ChevronDown, TriangleAlert } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { notificaciones, obligaciones } from '@/portal/data/mock-portal-data'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { formatFecha } from '@/portal/obligaciones/formato'
 import { AccountMenu } from './AccountMenu'
 import { CompanySwitcher } from './CompanySwitcher'
 import { NotificationsPanel, type PanelItem } from './NotificationsPanel'
@@ -24,7 +25,7 @@ export function Topbar() {
         id: n.id,
         titulo: n.titulo,
         mensaje: n.mensaje,
-        fecha: n.createdAt,
+        fecha: formatFecha(n.createdAt.slice(0, 10)),
         tono: n.leida ? 'neutro' : 'atencion',
       }))
     : notificaciones.map((n) => ({

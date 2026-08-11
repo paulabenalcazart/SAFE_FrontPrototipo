@@ -117,6 +117,11 @@ type PortalDataContextValue = {
 
 const PortalDataContext = createContext<PortalDataContextValue | null>(null)
 
+function horaHHMMAMinutos(hora: string): number {
+  const [horas, minutos] = hora.split(':').map(Number)
+  return horas * 60 + minutos
+}
+
 function validarYAceptar({
   solicitud,
   servicio,
@@ -137,6 +142,9 @@ function validarYAceptar({
   if (!solicitud.fechaPreferida || !solicitud.horaPreferida) {
     return { ok: false, motivo: 'La solicitud no tiene fecha u hora preferida.' }
   }
+  if (modalidadElegida !== servicio.modalidad) {
+    return { ok: false, motivo: 'La modalidad elegida no corresponde a la del servicio solicitado.' }
+  }
   const inicio = new Date(`${solicitud.fechaPreferida}T${solicitud.horaPreferida}:00-05:00`)
   if (inicio.getTime() < Date.now() - 24 * 3_600_000) {
     // Margen de 24h para no invalidar seeds "de hoy" por diferencia de reloj del navegador.
@@ -145,14 +153,16 @@ function validarYAceptar({
   const fin = new Date(inicio.getTime() + servicio.duracionEstimadaMinutos * 60_000)
 
   const diaSemana = diaSemanaIso(solicitud.fechaPreferida)
-  const horaHHMM = solicitud.horaPreferida
+  const minutoInicio = horaHHMMAMinutos(solicitud.horaPreferida)
+  const minutoFin = minutoInicio + servicio.duracionEstimadaMinutos
+  // La duración completa del servicio debe entrar dentro del bloque, no solo su hora de inicio.
   const bloqueValido = horarios.some(
     (h) =>
       h.activo &&
       h.diaSemana === diaSemana &&
       (h.modalidad === 'AMBAS' || h.modalidad === modalidadElegida) &&
-      h.horaInicio <= horaHHMM &&
-      h.horaFin >= horaHHMM,
+      horaHHMMAMinutos(h.horaInicio) <= minutoInicio &&
+      minutoFin <= horaHHMMAMinutos(h.horaFin),
   )
   if (!bloqueValido) return { ok: false, motivo: 'El horario solicitado ya no está disponible.' }
 
