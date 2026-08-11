@@ -29,6 +29,9 @@ export const ESPECIALIDADES_PROFESIONALES: EspecialidadProfesional[] = [
   ["contabilidad", "CONTABILIDAD", "Contabilidad", "Contable"],
   ["niif", "NIIF", "NIIF", "Contable"],
   ["auditoria", "AUDITORIA", "Auditoría", "Contable"],
+  ["planificacion-financiera", "PLANIFICACION_FINANCIERA", "Planificación financiera", "Financiero"],
+  ["finanzas-corporativas", "FINANZAS_CORPORATIVAS", "Finanzas corporativas", "Financiero"],
+  ["analisis-financiero", "ANALISIS_FINANCIERO", "Análisis financiero", "Financiero"],
 ].map(([id, codigo, nombre, categoria]) => ({
   id: "esp-" + id,
   codigo,
@@ -43,6 +46,7 @@ type ColaboradorSemilla = Omit<
   | "estadoDisponibilidad"
   | "visibleMarketplace"
   | "estado"
+  | "especialidades"
 >;
 const crearColaborador = (
   datos: ColaboradorSemilla,
@@ -53,6 +57,12 @@ const crearColaborador = (
   estadoDisponibilidad: "DISPONIBLE",
   visibleMarketplace: true,
   estado: "ACTIVO",
+  especialidades: datos.especialidadIds.map((especialidadId) => ({
+    especialidadId,
+    esPrincipal: especialidadId === datos.especialidadPrincipalId,
+    aniosExperiencia: datos.aniosExperiencia,
+    activo: true,
+  })),
 });
 
 export const COLABORADORES_MARKETPLACE: ColaboradorMarketplace[] = [
@@ -298,6 +308,35 @@ export const COLABORADORES_MARKETPLACE: ColaboradorMarketplace[] = [
     calificacionPromedio: 4.6,
     cantidadResenas: 44,
   }),
+  {
+    id: "col-mfl",
+    nombres: "María Fernanda",
+    apellidos: "López Goncalves",
+    areaEspecializacion: "Finanzas",
+    profesion: "Consultora Financiera",
+    trabajoActual: "Asesora financiera independiente",
+    descripcionProfesional:
+      "Consultora financiera con 8 años de experiencia acompañando a PYMES ecuatorianas en planificación financiera, estructura de costos y análisis para toma de decisiones.",
+    modalidadAtencion: "AMBAS",
+    paisAtencion: "Ecuador",
+    ciudadAtencion: "Guayaquil",
+    zonaHoraria: "America/Guayaquil",
+    tarifaReferencial: 35,
+    aniosExperiencia: 8,
+    cvVisible: true,
+    estadoDisponibilidad: "DISPONIBLE",
+    visibleMarketplace: true,
+    estado: "ACTIVO",
+    especialidades: [
+      { especialidadId: "esp-planificacion-financiera", esPrincipal: true, aniosExperiencia: 8, activo: true },
+      { especialidadId: "esp-finanzas-corporativas", esPrincipal: false, aniosExperiencia: 6, activo: true },
+      { especialidadId: "esp-analisis-financiero", esPrincipal: false, aniosExperiencia: 5, activo: true },
+    ],
+    especialidadIds: ["esp-planificacion-financiera", "esp-finanzas-corporativas", "esp-analisis-financiero"],
+    especialidadPrincipalId: "esp-planificacion-financiera",
+    calificacionPromedio: 4.8,
+    cantidadResenas: 39,
+  },
 ];
 
 type ServicioSemilla = Omit<
@@ -604,6 +643,36 @@ export const SERVICIOS_PROFESIONALES: ServicioProfesional[] = [
       "VIRTUAL",
     ),
   ]),
+  ...crearServicios("col-mfl", [
+    crearServicio(
+      "Diagnóstico financiero",
+      "Lectura ejecutiva de liquidez, rentabilidad y estructura financiera del negocio.",
+      60,
+      35,
+      "VIRTUAL",
+    ),
+    crearServicio(
+      "Planificación financiera",
+      "Plan financiero a 12 meses con metas, supuestos y seguimiento mensual.",
+      90,
+      55,
+      "VIRTUAL",
+    ),
+    crearServicio(
+      "Revisión de flujo de caja",
+      "Revisión guiada de cobros y pagos proyectados para anticipar meses críticos.",
+      60,
+      30,
+      "VIRTUAL",
+    ),
+    crearServicio(
+      "Asesoría para financiamiento",
+      "Preparación de información financiera y alternativas para solicitar crédito.",
+      90,
+      45,
+      "PRESENCIAL",
+    ),
+  ]),
 ];
 
 const crearHorarios = (
@@ -635,6 +704,29 @@ export const HORARIOS_DISPONIBILIDAD: HorarioDisponibilidad[] = [
   ...crearHorarios("col-10", "AMBAS", [1, 2, 4], "13:00", "18:00"),
   ...crearHorarios("col-11", "VIRTUAL", [3, 4, 5], "08:00", "12:00"),
   ...crearHorarios("col-12", "AMBAS", [1, 3, 6], "09:00", "13:00"),
+  {
+    id: "hor-col-mfl-1a",
+    colaboradorId: "col-mfl",
+    diaSemana: 1,
+    horaInicio: "08:00",
+    horaFin: "12:00",
+    modalidad: "VIRTUAL",
+    activo: true,
+  },
+  {
+    id: "hor-col-mfl-1b",
+    colaboradorId: "col-mfl",
+    diaSemana: 1,
+    horaInicio: "14:00",
+    horaFin: "17:00",
+    modalidad: "PRESENCIAL",
+    activo: true,
+  },
+  { id: "hor-col-mfl-2", colaboradorId: "col-mfl", diaSemana: 2, horaInicio: "08:00", horaFin: "17:00", modalidad: "VIRTUAL", activo: true },
+  { id: "hor-col-mfl-3", colaboradorId: "col-mfl", diaSemana: 3, horaInicio: "08:00", horaFin: "12:00", modalidad: "AMBAS", activo: true },
+  { id: "hor-col-mfl-4", colaboradorId: "col-mfl", diaSemana: 4, horaInicio: "09:00", horaFin: "17:00", modalidad: "AMBAS", activo: true },
+  { id: "hor-col-mfl-5", colaboradorId: "col-mfl", diaSemana: 5, horaInicio: "08:00", horaFin: "15:00", modalidad: "VIRTUAL", activo: true },
+  { id: "hor-col-mfl-6", colaboradorId: "col-mfl", diaSemana: 6, horaInicio: "09:00", horaFin: "12:00", modalidad: "VIRTUAL", activo: true },
 ];
 
 type ResenaSemilla = Omit<ResenaColaborador, "id" | "colaboradorId" | "estado">;
