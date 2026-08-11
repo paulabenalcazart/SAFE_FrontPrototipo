@@ -1,18 +1,25 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
+export type AppRole = 'EMPRESA' | 'COLABORADOR'
+
 export type AuthUser = {
+  role: AppRole
   nombres: string
   apellidos: string
   correo: string
+  telefono: string
+  pais: string
+  ciudad: string
   iniciales: string
   mfaHabilitado: boolean
+  colaboradorId?: string
 }
 
 type AuthContextValue = {
   user: AuthUser | null
   login: (user: AuthUser) => void
   logout: () => void
-  updateUser: (patch: Partial<Pick<AuthUser, 'nombres' | 'apellidos' | 'correo'>>) => void
+  updateUser: (patch: Partial<Pick<AuthUser, 'nombres' | 'apellidos' | 'correo' | 'telefono' | 'pais' | 'ciudad'>>) => void
   toggleMfa: () => void
 }
 
@@ -32,6 +39,7 @@ function readStoredUser(): AuthUser | null {
     const parsed = JSON.parse(raw) as Partial<AuthUser>
     // Sesiones guardadas antes de separar nombres/apellidos (pre Fase 9) ya no son válidas.
     if (typeof parsed.nombres !== 'string' || typeof parsed.apellidos !== 'string') return null
+    if (parsed.role !== 'EMPRESA' && parsed.role !== 'COLABORADOR') return null
     return parsed as AuthUser
   } catch {
     return null
@@ -52,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (nextUser: AuthUser) => setUser(nextUser)
   const logout = () => setUser(null)
 
-  const updateUser = (patch: Partial<Pick<AuthUser, 'nombres' | 'apellidos' | 'correo'>>) => {
+  const updateUser = (patch: Partial<Pick<AuthUser, 'nombres' | 'apellidos' | 'correo' | 'telefono' | 'pais' | 'ciudad'>>) => {
     setUser((current) => {
       if (!current) return current
       const nombres = patch.nombres ?? current.nombres
