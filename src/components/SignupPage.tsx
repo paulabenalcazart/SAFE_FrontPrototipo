@@ -15,13 +15,14 @@ export function SignupPage({
   onIrTerminos,
   onIrPrivacidad,
 }: {
-  onCrearCuenta?: () => void
+  onCrearCuenta?: (correo: string) => void
   onIrLogin: () => void
   onIrInicio?: () => void
   onIrTerminos?: () => void
   onIrPrivacidad?: () => void
 }) {
   const [showPassword, setShowPassword] = useState(false)
+  const [correo, setCorreo] = useState('')
 
   return (
     <div className="grid min-h-[100dvh] bg-surface/60 lg:grid-cols-2">
@@ -48,7 +49,7 @@ export function SignupPage({
             className="mt-7 space-y-5"
             onSubmit={(e) => {
               e.preventDefault()
-              onCrearCuenta?.()
+              onCrearCuenta?.(correo)
             }}
           >
             <div className="grid gap-4 sm:grid-cols-2">
@@ -70,6 +71,8 @@ export function SignupPage({
                 autoComplete="email"
                 placeholder="mateo.villacis@empresa.ec"
                 className="mt-1.5 h-11"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
                 required
               />
             </div>

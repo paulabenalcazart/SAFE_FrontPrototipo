@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
@@ -18,7 +18,7 @@ import { ContactoPage } from './components/ContactoPage'
 import { TerminosPage } from './components/TerminosPage'
 import { PrivacidadPage } from './components/PrivacidadPage'
 import { Footer } from './components/Footer'
-import { useAuth } from './auth/AuthContext'
+import { useAuth, type AppRole, type AuthUser } from './auth/AuthContext'
 import { RequireAuth } from './auth/RequireAuth'
 import { PortalLayout } from './portal/PortalLayout'
 import { PortalDataProvider } from './portal/PortalDataContext'
@@ -68,6 +68,39 @@ const PATH_TO_NAV_KEY: Record<string, string> = Object.fromEntries(
   Object.entries(NAV_KEY_TO_PATH).map(([key, path]) => [path, key]),
 )
 
+const CORREO_COLABORADOR_DEMO = 'maria.lopez@safe-demo.ec'
+
+const usuarioEmpresaDemo: AuthUser = {
+  role: 'EMPRESA',
+  nombres: 'María Fernanda',
+  apellidos: 'Torres',
+  correo: 'maria.torres@textilesandina.ec',
+  telefono: '+593 99 812 4410',
+  pais: 'Ecuador',
+  ciudad: 'Quito',
+  iniciales: 'MT',
+  mfaHabilitado: false,
+}
+
+const usuarioColaboradorDemo: AuthUser = {
+  role: 'COLABORADOR',
+  nombres: 'María Fernanda',
+  apellidos: 'López Goncalves',
+  correo: CORREO_COLABORADOR_DEMO,
+  telefono: '+593 99 920 0113',
+  pais: 'Ecuador',
+  ciudad: 'Guayaquil',
+  iniciales: 'ML',
+  mfaHabilitado: false,
+  colaboradorId: 'col-mfl',
+}
+
+function RoleRoute({ allow, children }: { allow: AppRole[]; children: ReactNode }) {
+  const { user } = useAuth()
+  if (!user || !allow.includes(user.role)) return <Navigate to="/app/dashboard" replace />
+  return <>{children}</>
+}
+
 function PublicLayout() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -86,6 +119,12 @@ function PublicLayout() {
 
   const goToPlanes = () => handleNavigate('planes')
   const goToPostulacion = () => handleNavigate('postulacion')
+
+  const loginDemo = (correoTipeado: string) => {
+    const esColaborador = correoTipeado.trim().toLowerCase() === CORREO_COLABORADOR_DEMO
+    login(esColaborador ? usuarioColaboradorDemo : usuarioEmpresaDemo)
+    navigate('/app/dashboard')
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans text-foreground">
@@ -128,16 +167,7 @@ function PublicLayout() {
           path="/login"
           element={
             <LoginPage
-              onIngresar={() => {
-                login({
-                  nombres: 'María Fernanda',
-                  apellidos: 'Torres',
-                  correo: 'maria.torres@textilesandina.ec',
-                  iniciales: 'MT',
-                  mfaHabilitado: false,
-                })
-                navigate('/app/dashboard')
-              }}
+              onIngresar={loginDemo}
               onRecuperar={() => handleNavigate('recuperar')}
               onIrInicio={() => handleNavigate('inicio')}
               onIrCrearCuenta={() => handleNavigate('signup')}
@@ -157,16 +187,7 @@ function PublicLayout() {
           path="/signup"
           element={
             <SignupPage
-              onCrearCuenta={() => {
-                login({
-                  nombres: 'María Fernanda',
-                  apellidos: 'Torres',
-                  correo: 'maria.torres@textilesandina.ec',
-                  iniciales: 'MT',
-                  mfaHabilitado: false,
-                })
-                navigate('/app/dashboard')
-              }}
+              onCrearCuenta={loginDemo}
               onIrLogin={() => handleNavigate('login')}
               onIrInicio={() => handleNavigate('inicio')}
               onIrTerminos={() => handleNavigate('terminos')}
@@ -196,29 +217,190 @@ export default function App() {
       >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<DashboardScreen />} />
-        <Route path="empresa" element={<EmpresaScreen />} />
-        <Route path="empresa/registrar" element={<EmpresaRegistrarScreen />} />
-        <Route path="empresa/editar" element={<EmpresaEditarScreen />} />
-        <Route path="financiero" element={<FinancieroScreen />} />
-        <Route path="financiero/nuevo" element={<NuevaCargaScreen />} />
-        <Route path="financiero/comparar" element={<CompararPeriodosScreen />} />
-        <Route path="financiero/:id/editar" element={<NuevaCargaScreen />} />
-        <Route path="financiero/:id" element={<DetalleRegistroScreen />} />
-        <Route path="indicadores" element={<IndicadoresScreen />} />
-        <Route path="indicadores/principales" element={<IndicadoresPrincipalesScreen />} />
-        <Route path="indicadores/todos" element={<TodosIndicadoresScreen />} />
-        <Route path="indicadores/comparar" element={<CompararIndicadoresScreen />} />
-        <Route path="obligaciones" element={<ObligacionesScreen />} />
-        <Route path="obligaciones/:id" element={<DetalleObligacionScreen />} />
-        <Route path="simulador" element={<SimuladorScreen />} />
-        <Route path="simulador/:id" element={<DetalleSimulacionScreen />} />
-        <Route path="marketplace" element={<MarketplaceScreen />} />
-        <Route path="marketplace/:id" element={<PerfilProfesionalScreen />} />
-        <Route path="plan" element={<PlanScreen />} />
-        <Route path="plan/suscripcion" element={<AdministrarSuscripcionScreen />} />
-        <Route path="plan/cambiar" element={<CambiarPlanScreen />} />
-        <Route path="plan/metodos-pago" element={<MetodosPagoScreen />} />
-        <Route path="plan/historial-pagos" element={<HistorialPagosScreen />} />
+        <Route
+          path="empresa"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <EmpresaScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="empresa/registrar"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <EmpresaRegistrarScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="empresa/editar"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <EmpresaEditarScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="financiero"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <FinancieroScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="financiero/nuevo"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <NuevaCargaScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="financiero/comparar"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <CompararPeriodosScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="financiero/:id/editar"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <NuevaCargaScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="financiero/:id"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <DetalleRegistroScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="indicadores"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <IndicadoresScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="indicadores/principales"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <IndicadoresPrincipalesScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="indicadores/todos"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <TodosIndicadoresScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="indicadores/comparar"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <CompararIndicadoresScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="obligaciones"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <ObligacionesScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="obligaciones/:id"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <DetalleObligacionScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="simulador"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <SimuladorScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="simulador/:id"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <DetalleSimulacionScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="marketplace"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <MarketplaceScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="marketplace/:id"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <PerfilProfesionalScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="plan"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <PlanScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="plan/suscripcion"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <AdministrarSuscripcionScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="plan/cambiar"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <CambiarPlanScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="plan/metodos-pago"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <MetodosPagoScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="plan/historial-pagos"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <HistorialPagosScreen />
+            </RoleRoute>
+          }
+        />
         <Route path="configuracion" element={<ConfiguracionScreen />} />
         <Route path="configuracion/cuenta" element={<EditarCuentaScreen />} />
         <Route path="tutoriales" element={<TutorialesScreen />} />

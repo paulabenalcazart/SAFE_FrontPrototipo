@@ -14,12 +14,13 @@ export function LoginPage({
   onIrInicio,
   onIrCrearCuenta,
 }: {
-  onIngresar?: () => void
+  onIngresar?: (correo: string) => void
   onRecuperar: () => void
   onIrInicio?: () => void
   onIrCrearCuenta?: () => void
 }) {
   const [showPassword, setShowPassword] = useState(false)
+  const [correo, setCorreo] = useState('')
 
   return (
     <div className="grid min-h-[100dvh] bg-surface/60 lg:grid-cols-2">
@@ -42,7 +43,7 @@ export function LoginPage({
             className="mt-7 space-y-5"
             onSubmit={(e) => {
               e.preventDefault()
-              onIngresar?.()
+              onIngresar?.(correo)
             }}
           >
             <div>
@@ -53,6 +54,8 @@ export function LoginPage({
                 autoComplete="email"
                 placeholder="tu@empresa.ec"
                 className="mt-1.5 h-11"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
                 required
               />
             </div>
