@@ -2,15 +2,18 @@ import {
   Building2,
   CalendarClock,
   Calculator,
+  ClipboardList,
   CreditCard,
   Gauge,
   Landmark,
   LayoutDashboard,
   LineChart,
+  PlaySquare,
   Settings,
   ShieldCheck,
   Store,
   TrendingUp,
+  UserRound,
   Video,
   Wallet,
 } from 'lucide-react'
@@ -123,7 +126,7 @@ export const empresasDisponibles: Empresa[] = [
   },
 ]
 
-export const navItems: NavItem[] = [
+export const navItemsEmpresa: NavItem[] = [
   { key: 'dashboard', label: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard },
   { key: 'empresa', label: 'Mi Empresa', path: '/app/empresa', icon: Building2 },
   { key: 'financiero', label: 'Financiero', path: '/app/financiero', icon: LineChart },
@@ -134,6 +137,14 @@ export const navItems: NavItem[] = [
   { key: 'plan', label: 'Plan', path: '/app/plan', icon: CreditCard },
   { key: 'configuracion', label: 'Configuración', path: '/app/configuracion', icon: Settings },
   { key: 'tutoriales', label: 'Video Tutoriales', path: '/app/tutoriales', icon: Video },
+]
+
+export const navItemsColaborador: NavItem[] = [
+  { key: 'dashboard', label: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard },
+  { key: 'perfil', label: 'Perfil profesional', path: '/app/perfil', icon: UserRound },
+  { key: 'solicitudes', label: 'Solicitudes y citas', path: '/app/solicitudes', icon: ClipboardList },
+  { key: 'configuracion', label: 'Configuración', path: '/app/configuracion', icon: Settings },
+  { key: 'tutoriales', label: 'Video tutoriales', path: '/app/tutoriales', icon: PlaySquare },
 ]
 
 export const kpis: Kpi[] = [

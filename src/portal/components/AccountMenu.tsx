@@ -7,6 +7,18 @@ export function AccountMenu({ onClose }: { onClose: () => void }) {
 
   if (!user) return null
 
+  const enlaces =
+    user.role === 'COLABORADOR'
+      ? [
+          { label: 'Mi cuenta', to: '/app/configuracion/cuenta' },
+          { label: 'Video tutoriales', to: '/app/tutoriales' },
+        ]
+      : [
+          { label: 'Mi cuenta', to: '/app/configuracion/cuenta' },
+          { label: 'Mi plan', to: '/app/plan' },
+          { label: 'Video tutoriales', to: '/app/tutoriales' },
+        ]
+
   return (
     <div
       role="menu"
@@ -18,11 +30,7 @@ export function AccountMenu({ onClose }: { onClose: () => void }) {
         </div>
         <div className="break-all text-[12px] text-ink-500">{user.correo}</div>
       </div>
-      {[
-        { label: 'Mi cuenta', to: '/app/configuracion/cuenta' },
-        { label: 'Mi plan', to: '/app/plan' },
-        { label: 'Video tutoriales', to: '/app/tutoriales' },
-      ].map((item) => (
+      {enlaces.map((item) => (
         <button
           key={item.to}
           type="button"
