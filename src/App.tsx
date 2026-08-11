@@ -23,6 +23,7 @@ import { RequireAuth } from './auth/RequireAuth'
 import { PortalLayout } from './portal/PortalLayout'
 import { PortalDataProvider } from './portal/PortalDataContext'
 import { DashboardScreen } from './portal/dashboard/DashboardScreen'
+import { CollaboratorDashboardScreen } from './portal/colaborador/dashboard/CollaboratorDashboardScreen'
 import { EmpresaScreen } from './portal/empresa/EmpresaScreen'
 import { EmpresaRegistrarScreen } from './portal/empresa/EmpresaRegistrarScreen'
 import { EmpresaEditarScreen } from './portal/empresa/EmpresaEditarScreen'
@@ -99,6 +100,11 @@ function RoleRoute({ allow, children }: { allow: AppRole[]; children: ReactNode 
   const { user } = useAuth()
   if (!user || !allow.includes(user.role)) return <Navigate to="/app/dashboard" replace />
   return <>{children}</>
+}
+
+function DashboardResolver() {
+  const { user } = useAuth()
+  return user?.role === 'COLABORADOR' ? <CollaboratorDashboardScreen /> : <DashboardScreen />
 }
 
 function PublicLayout() {
@@ -216,7 +222,7 @@ export default function App() {
         }
       >
         <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<DashboardScreen />} />
+        <Route path="dashboard" element={<DashboardResolver />} />
         <Route
           path="empresa"
           element={
