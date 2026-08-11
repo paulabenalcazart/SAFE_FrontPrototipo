@@ -10,8 +10,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { formatEstadoDisponibilidad, formatModalidadEtiqueta } from '@/portal/colaborador/formato'
-import { inicialesDeNombre } from '@/portal/colaborador/calculo'
-import type { ColaboradorMarketplace, ModalidadAtencion } from '@/portal/types'
+import { inicialesDeNombre, validarEspecialidades } from '@/portal/colaborador/calculo'
+import { EspecialidadesEditor } from '@/portal/colaborador/perfil/EspecialidadesEditor'
+import type { ColaboradorMarketplace, EspecialidadColaboradorRelacion, ModalidadAtencion } from '@/portal/types'
 
 // Estado local del formulario. Copia editable de los campos de `usuario` y `colaborador` que Sección 13
 // del prompt agrupa como "Editar perfil". Las Tareas 6-8 (especialidades, servicios, disponibilidad) NO
@@ -108,6 +109,19 @@ function formulariosIguales(a: FormularioPerfil, b: FormularioPerfil): boolean {
   return (Object.keys(a) as (keyof FormularioPerfil)[]).every((clave) => a[clave] === b[clave])
 }
 
+function especialidadesIguales(a: EspecialidadColaboradorRelacion[], b: EspecialidadColaboradorRelacion[]): boolean {
+  if (a.length !== b.length) return false
+  return a.every((relacion, indice) => {
+    const otra = b[indice]
+    return (
+      relacion.especialidadId === otra.especialidadId &&
+      relacion.esPrincipal === otra.esPrincipal &&
+      relacion.aniosExperiencia === otra.aniosExperiencia &&
+      relacion.activo === otra.activo
+    )
+  })
+}
+
 function nombreArchivoDesdeUrl(url: string | undefined, fallback: string): string {
   if (!url) return fallback
   if (url.startsWith('blob:')) return fallback
@@ -155,11 +169,18 @@ function FieldError({ message }: { message?: string }) {
 export function EditarPerfilScreen() {
   const navigate = useNavigate()
   const { user, updateUser } = useAuth()
-  const { colaboradorPerfil, actualizarColaboradorPerfil } = usePortalData()
+  const { colaboradorPerfil, actualizarColaboradorPerfil, actualizarEspecialidadesColaborador } = usePortalData()
 
   const [formularioInicial] = useState<FormularioPerfil>(() => construirFormulario(user, colaboradorPerfil))
   const [formulario, setFormulario] = useState<FormularioPerfil>(() => construirFormulario(user, colaboradorPerfil))
   const [errores, setErrores] = useState<Record<string, string>>({})
+
+  // Tarea 6: especialidades. Vive en su propio estado (fuera de `FormularioPerfil`) y se integra al guardado
+  // general vía `handleGuardar` — ver comentario ahí.
+  const [especialidadesIniciales] = useState<EspecialidadColaboradorRelacion[]>(() => colaboradorPerfil.especialidades)
+  const [especialidades, setEspecialidades] = useState<EspecialidadColaboradorRelacion[]>(
+    () => colaboradorPerfil.especialidades,
+  )
 
   const [errorFoto, setErrorFoto] = useState<string | undefined>(undefined)
   const [errorCv, setErrorCv] = useState<string | undefined>(undefined)
@@ -180,8 +201,10 @@ export function EditarPerfilScreen() {
   const credencialInputRef = useRef<HTMLInputElement>(null)
 
   const hayCambiosSinGuardar = useMemo(
-    () => !formulariosIguales(formulario, formularioInicial),
-    [formulario, formularioInicial],
+    () =>
+      !formulariosIguales(formulario, formularioInicial) ||
+      !especialidadesIguales(especialidades, especialidadesIniciales),
+    [formulario, formularioInicial, especialidades, especialidadesIniciales],
   )
 
   if (!user) return null
@@ -245,12 +268,15 @@ export function EditarPerfilScreen() {
   const handleGuardar = () => {
     const erroresPersonales = validarInformacionPersonal(formulario)
     const erroresProfesionales = validarInformacionProfesional(formulario)
-    // Las Tareas 6-8 (especialidades, servicios, disponibilidad) agregan aquí sus propios objetos de
-    // errores mediante spread, ej.: `...validarEspecialidades(...)`.
+    // Las Tareas 7-8 (servicios, disponibilidad) agregan aquí sus propios objetos de errores mediante
+    // spread. Tarea 6 (especialidades) usa `validarEspecialidades`, que devuelve un mensaje único en vez de
+    // un Record — `EspecialidadesEditor` ya muestra ese mensaje en vivo bajo su propia sección, así que aquí
+    // solo se usa como compuerta booleana para bloquear el guardado, sin duplicar el mensaje en `errores`.
+    const errorEspecialidades = validarEspecialidades(especialidades)
     const todosLosErrores: Record<string, string> = { ...erroresPersonales, ...erroresProfesionales }
 
     setErrores(todosLosErrores)
-    if (Object.keys(todosLosErrores).length > 0) return
+    if (Object.keys(todosLosErrores).length > 0 || errorEspecialidades) return
 
     updateUser({
       nombres: formulario.nombres,
@@ -282,6 +308,7 @@ export function EditarPerfilScreen() {
       entidadEmisora: formulario.entidadEmisora || undefined,
       archivoCredencialUrl: formulario.archivoCredencialUrl,
     })
+    actualizarEspecialidadesColaborador(especialidades)
     navigate('/app/perfil')
   }
 
@@ -621,6 +648,9 @@ export function EditarPerfilScreen() {
           </div>
         </div>
       </section>
+
+      {/* 13.6 Especialidades */}
+      <EspecialidadesEditor value={especialidades} onChange={setEspecialidades} />
 
       {/* 13.4 CV */}
       <section className="rounded-xl border border-line bg-card p-4.5">
