@@ -9,6 +9,7 @@ import { RESENAS_COLABORADORES, especialidadProfesionalPorId } from '@/portal/ma
 import { agruparDisponibilidadPorDia, calcularCalificacionPromedio, inicialesDeNombre } from '@/portal/colaborador/calculo'
 import { formatDuracion, formatModalidad, formatTarifaHora } from '@/portal/marketplace/formato'
 import { formatEstadoDisponibilidad, formatModalidadEtiqueta, formatPrecioServicio } from '@/portal/colaborador/formato'
+import { ICONO_SERVICIO } from '@/portal/colaborador/iconos-servicio'
 import { formatFecha } from '@/portal/obligaciones/formato'
 
 type Campo = { label: string; valor: ReactNode }
@@ -29,7 +30,7 @@ function CamposDl({ campos }: { campos: Campo[] }) {
 export function PerfilColaboradorScreen() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { colaboradorPerfil, serviciosColaborador, horariosColaborador } = usePortalData()
+  const { colaboradorPerfil, serviciosColaborador, horariosColaborador, iconosServicio } = usePortalData()
 
   const especialidadPrincipal = especialidadProfesionalPorId(colaboradorPerfil.especialidadPrincipalId)
   const resenas = RESENAS_COLABORADORES.filter((r) => r.colaboradorId === colaboradorPerfil.id)
@@ -241,16 +242,27 @@ export function PerfilColaboradorScreen() {
           </p>
         ) : (
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {serviciosActivos.map((servicio) => (
-              <article key={servicio.id} className="rounded-xl border border-line/70 bg-surface p-3.5">
-                <h3 className="text-[13.5px] font-semibold text-ink-900">{servicio.nombre}</h3>
-                <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-700">{servicio.descripcion}</p>
-                <p className="mt-2 text-[12px] font-semibold text-navy-600">
-                  {formatDuracion(servicio.duracionEstimadaMinutos)} · {formatPrecioServicio(servicio.tarifaReferencial)}{' '}
-                  · {formatModalidad(servicio.modalidad)}
-                </p>
-              </article>
-            ))}
+            {serviciosActivos.map((servicio) => {
+              const LucideIcon = ICONO_SERVICIO[iconosServicio[servicio.id] ?? 'accounting']
+              return (
+                <article key={servicio.id} className="rounded-xl border border-line/70 bg-surface p-3.5">
+                  <div className="flex items-start gap-2.5">
+                    <span
+                      aria-hidden="true"
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700"
+                    >
+                      <LucideIcon className="h-4 w-4" />
+                    </span>
+                    <h3 className="text-[13.5px] font-semibold text-ink-900">{servicio.nombre}</h3>
+                  </div>
+                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-700">{servicio.descripcion}</p>
+                  <p className="mt-2 text-[12px] font-semibold text-navy-600">
+                    {formatDuracion(servicio.duracionEstimadaMinutos)} · {formatPrecioServicio(servicio.tarifaReferencial)}{' '}
+                    · {formatModalidad(servicio.modalidad)}
+                  </p>
+                </article>
+              )
+            })}
           </div>
         )}
       </section>

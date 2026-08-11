@@ -12,12 +12,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { formatEstadoDisponibilidad, formatModalidadEtiqueta } from '@/portal/colaborador/formato'
 import { inicialesDeNombre, validarEspecialidades } from '@/portal/colaborador/calculo'
 import { EspecialidadesEditor } from '@/portal/colaborador/perfil/EspecialidadesEditor'
+import { ServiciosEditor } from '@/portal/colaborador/perfil/ServiciosEditor'
 import type { ColaboradorMarketplace, EspecialidadColaboradorRelacion, ModalidadAtencion } from '@/portal/types'
 
 // Estado local del formulario. Copia editable de los campos de `usuario` y `colaborador` que Sección 13
 // del prompt agrupa como "Editar perfil". Las Tareas 6-8 (especialidades, servicios, disponibilidad) NO
-// forman parte de este tipo — viven en su propio estado dentro de sus propios componentes y se integran a
-// este shell únicamente a través de la validación agregada en `handleGuardar`.
+// forman parte de este tipo — viven en su propio estado (o, en el caso de servicios, sin estado local
+// alguno — sus mutaciones son inmediatas contra `PortalDataContext`, Tarea 7) dentro de sus propios
+// componentes. Especialidades se integra a este shell a través de la validación agregada en
+// `handleGuardar`; servicios no necesita esa compuerta porque cada acción del editor ya persiste al
+// instante.
 type FormularioPerfil = {
   nombres: string
   apellidos: string
@@ -651,6 +655,9 @@ export function EditarPerfilScreen() {
 
       {/* 13.6 Especialidades */}
       <EspecialidadesEditor value={especialidades} onChange={setEspecialidades} />
+
+      {/* 13.7 Servicios */}
+      <ServiciosEditor />
 
       {/* 13.4 CV */}
       <section className="rounded-xl border border-line bg-card p-4.5">

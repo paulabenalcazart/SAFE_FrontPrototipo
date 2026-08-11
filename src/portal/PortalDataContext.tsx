@@ -49,6 +49,18 @@ import {
   PREFERENCIAS_NOTIFICACION_COLABORADOR_SEMILLA,
   SOLICITUDES_COLABORADOR_SEMILLA,
 } from './colaborador/semilla'
+import type { ServiceIconKey } from './colaborador/iconos-servicio'
+
+// Iconos por defecto para los 4 servicios semilla del colaborador de prueba (col-mfl), definidos por
+// Sección 12.5/13.7 del prompt. `iconKey` es un concepto puramente de UI — no existe columna SQL para él en
+// `ServicioProfesional` (que sí mapea a una tabla real) — por eso vive en su propia franja de estado aquí,
+// igual que el resto de datos "mock" del portal.
+const ICONOS_SERVICIO_SEMILLA: Record<string, ServiceIconKey> = {
+  'srv-col-mfl-01': 'analytics',
+  'srv-col-mfl-02': 'growth',
+  'srv-col-mfl-03': 'calculator',
+  'srv-col-mfl-04': 'business',
+}
 
 type PortalDataContextValue = {
   empresas: Empresa[]
@@ -96,6 +108,8 @@ type PortalDataContextValue = {
   ) => ServicioProfesional
   actualizarServicioColaborador: (id: string, patch: Partial<ServicioProfesional>) => void
   desactivarServicioColaborador: (id: string) => void
+  iconosServicio: Record<string, ServiceIconKey>
+  establecerIconoServicio: (servicioId: string, iconKey: ServiceIconKey) => void
   horariosColaborador: HorarioDisponibilidad[]
   guardarHorariosColaborador: (horarios: HorarioDisponibilidad[]) => void
   solicitudesColaborador: SolicitudContacto[]
@@ -227,6 +241,9 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
   )
   const [serviciosColaborador, setServiciosColaborador] = useState<ServicioProfesional[]>(() =>
     SERVICIOS_PROFESIONALES.filter((s) => s.colaboradorId === colaboradorPerfil.id),
+  )
+  const [iconosServicio, setIconosServicio] = useState<Record<string, ServiceIconKey>>(
+    ICONOS_SERVICIO_SEMILLA,
   )
   const [horariosColaborador, setHorariosColaborador] = useState<HorarioDisponibilidad[]>(() =>
     HORARIOS_DISPONIBILIDAD.filter((h) => h.colaboradorId === colaboradorPerfil.id),
@@ -449,6 +466,10 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     setServiciosColaborador((current) => current.map((s) => (s.id === id ? { ...s, activo: false } : s)))
   }
 
+  const establecerIconoServicio = (servicioId: string, iconKey: ServiceIconKey) => {
+    setIconosServicio((current) => ({ ...current, [servicioId]: iconKey }))
+  }
+
   const guardarHorariosColaborador = (horarios: HorarioDisponibilidad[]) => {
     setHorariosColaborador(horarios)
   }
@@ -555,6 +576,8 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         agregarServicioColaborador,
         actualizarServicioColaborador,
         desactivarServicioColaborador,
+        iconosServicio,
+        establecerIconoServicio,
         horariosColaborador,
         guardarHorariosColaborador,
         solicitudesColaborador,
