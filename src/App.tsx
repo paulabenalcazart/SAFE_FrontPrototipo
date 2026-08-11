@@ -50,6 +50,7 @@ import { ConfiguracionScreen } from './portal/configuracion/ConfiguracionScreen'
 import { EditarCuentaScreen } from './portal/configuracion/EditarCuentaScreen'
 import { TutorialesScreen } from './portal/tutoriales/TutorialesScreen'
 import { PerfilColaboradorScreen } from './portal/colaborador/perfil/PerfilColaboradorScreen'
+import { VistaPreviaPerfilScreen } from './portal/colaborador/perfil/VistaPreviaPerfilScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -229,6 +230,14 @@ export default function App() {
           element={
             <RoleRoute allow={['COLABORADOR']}>
               <PerfilColaboradorScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="perfil/vista-previa"
+          element={
+            <RoleRoute allow={['COLABORADOR']}>
+              <VistaPreviaPerfilScreen />
             </RoleRoute>
           }
         />
