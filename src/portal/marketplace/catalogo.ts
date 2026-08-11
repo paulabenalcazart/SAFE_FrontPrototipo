@@ -746,6 +746,54 @@ const crearResena = (
   comentario: string,
   fecha: string,
 ): ResenaSemilla => ({ autorEmpresa, calificacion, comentario, fecha });
+
+const EMPRESAS_RESENA_MFL = [
+  "Textiles Andina S.A.",
+  "Comercial del Valle Cía. Ltda.",
+  "Panadería La Colina",
+  "Muebles Austro",
+  "Logística Azul",
+  "Ferretería Ambato",
+  "Distribuidora Pacífico",
+  "Café Sierra Norte",
+  "Constructora Horizonte",
+  "AgroLoja",
+  "Calzado Manabí",
+  "Importadora Central",
+  "Hostería Tomebamba",
+];
+
+const COMENTARIOS_RESENA_MFL = [
+  "Nos ayudó a ordenar el flujo de caja y anticipar dos meses complicados.",
+  "El plan financiero quedó claro y con metas realistas para el equipo.",
+  "Explicó cada indicador con ejemplos concretos de nuestro negocio.",
+  "La preparación para el crédito fue detallada y nos dio confianza con el banco.",
+  "Seguimiento puntual y recomendaciones fáciles de aplicar cada mes.",
+  "Identificó gastos que no estábamos controlando y propuso ajustes simples.",
+];
+
+function crearResenasMasivas(
+  colaboradorId: string,
+  cantidad: number,
+  fechaBase: string,
+): ResenaColaborador[] {
+  return Array.from({ length: cantidad }, (_, indice) => {
+    const calificacion = indice % 5 === 0 ? 4 : 5; // ~80% 5 estrellas, ~20% 4 -> promedio 4.8
+    const [anio, mes, dia] = fechaBase.split("-").map(Number);
+    const fecha = new Date(Date.UTC(anio, mes - 1, dia));
+    fecha.setUTCDate(fecha.getUTCDate() - indice * 5);
+    return {
+      id: `res-${colaboradorId}-${String(indice + 1).padStart(3, "0")}`,
+      colaboradorId,
+      autorEmpresa: EMPRESAS_RESENA_MFL[indice % EMPRESAS_RESENA_MFL.length],
+      calificacion: calificacion as ResenaColaborador["calificacion"],
+      comentario: COMENTARIOS_RESENA_MFL[indice % COMENTARIOS_RESENA_MFL.length],
+      fecha: fecha.toISOString().slice(0, 10),
+      estado: "PUBLICADA",
+    };
+  });
+}
+
 export const RESENAS_COLABORADORES: ResenaColaborador[] = [
   ...crearResenas("col-01", [
     crearResena(
@@ -903,6 +951,7 @@ export const RESENAS_COLABORADORES: ResenaColaborador[] = [
       "2026-07-23",
     ),
   ]),
+  ...crearResenasMasivas("col-mfl", 39, "2026-08-10"),
 ];
 
 export const BLOQUEOS_AGENDA: BloqueoAgenda[] = [
