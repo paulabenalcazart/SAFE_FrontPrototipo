@@ -261,6 +261,8 @@ export function EditarPerfilScreen() {
       ciudad: formulario.ciudad,
     })
     actualizarColaboradorPerfil({
+      nombres: formulario.nombres,
+      apellidos: formulario.apellidos,
       areaEspecializacion: formulario.areaEspecializacion,
       profesion: formulario.profesion,
       trabajoActual: formulario.trabajoActual || undefined,
