@@ -73,7 +73,7 @@ export function PerfilProfesionalContenido({
     })
   }
 
-  const camposBase = [
+  const campos = [
     { label: 'Área', valor: profesional.areaEspecializacion },
     { label: 'Profesión', valor: profesional.profesion },
     { label: 'Trabajo actual', valor: profesional.trabajoActual ?? 'Independiente' },
@@ -90,10 +90,6 @@ export function PerfilProfesionalContenido({
       valor: profesional.cvVisible ? 'Disponible para empresas' : 'No compartida',
     },
   ]
-  const campos =
-    modo === 'vista-previa' && profesional.cvVisible && profesional.cvUrl
-      ? [...camposBase, { label: 'Hoja de vida', valor: 'Disponible' }]
-      : camposBase
 
   return (
     <>
