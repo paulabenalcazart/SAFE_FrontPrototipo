@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type RefObject } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, FileText } from 'lucide-react'
 import { useAuth, type AuthUser } from '@/auth/AuthContext'
@@ -227,6 +227,17 @@ export function EditarPerfilScreen() {
   const [disponibilidadValida, setDisponibilidadValida] = useState(true)
   const disponibilidadHeadingRef = useRef<HTMLHeadingElement>(null)
 
+  // Encabezados de cada sección "bloqueante" del guardado (Tarea 9, hallazgo de feedback de guardado).
+  // `handleGuardar` usa estos refs para hacer scroll + foco a la primera sección que impide guardar, mismo
+  // patrón que el deep-link `?seccion=disponibilidad` de más abajo.
+  const informacionPersonalHeadingRef = useRef<HTMLHeadingElement>(null)
+  const informacionProfesionalHeadingRef = useRef<HTMLHeadingElement>(null)
+  const especialidadesHeadingRef = useRef<HTMLHeadingElement>(null)
+
+  // Nombres de las secciones que están bloqueando el guardado en el intento más reciente (vacío si no hubo
+  // intento bloqueado, o si el guardado tuvo éxito). Alimenta el banner de resumen junto al footer sticky.
+  const [seccionesBloqueando, setSeccionesBloqueando] = useState<string[]>([])
+
   const [errorFoto, setErrorFoto] = useState<string | undefined>(undefined)
   const [errorCv, setErrorCv] = useState<string | undefined>(undefined)
   const [errorCredencial, setErrorCredencial] = useState<string | undefined>(undefined)
@@ -339,7 +350,36 @@ export function EditarPerfilScreen() {
     const todosLosErrores: Record<string, string> = { ...erroresPersonales, ...erroresProfesionales }
 
     setErrores(todosLosErrores)
-    if (Object.keys(todosLosErrores).length > 0 || errorEspecialidades || !disponibilidadValida) return
+
+    // Resumen de guardado bloqueado (hallazgo de la revisión final): además de las compuertas booleanas de
+    // arriba, se arma la lista de nombres de sección bloqueante (en el mismo orden en que aparecen en la
+    // página) para mostrarla en un banner junto al footer sticky, y se hace scroll + foco al encabezado de
+    // la primera sección bloqueante — igual que el deep-link `?seccion=disponibilidad` de más abajo.
+    const bloqueos: { nombre: string; ref: RefObject<HTMLHeadingElement> }[] = []
+    if (Object.keys(erroresPersonales).length > 0) {
+      bloqueos.push({ nombre: 'Información personal', ref: informacionPersonalHeadingRef })
+    }
+    if (Object.keys(erroresProfesionales).length > 0) {
+      bloqueos.push({ nombre: 'Información profesional', ref: informacionProfesionalHeadingRef })
+    }
+    if (errorEspecialidades) {
+      bloqueos.push({ nombre: 'Especialidades', ref: especialidadesHeadingRef })
+    }
+    if (!disponibilidadValida) {
+      bloqueos.push({ nombre: 'Disponibilidad', ref: disponibilidadHeadingRef })
+    }
+
+    if (bloqueos.length > 0) {
+      setSeccionesBloqueando(bloqueos.map((b) => b.nombre))
+      const primeraRef = bloqueos[0].ref
+      window.requestAnimationFrame(() => {
+        primeraRef.current?.scrollIntoView({ behavior: 'smooth' })
+        primeraRef.current?.focus()
+      })
+      return
+    }
+
+    setSeccionesBloqueando([])
 
     updateUser({
       nombres: formulario.nombres,
@@ -432,7 +472,13 @@ export function EditarPerfilScreen() {
 
       {/* 13.2 Información personal */}
       <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Información personal</h2>
+        <h2
+          ref={informacionPersonalHeadingRef}
+          tabIndex={-1}
+          className="text-[16px] font-semibold text-ink-900 outline-none"
+        >
+          Información personal
+        </h2>
         <div className="mt-3.5 grid grid-cols-1 gap-4.5 sm:grid-cols-3">
           <div>
             <Label htmlFor="perfil-nombres">Nombres</Label>
@@ -515,7 +561,13 @@ export function EditarPerfilScreen() {
 
       {/* 13.3 Información profesional */}
       <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Información profesional</h2>
+        <h2
+          ref={informacionProfesionalHeadingRef}
+          tabIndex={-1}
+          className="text-[16px] font-semibold text-ink-900 outline-none"
+        >
+          Información profesional
+        </h2>
         <div className="mt-3.5 grid grid-cols-1 gap-4.5 sm:grid-cols-3">
           <div>
             <Label htmlFor="perfil-area">Área de especialización</Label>
@@ -714,7 +766,7 @@ export function EditarPerfilScreen() {
       </section>
 
       {/* 13.6 Especialidades */}
-      <EspecialidadesEditor value={especialidades} onChange={setEspecialidades} />
+      <EspecialidadesEditor value={especialidades} onChange={setEspecialidades} headingRef={especialidadesHeadingRef} />
 
       {/* 13.7 Servicios */}
       <ServiciosEditor />
@@ -827,13 +879,20 @@ export function EditarPerfilScreen() {
         headingRef={disponibilidadHeadingRef}
       />
 
-      <div className="sticky bottom-0 flex flex-wrap justify-end gap-2.5 border-t border-line bg-background py-3.5">
-        <Button type="button" variant="outline" onClick={handleCancelar}>
-          Cancelar
-        </Button>
-        <Button type="button" onClick={handleGuardar}>
-          Guardar cambios
-        </Button>
+      <div className="sticky bottom-0 flex flex-col gap-2.5 border-t border-line bg-background py-3.5">
+        {seccionesBloqueando.length > 0 && (
+          <p role="alert" className="rounded-lg bg-danger-soft px-3.5 py-2.5 text-[13px] font-semibold text-destructive">
+            No se pudo guardar. Revisa: {seccionesBloqueando.join(', ')}.
+          </p>
+        )}
+        <div className="flex flex-wrap justify-end gap-2.5">
+          <Button type="button" variant="outline" onClick={handleCancelar}>
+            Cancelar
+          </Button>
+          <Button type="button" onClick={handleGuardar}>
+            Guardar cambios
+          </Button>
+        </div>
       </div>
     </section>
   )

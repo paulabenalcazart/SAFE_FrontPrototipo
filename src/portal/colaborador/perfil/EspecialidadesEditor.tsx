@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,9 +15,10 @@ import type { EspecialidadColaboradorRelacion } from '@/portal/types'
 type EspecialidadesEditorProps = {
   value: EspecialidadColaboradorRelacion[]
   onChange: (value: EspecialidadColaboradorRelacion[]) => void
+  headingRef?: RefObject<HTMLHeadingElement>
 }
 
-export function EspecialidadesEditor({ value, onChange }: EspecialidadesEditorProps) {
+export function EspecialidadesEditor({ value, onChange, headingRef }: EspecialidadesEditorProps) {
   const disponibles = ESPECIALIDADES_PROFESIONALES.filter(
     (especialidad) => !value.some((relacion) => relacion.especialidadId === especialidad.id),
   )
@@ -51,7 +53,9 @@ export function EspecialidadesEditor({ value, onChange }: EspecialidadesEditorPr
 
   return (
     <section className="rounded-xl border border-line bg-card p-4.5">
-      <h2 className="text-[16px] font-semibold text-ink-900">Especialidades</h2>
+      <h2 ref={headingRef} tabIndex={-1} className="text-[16px] font-semibold text-ink-900 outline-none">
+        Especialidades
+      </h2>
 
       {value.length === 0 ? (
         <p className="mt-3.5 text-[13px] text-ink-500">Aún no has agregado especialidades.</p>

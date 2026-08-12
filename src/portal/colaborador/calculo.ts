@@ -293,6 +293,7 @@ export function modalidadesCompatibles(modalidadAtencion: ModalidadAtencion): Ho
 
 function horaAMinutos(hora: string): number {
   const [h, m] = hora.split(':').map(Number)
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return NaN
   return h * 60 + m
 }
 
@@ -312,7 +313,12 @@ export function haySolapamientoHorario(
 }
 
 export function validarBloqueHorario(bloque: Pick<HorarioDisponibilidad, 'horaInicio' | 'horaFin'>): string | null {
-  if (horaAMinutos(bloque.horaFin) <= horaAMinutos(bloque.horaInicio)) {
+  const inicio = horaAMinutos(bloque.horaInicio)
+  const fin = horaAMinutos(bloque.horaFin)
+  if (!Number.isFinite(inicio) || !Number.isFinite(fin)) {
+    return 'Ingresa una hora válida.'
+  }
+  if (fin <= inicio) {
     return 'La hora de fin debe ser posterior a la hora de inicio.'
   }
   return null

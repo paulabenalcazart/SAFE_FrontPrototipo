@@ -38,6 +38,20 @@ function bloquesDelDia(value: HorarioDisponibilidad[], dia: HorarioDisponibilida
   return value.filter((h) => h.diaSemana === dia)
 }
 
+// Candidato por defecto para "Agregar bloque": en vez de proponer siempre 09:00-10:00 (que colisiona con
+// cualquier disponibilidad ya sembrada en ese horario), se propone empezar justo donde termina el último
+// bloque existente del día, con una duración de 1 hora, recortada para no pasar de las 23:00. Con el día
+// vacío se mantiene el valor histórico 09:00-10:00.
+function siguienteBloquePorDefecto(bloquesDia: HorarioDisponibilidad[]): { horaInicio: string; horaFin: string } {
+  if (bloquesDia.length === 0) return { horaInicio: '09:00', horaFin: '10:00' }
+  const ultimoFin = bloquesDia.reduce((max, b) => (b.horaFin > max ? b.horaFin : max), '00:00')
+  if (ultimoFin >= '22:00') return { horaInicio: ultimoFin, horaFin: '23:00' }
+  const [h, m] = ultimoFin.split(':').map(Number)
+  const finMinutos = Math.min(23 * 60, h * 60 + m + 60)
+  const horaFin = `${String(Math.floor(finMinutos / 60)).padStart(2, '0')}:${String(finMinutos % 60).padStart(2, '0')}`
+  return { horaInicio: ultimoFin, horaFin }
+}
+
 export function DisponibilidadEditor({
   value,
   onChange,
@@ -86,7 +100,7 @@ export function DisponibilidadEditor({
 
   const handleAgregarBloque = (dia: HorarioDisponibilidad['diaSemana']) => {
     const bloquesDia = bloquesDelDia(value, dia)
-    const candidato = { horaInicio: '09:00', horaFin: '10:00' }
+    const candidato = siguienteBloquePorDefecto(bloquesDia)
 
     const errorRango = validarBloqueHorario(candidato)
     if (errorRango) {
