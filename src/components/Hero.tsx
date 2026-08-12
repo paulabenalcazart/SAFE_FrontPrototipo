@@ -93,7 +93,7 @@ const RIGHT_SHARD_FILLS = [
 ]
 
 const NAVBAR_HEIGHT_PX = 80
-const TEXT_TOP_GAP_PX = 56
+const TEXT_TOP_GAP_PX = 36
 const GAP_TEXT_TO_PREVIEW_PX = 32
 const MIN_PEEK_PX = 100
 const PEEK_SCALE = 0.58
@@ -201,10 +201,15 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
                 transformOrigin: 'top left',
               }}
             >
-              <div ref={previewRef} className="relative">
-                <DashboardPreviewCard inView className="!border-transparent !shadow-none" />
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(70%_100%_at_10%_0%,var(--color-navy-100)_0%,rgba(255,255,255,0)_100%)] opacity-70 mix-blend-multiply" />
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(60%_100%_at_92%_0%,var(--color-amber-soft)_0%,rgba(255,255,255,0)_100%)] opacity-60 mix-blend-multiply" />
+              <div className="animate-safe-preview-float">
+                <div ref={previewRef} className="relative">
+                  <DashboardPreviewCard
+                    inView={progress > 0.1}
+                    className="!border-transparent !shadow-none"
+                  />
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(70%_100%_at_10%_0%,var(--color-navy-100)_0%,rgba(255,255,255,0)_100%)] opacity-70 mix-blend-multiply" />
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(60%_100%_at_92%_0%,var(--color-amber-soft)_0%,rgba(255,255,255,0)_100%)] opacity-60 mix-blend-multiply" />
+                </div>
               </div>
             </div>
           </div>
