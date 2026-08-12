@@ -96,6 +96,7 @@ const NAVBAR_HEIGHT_PX = 80
 const TEXT_TOP_GAP_PX = 56
 const GAP_TEXT_TO_PREVIEW_PX = 32
 const MIN_PEEK_PX = 100
+const PEEK_SCALE = 0.58
 
 export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const { ref: trackRef, progress } = useScrollProgress<HTMLDivElement>()
@@ -119,19 +120,23 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const availW = Math.min(viewportW - 64, 1360)
   const availH = viewportH * 0.82
   const finalScale = Math.min(availW / PREVIEW_NATURAL_W, availH / previewNaturalH)
-  const boxW = PREVIEW_NATURAL_W * finalScale
-  const boxH = previewNaturalH * finalScale
+  const boxWMax = PREVIEW_NATURAL_W * finalScale
+  const boxHMax = previewNaturalH * finalScale
+  const boxWPeek = boxWMax * PEEK_SCALE
+  const boxHPeek = boxHMax * PEEK_SCALE
 
-  const boxScale = lerp(0.94, 1, progress)
+  const boxW = lerp(boxWPeek, boxWMax, progress)
+  const boxH = lerp(boxHPeek, boxHMax, progress)
+  const previewScale = boxW / PREVIEW_NATURAL_W
   const textOpacity = 1 - Math.min(Math.max(progress / 0.35, 0), 1)
-  const shadowAlpha = lerp(0.1, 0.24, progress).toFixed(3)
+  const shadowAlpha = lerp(0.12, 0.24, progress).toFixed(3)
 
   const textTopPx = NAVBAR_HEIGHT_PX + TEXT_TOP_GAP_PX
   const boxTopY0 = Math.min(
     textTopPx + textHeight + GAP_TEXT_TO_PREVIEW_PX,
     viewportH - MIN_PEEK_PX,
   )
-  const boxCenterY0 = boxTopY0 + boxH / 2
+  const boxCenterY0 = boxTopY0 + boxHPeek / 2
   const boxCenterY1 = viewportH * 0.5
   const boxCenterY = lerp(boxCenterY0, boxCenterY1, progress)
 
@@ -184,7 +189,7 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
               top: `${boxCenterY}px`,
               width: `${boxW}px`,
               height: `${boxH}px`,
-              transform: `translate(-50%, -50%) scale(${boxScale})`,
+              transform: 'translate(-50%, -50%)',
               boxShadow: `0 44px 90px -42px oklch(0.28 0.076 253.5 / ${shadowAlpha})`,
             }}
           >
@@ -192,7 +197,7 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
               className="absolute left-0 top-0"
               style={{
                 width: `${PREVIEW_NATURAL_W}px`,
-                transform: `scale(${finalScale})`,
+                transform: `scale(${previewScale})`,
                 transformOrigin: 'top left',
               }}
             >
