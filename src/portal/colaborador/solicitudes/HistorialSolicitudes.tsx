@@ -5,7 +5,8 @@ import { buscarSolicitudesPorEmpresa } from '@/portal/colaborador/calculo'
 import { empresaSolicitantePorId } from '@/portal/colaborador/semilla'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { TONE_BADGE_CLASSES } from '@/portal/tone'
-import type { EstadoSolicitudContacto, SolicitudContacto, Tono } from '@/portal/types'
+import type { EstadoSolicitudContacto, SolicitudContacto } from '@/portal/types'
+import { ESTADO_LABEL, ESTADO_TONO } from './estado'
 
 const POR_PAGINA = 6
 
@@ -18,26 +19,6 @@ const FILTRO_A_ESTADOS: Record<string, EstadoSolicitudContacto[]> = {
 }
 
 const OPCIONES_FILTRO = Object.keys(FILTRO_A_ESTADOS)
-
-const ESTADO_TONO: Record<EstadoSolicitudContacto, Tono> = {
-  ENVIADA: 'atencion',
-  ACEPTADA: 'positivo',
-  CONTACTO_LIBERADO: 'positivo',
-  FINALIZADA: 'positivo',
-  RECHAZADA: 'critico',
-  PENDIENTE_PAGO: 'neutro',
-  PAGADA: 'neutro',
-}
-
-const ESTADO_LABEL: Record<EstadoSolicitudContacto, string> = {
-  ENVIADA: 'Enviada',
-  ACEPTADA: 'Aceptada',
-  CONTACTO_LIBERADO: 'Contacto liberado',
-  FINALIZADA: 'Finalizada',
-  RECHAZADA: 'Rechazada',
-  PENDIENTE_PAGO: 'Pendiente de pago',
-  PAGADA: 'Pagada',
-}
 
 export function HistorialSolicitudes({
   solicitudes,
@@ -165,7 +146,7 @@ export function HistorialSolicitudes({
                       {empresa?.nombre ?? 'Empresa no encontrada'}
                     </td>
                     <td className="hidden px-2 py-2.5 text-ink-700 sm:table-cell">
-                      {empresa?.representante.nombre ?? '--'}
+                      {empresa?.representante.nombre ?? '—'}
                     </td>
                     <td className="num hidden whitespace-nowrap px-2 py-2.5 sm:table-cell">
                       {formatFecha(solicitud.createdAt.slice(0, 10))}
@@ -199,14 +180,18 @@ export function HistorialSolicitudes({
       )}
 
       {totalPaginas > 1 && (
-        <div className="flex justify-center gap-1.5">
+        <nav
+          aria-label="Páginas del historial de solicitudes"
+          className="flex flex-wrap justify-center gap-x-1.5 gap-y-1.5"
+        >
           {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => setPagina(n)}
               aria-current={n === paginaActual ? 'page' : undefined}
-              className={`num grid h-9.5 min-w-9.5 place-items-center rounded-lg text-[12.5px] font-semibold ${
+              aria-label={`Ir a la página ${n}`}
+              className={`num grid h-9.5 min-w-9.5 place-items-center rounded-lg text-[12.5px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 ${
                 n === paginaActual
                   ? 'bg-navy-600 text-white'
                   : 'border border-line bg-card text-ink-700 hover:bg-surface'
@@ -215,7 +200,7 @@ export function HistorialSolicitudes({
               {n}
             </button>
           ))}
-        </div>
+        </nav>
       )}
     </section>
   )

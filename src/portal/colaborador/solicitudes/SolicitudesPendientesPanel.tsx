@@ -83,14 +83,18 @@ export function SolicitudesPendientesPanel({
       )}
 
       {totalPaginas > 1 && (
-        <div className="flex justify-center gap-1.5">
+        <nav
+          aria-label="Páginas de solicitudes pendientes"
+          className="flex flex-wrap justify-center gap-x-1.5 gap-y-1.5"
+        >
           {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => setPagina(n)}
               aria-current={n === paginaActual ? 'page' : undefined}
-              className={`num grid h-9.5 min-w-9.5 place-items-center rounded-lg text-[12.5px] font-semibold ${
+              aria-label={`Ir a la página ${n}`}
+              className={`num grid h-9.5 min-w-9.5 place-items-center rounded-lg text-[12.5px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 ${
                 n === paginaActual
                   ? 'bg-navy-600 text-white'
                   : 'border border-line bg-card text-ink-700 hover:bg-surface'
@@ -99,7 +103,7 @@ export function SolicitudesPendientesPanel({
               {n}
             </button>
           ))}
-        </div>
+        </nav>
       )}
     </section>
   )

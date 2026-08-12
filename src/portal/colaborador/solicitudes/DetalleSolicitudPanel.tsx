@@ -8,8 +8,8 @@ import { formatDuracion, formatModalidad } from '@/portal/marketplace/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
 import { TONE_BADGE_CLASSES } from '@/portal/tone'
-import type { EstadoSolicitudContacto, Tono } from '@/portal/types'
-import { acquireBodyScrollLock } from './dialogScrollLock'
+import { acquireBodyScrollLock, acquireDialogLayer } from './dialogScrollLock'
+import { ESTADO_LABEL, ESTADO_TONO } from './estado'
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -19,26 +19,6 @@ const FOCUSABLE_SELECTOR = [
   'textarea:not([disabled])',
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
-
-const ESTADO_TONO: Record<EstadoSolicitudContacto, Tono> = {
-  ENVIADA: 'atencion',
-  ACEPTADA: 'positivo',
-  CONTACTO_LIBERADO: 'positivo',
-  FINALIZADA: 'positivo',
-  RECHAZADA: 'critico',
-  PENDIENTE_PAGO: 'neutro',
-  PAGADA: 'neutro',
-}
-
-const ESTADO_LABEL: Record<EstadoSolicitudContacto, string> = {
-  ENVIADA: 'Enviada',
-  ACEPTADA: 'Aceptada',
-  CONTACTO_LIBERADO: 'Contacto liberado',
-  FINALIZADA: 'Finalizada',
-  RECHAZADA: 'Rechazada',
-  PENDIENTE_PAGO: 'Pendiente de pago',
-  PAGADA: 'Pagada',
-}
 
 const FALLBACK_CONTACTO = 'Contacto disponible — SAFE liberó los datos de esta empresa.'
 
@@ -87,10 +67,16 @@ export function DetalleSolicitudPanel({
   useEffect(() => {
     const focoAnterior = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const liberarBloqueoScroll = acquireBodyScrollLock()
+    const capa = acquireDialogLayer()
 
     const frame = window.requestAnimationFrame(() => dialogTitleRef.current?.focus())
 
     const manejarTeclado = (event: KeyboardEvent) => {
+      // Mientras otro diálogo esté encima (Aceptar/Rechazar abiertos desde este panel),
+      // este handler no debe hacer nada: ni Escape ni trampa de Tab. Se consulta en cada
+      // pulsación, así que recupera su comportamiento normal cuando la capa de arriba se libera.
+      if (!capa.esTope()) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
         onCerrarRef.current()
@@ -136,12 +122,18 @@ export function DetalleSolicitudPanel({
     return () => {
       window.cancelAnimationFrame(frame)
       document.removeEventListener('keydown', manejarTeclado)
+      capa.release()
       liberarBloqueoScroll()
       if (focoAnterior?.isConnected) focoAnterior.focus()
     }
   }, [])
 
   const mostrarContacto = solicitud?.estado === 'CONTACTO_LIBERADO' || solicitud?.estado === 'FINALIZADA'
+  const correoEmpresa = empresa?.contacto.correo ?? ''
+  const telefonoEmpresa = empresa?.contacto.telefono ?? ''
+  // Sin ningún dato concreto, la nota de liberación se muestra una sola vez a nivel de
+  // sección en lugar de repetirse como valor de cada campo.
+  const sinDatosContacto = !correoEmpresa && !telefonoEmpresa
   const mostrarAcciones = solicitud?.estado === 'ENVIADA' && (Boolean(onAceptar) || Boolean(onRechazar))
 
   return (
@@ -283,10 +275,16 @@ export function DetalleSolicitudPanel({
                   >
                     Contacto liberado
                   </h3>
-                  <dl className="mt-2 divide-y divide-line/70 overflow-hidden rounded-xl border border-line/70 bg-surface/50">
-                    <Fila label="Correo empresarial" valor={empresa?.contacto.correo || FALLBACK_CONTACTO} />
-                    <Fila label="Teléfono empresarial" valor={empresa?.contacto.telefono || FALLBACK_CONTACTO} />
-                  </dl>
+                  {sinDatosContacto ? (
+                    <p className="mt-2 rounded-xl border border-line/70 bg-surface/50 px-4 py-3 text-sm leading-6 text-ink-900">
+                      {FALLBACK_CONTACTO}
+                    </p>
+                  ) : (
+                    <dl className="mt-2 divide-y divide-line/70 overflow-hidden rounded-xl border border-line/70 bg-surface/50">
+                      <Fila label="Correo empresarial" valor={correoEmpresa || FALLBACK_CONTACTO} />
+                      <Fila label="Teléfono empresarial" valor={telefonoEmpresa || FALLBACK_CONTACTO} />
+                    </dl>
+                  )}
                 </section>
               )}
             </div>

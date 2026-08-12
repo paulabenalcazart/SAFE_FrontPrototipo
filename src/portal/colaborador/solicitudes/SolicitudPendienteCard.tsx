@@ -22,7 +22,7 @@ export function SolicitudPendienteCard({
 
   return (
     <article className="rounded-xl border border-line/70 bg-surface p-3.5">
-      <CompanyIdentity nombre={empresa?.nombre ?? 'Empresa'} iniciales={empresa?.iniciales} />
+      <CompanyIdentity nombre={empresa?.nombre ?? 'Empresa no encontrada'} iniciales={empresa?.iniciales} />
       <dl className="mt-3 flex flex-col gap-1.5 text-[12.5px]">
         <div className="flex justify-between gap-2">
           <dt className="text-ink-500">Responsable</dt>
@@ -30,7 +30,7 @@ export function SolicitudPendienteCard({
         </div>
         <div className="flex justify-between gap-2">
           <dt className="text-ink-500">Servicio solicitado</dt>
-          <dd className="text-ink-900">{servicio?.nombre ?? 'Servicio por definir'}</dd>
+          <dd className="text-ink-900">{servicio?.nombre ?? 'Servicio no encontrado'}</dd>
         </div>
         <div className="flex justify-between gap-2">
           <dt className="text-ink-500">Fecha solicitada</dt>

@@ -6,7 +6,7 @@ import { empresaSolicitantePorId } from '@/portal/colaborador/semilla'
 import { formatDuracion, formatModalidad } from '@/portal/marketplace/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
-import { acquireBodyScrollLock } from './dialogScrollLock'
+import { acquireBodyScrollLock, acquireDialogLayer } from './dialogScrollLock'
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -64,10 +64,15 @@ export function AceptarSolicitudDialog({
   useEffect(() => {
     const focoAnterior = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const liberarBloqueoScroll = acquireBodyScrollLock()
+    const capa = acquireDialogLayer()
 
     const frame = window.requestAnimationFrame(() => dialogTitleRef.current?.focus())
 
     const manejarTeclado = (event: KeyboardEvent) => {
+      // Si este diálogo quedara cubierto por otra capa, ignora el teclado por completo
+      // para no competir con el diálogo superior por el foco ni por Escape.
+      if (!capa.esTope()) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
         // Mirrors the backdrop-click / header-X gating: while confirming, Escape is just
@@ -121,6 +126,7 @@ export function AceptarSolicitudDialog({
     return () => {
       window.cancelAnimationFrame(frame)
       document.removeEventListener('keydown', manejarTeclado)
+      capa.release()
       liberarBloqueoScroll()
       if (focoAnterior?.isConnected) focoAnterior.focus()
     }

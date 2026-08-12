@@ -61,7 +61,7 @@ export function SolicitudesScreen() {
           onCerrar={() => setAccion(null)}
           onExito={() => {
             setAccion(null)
-            navigate('/app/solicitudes')
+            navigate('/app/solicitudes', { replace: true })
           }}
         />
       )}
@@ -72,7 +72,7 @@ export function SolicitudesScreen() {
           onCerrar={() => setAccion(null)}
           onExito={() => {
             setAccion(null)
-            navigate('/app/solicitudes')
+            navigate('/app/solicitudes', { replace: true })
           }}
         />
       )}

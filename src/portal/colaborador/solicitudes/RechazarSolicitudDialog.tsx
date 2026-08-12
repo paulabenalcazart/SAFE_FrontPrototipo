@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { usePortalData } from '@/portal/PortalDataContext'
-import { acquireBodyScrollLock } from './dialogScrollLock'
+import { acquireBodyScrollLock, acquireDialogLayer } from './dialogScrollLock'
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -45,10 +45,15 @@ export function RechazarSolicitudDialog({
   useEffect(() => {
     const focoAnterior = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const liberarBloqueoScroll = acquireBodyScrollLock()
+    const capa = acquireDialogLayer()
 
     const frame = window.requestAnimationFrame(() => dialogTitleRef.current?.focus())
 
     const manejarTeclado = (event: KeyboardEvent) => {
+      // Si este diálogo quedara cubierto por otra capa, ignora el teclado por completo
+      // para no competir con el diálogo superior por el foco ni por Escape.
+      if (!capa.esTope()) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
         // This dialog has a single terminal state (no post-success step), so every close
@@ -97,6 +102,7 @@ export function RechazarSolicitudDialog({
     return () => {
       window.cancelAnimationFrame(frame)
       document.removeEventListener('keydown', manejarTeclado)
+      capa.release()
       liberarBloqueoScroll()
       if (focoAnterior?.isConnected) focoAnterior.focus()
     }
