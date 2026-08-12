@@ -92,14 +92,24 @@ const RIGHT_SHARD_FILLS = [
   'fill-amber-soft/70',
 ]
 
+const NAVBAR_HEIGHT_PX = 80
+const TEXT_TOP_GAP_PX = 56
+const GAP_TEXT_TO_PREVIEW_PX = 32
+const MIN_PEEK_PX = 100
+
 export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const { ref: trackRef, progress } = useScrollProgress<HTMLDivElement>()
   const previewRef = useRef<HTMLDivElement>(null)
+  const textRef = useRef<HTMLDivElement>(null)
   const [previewNaturalH, setPreviewNaturalH] = useState(720)
+  const [textHeight, setTextHeight] = useState(300)
 
   useEffect(() => {
     if (previewRef.current) {
       setPreviewNaturalH(previewRef.current.offsetHeight)
+    }
+    if (textRef.current) {
+      setTextHeight(textRef.current.offsetHeight)
     }
   }, [])
 
@@ -109,19 +119,21 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const availW = Math.min(viewportW - 64, 1360)
   const availH = viewportH * 0.82
   const finalScale = Math.min(availW / PREVIEW_NATURAL_W, availH / previewNaturalH)
-  const boxWMax = PREVIEW_NATURAL_W * finalScale
-  const boxHMax = previewNaturalH * finalScale
+  const boxW = PREVIEW_NATURAL_W * finalScale
+  const boxH = previewNaturalH * finalScale
 
-  const boxW = lerp(72, boxWMax, progress)
-  const boxH = lerp(72, boxHMax, progress)
+  const boxScale = lerp(0.94, 1, progress)
   const textOpacity = 1 - Math.min(Math.max(progress / 0.35, 0), 1)
-  const contentOpacity = Math.min(Math.max((progress - 0.5) / 0.35, 0), 1)
-  const shadowAlpha = (0.24 * contentOpacity).toFixed(3)
+  const shadowAlpha = lerp(0.1, 0.24, progress).toFixed(3)
 
-  const previewScale = Math.min(boxW / PREVIEW_NATURAL_W, boxH / previewNaturalH)
-  const previewScaledW = PREVIEW_NATURAL_W * previewScale
-  const previewScaledH = previewNaturalH * previewScale
-  const boxTopPercent = lerp(36, 50, progress)
+  const textTopPx = NAVBAR_HEIGHT_PX + TEXT_TOP_GAP_PX
+  const boxTopY0 = Math.min(
+    textTopPx + textHeight + GAP_TEXT_TO_PREVIEW_PX,
+    viewportH - MIN_PEEK_PX,
+  )
+  const boxCenterY0 = boxTopY0 + boxH / 2
+  const boxCenterY1 = viewportH * 0.5
+  const boxCenterY = lerp(boxCenterY0, boxCenterY1, progress)
 
   return (
     <div className="relative w-full bg-white">
@@ -169,29 +181,23 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
           <div
             className="absolute left-1/2 overflow-hidden rounded-xl bg-surface"
             style={{
-              top: `${boxTopPercent}%`,
+              top: `${boxCenterY}px`,
               width: `${boxW}px`,
               height: `${boxH}px`,
-              transform: 'translate(-50%, -50%)',
+              transform: `translate(-50%, -50%) scale(${boxScale})`,
               boxShadow: `0 44px 90px -42px oklch(0.28 0.076 253.5 / ${shadowAlpha})`,
             }}
           >
             <div
-              className="absolute"
+              className="absolute left-0 top-0"
               style={{
                 width: `${PREVIEW_NATURAL_W}px`,
-                left: `${(boxW - previewScaledW) / 2}px`,
-                top: `${(boxH - previewScaledH) / 2}px`,
-                transform: `scale(${previewScale})`,
+                transform: `scale(${finalScale})`,
                 transformOrigin: 'top left',
-                opacity: contentOpacity,
               }}
             >
               <div ref={previewRef} className="relative">
-                <DashboardPreviewCard
-                  inView={progress > 0.9}
-                  className="!border-transparent !shadow-none"
-                />
+                <DashboardPreviewCard inView className="!border-transparent !shadow-none" />
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(70%_100%_at_10%_0%,var(--color-navy-100)_0%,rgba(255,255,255,0)_100%)] opacity-70 mix-blend-multiply" />
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(60%_100%_at_92%_0%,var(--color-amber-soft)_0%,rgba(255,255,255,0)_100%)] opacity-60 mix-blend-multiply" />
               </div>
@@ -199,8 +205,9 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
           </div>
 
           <div
+            ref={textRef}
             className="absolute left-1/2 w-full max-w-5xl px-6 text-center"
-            style={{ top: 'calc(36% + 80px)', transform: 'translateX(-50%)', opacity: textOpacity }}
+            style={{ top: `${textTopPx}px`, transform: 'translateX(-50%)', opacity: textOpacity }}
           >
             <h1 className="animate-safe-fade-up text-3xl font-extrabold leading-[1.14] tracking-tight text-navy-900 sm:text-4xl lg:text-5xl">
               Gestiona las finanzas, impuestos y legal
