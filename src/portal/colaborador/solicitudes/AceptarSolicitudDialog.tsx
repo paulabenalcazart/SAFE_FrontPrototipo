@@ -6,6 +6,7 @@ import { empresaSolicitantePorId } from '@/portal/colaborador/semilla'
 import { formatDuracion, formatModalidad } from '@/portal/marketplace/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
+import { acquireBodyScrollLock } from './dialogScrollLock'
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -62,8 +63,7 @@ export function AceptarSolicitudDialog({
 
   useEffect(() => {
     const focoAnterior = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    const overflowAnterior = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const liberarBloqueoScroll = acquireBodyScrollLock()
 
     const frame = window.requestAnimationFrame(() => dialogTitleRef.current?.focus())
 
@@ -121,7 +121,7 @@ export function AceptarSolicitudDialog({
     return () => {
       window.cancelAnimationFrame(frame)
       document.removeEventListener('keydown', manejarTeclado)
-      document.body.style.overflow = overflowAnterior
+      liberarBloqueoScroll()
       if (focoAnterior?.isConnected) focoAnterior.focus()
     }
   }, [])

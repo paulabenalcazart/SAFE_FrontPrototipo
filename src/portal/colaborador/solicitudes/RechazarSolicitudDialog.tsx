@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { acquireBodyScrollLock } from './dialogScrollLock'
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -43,8 +44,7 @@ export function RechazarSolicitudDialog({
 
   useEffect(() => {
     const focoAnterior = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    const overflowAnterior = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const liberarBloqueoScroll = acquireBodyScrollLock()
 
     const frame = window.requestAnimationFrame(() => dialogTitleRef.current?.focus())
 
@@ -97,7 +97,7 @@ export function RechazarSolicitudDialog({
     return () => {
       window.cancelAnimationFrame(frame)
       document.removeEventListener('keydown', manejarTeclado)
-      document.body.style.overflow = overflowAnterior
+      liberarBloqueoScroll()
       if (focoAnterior?.isConnected) focoAnterior.focus()
     }
   }, [])
