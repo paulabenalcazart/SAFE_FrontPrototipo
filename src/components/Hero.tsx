@@ -96,7 +96,7 @@ const NAVBAR_HEIGHT_PX = 80
 const TEXT_TOP_GAP_PX = 56
 const GAP_TEXT_TO_PREVIEW_PX = 32
 const MIN_PEEK_PX = 100
-const PEEK_SCALE = 0.58
+const PEEK_HEIGHT_SCALE = 0.55
 
 export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const { ref: trackRef, progress } = useScrollProgress<HTMLDivElement>()
@@ -122,12 +122,11 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const finalScale = Math.min(availW / PREVIEW_NATURAL_W, availH / previewNaturalH)
   const boxWMax = PREVIEW_NATURAL_W * finalScale
   const boxHMax = previewNaturalH * finalScale
-  const boxWPeek = boxWMax * PEEK_SCALE
-  const boxHPeek = boxHMax * PEEK_SCALE
+  const boxHPeek = boxHMax * PEEK_HEIGHT_SCALE
 
-  const boxW = lerp(boxWPeek, boxWMax, progress)
+  const boxW = boxWMax
   const boxH = lerp(boxHPeek, boxHMax, progress)
-  const previewScale = boxW / PREVIEW_NATURAL_W
+  const previewScale = finalScale
   const textOpacity = 1 - Math.min(Math.max(progress / 0.35, 0), 1)
   const shadowAlpha = lerp(0.12, 0.24, progress).toFixed(3)
 
