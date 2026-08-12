@@ -48,6 +48,7 @@ import { MetodosPagoScreen } from './portal/plan/MetodosPagoScreen'
 import { HistorialPagosScreen } from './portal/plan/HistorialPagosScreen'
 import { ConfiguracionScreen } from './portal/configuracion/ConfiguracionScreen'
 import { EditarCuentaScreen } from './portal/configuracion/EditarCuentaScreen'
+import { CollaboratorSettingsScreen } from './portal/colaborador/configuracion/CollaboratorSettingsScreen'
 import { TutorialesScreen } from './portal/tutoriales/TutorialesScreen'
 import { CollaboratorTutorialsScreen } from './portal/colaborador/tutoriales/CollaboratorTutorialsScreen'
 import { PerfilColaboradorScreen } from './portal/colaborador/perfil/PerfilColaboradorScreen'
@@ -116,6 +117,11 @@ function DashboardResolver() {
 function TutorialesResolver() {
   const { user } = useAuth()
   return user?.role === 'COLABORADOR' ? <CollaboratorTutorialsScreen /> : <TutorialesScreen />
+}
+
+function ConfiguracionResolver() {
+  const { user } = useAuth()
+  return user?.role === 'COLABORADOR' ? <CollaboratorSettingsScreen /> : <ConfiguracionScreen />
 }
 
 function PublicLayout() {
@@ -466,7 +472,7 @@ export default function App() {
             </RoleRoute>
           }
         />
-        <Route path="configuracion" element={<ConfiguracionScreen />} />
+        <Route path="configuracion" element={<ConfiguracionResolver />} />
         <Route path="configuracion/cuenta" element={<EditarCuentaScreen />} />
         <Route path="tutoriales" element={<TutorialesResolver />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
