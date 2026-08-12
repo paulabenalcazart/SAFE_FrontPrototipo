@@ -1,4 +1,4 @@
-import type { Cita, EspecialidadColaboradorRelacion, HorarioDisponibilidad, ModalidadAtencion, ResenaColaborador, SolicitudContacto } from '@/portal/types'
+import type { Cita, Empresa, EspecialidadColaboradorRelacion, HorarioDisponibilidad, ModalidadAtencion, ResenaColaborador, SolicitudContacto } from '@/portal/types'
 
 export function inicialesDeNombre(nombre: string): string {
   const palabras = nombre.trim().split(/\s+/).filter(Boolean)
@@ -322,4 +322,33 @@ export function validarBloqueHorario(bloque: Pick<HorarioDisponibilidad, 'horaIn
     return 'La hora de fin debe ser posterior a la hora de inicio.'
   }
   return null
+}
+
+function normalizarTexto(texto: string): string {
+  return texto
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim()
+}
+
+export function buscarSolicitudesPorEmpresa<T extends { empresaId: string }>({
+  items,
+  busqueda,
+  empresaPorId,
+}: {
+  items: T[]
+  busqueda: string
+  empresaPorId: (id: string) => Pick<Empresa, 'nombre' | 'general'> | undefined
+}): T[] {
+  const consulta = normalizarTexto(busqueda)
+  if (consulta === '') return items
+  return items.filter((item) => {
+    const empresa = empresaPorId(item.empresaId)
+    if (!empresa) return false
+    return (
+      normalizarTexto(empresa.nombre).includes(consulta) ||
+      normalizarTexto(empresa.general.razonSocial).includes(consulta)
+    )
+  })
 }
