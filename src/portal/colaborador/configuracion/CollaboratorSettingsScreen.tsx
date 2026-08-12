@@ -11,6 +11,7 @@ import { useAuth } from '@/auth/AuthContext'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { DOCUMENTOS_LEGALES } from '@/portal/configuracion/catalogo'
 import { useTemaPreferencia } from '@/portal/configuracion/useTemaPreferencia'
+import { EliminarCuentaColaboradorModal } from '@/portal/colaborador/configuracion/EliminarCuentaColaboradorModal'
 import type { CategoriaNotificacionColaborador, FrecuenciaNotificacionColaborador } from '@/portal/types'
 
 const FILAS_NOTIFICACION: { categoria: CategoriaNotificacionColaborador; label: string }[] = [
@@ -306,13 +307,7 @@ export function CollaboratorSettingsScreen() {
         </div>
       </section>
 
-      {/*
-        Task 4 (Fase 13) crea EliminarCuentaColaboradorModal y la acción desactivarCuentaColaborador
-        en PortalDataContext. Cuando ese archivo exista, reemplazar la línea de abajo por:
-        <EliminarCuentaColaboradorModal abierto={eliminarAbierto} onCerrar={() => setEliminarAbierto(false)} />
-        El estado `eliminarAbierto` y el botón "Eliminar cuenta" ya están cableados para esa modal.
-      */}
-      {eliminarAbierto && null}
+      <EliminarCuentaColaboradorModal abierto={eliminarAbierto} onCerrar={() => setEliminarAbierto(false)} />
     </section>
   )
 }

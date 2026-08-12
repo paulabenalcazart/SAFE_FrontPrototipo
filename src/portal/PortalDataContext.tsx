@@ -102,6 +102,7 @@ type PortalDataContextValue = {
   colaboradorPerfil: ColaboradorMarketplace
   actualizarColaboradorPerfil: (patch: Partial<ColaboradorMarketplace>) => void
   actualizarEspecialidadesColaborador: (especialidades: EspecialidadColaboradorRelacion[]) => void
+  desactivarCuentaColaborador: () => void
   serviciosColaborador: ServicioProfesional[]
   agregarServicioColaborador: (
     servicio: Omit<ServicioProfesional, 'id' | 'colaboradorId' | 'activo'>,
@@ -445,6 +446,10 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     }))
   }
 
+  const desactivarCuentaColaborador = () => {
+    setColaboradorPerfil((current) => ({ ...current, estado: 'INACTIVO', visibleMarketplace: false }))
+  }
+
   const agregarServicioColaborador = (
     servicio: Omit<ServicioProfesional, 'id' | 'colaboradorId' | 'activo'>,
   ): ServicioProfesional => {
@@ -572,6 +577,7 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         colaboradorPerfil,
         actualizarColaboradorPerfil,
         actualizarEspecialidadesColaborador,
+        desactivarCuentaColaborador,
         serviciosColaborador,
         agregarServicioColaborador,
         actualizarServicioColaborador,
