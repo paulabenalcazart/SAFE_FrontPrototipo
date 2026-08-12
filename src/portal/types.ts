@@ -420,12 +420,15 @@ export type DocumentoLegal = {
   href?: string
 }
 
+export type AudienciaTutorial = 'EMPRESA' | 'COLABORADOR'
+
 export type VideoTutorial = {
   id: string
   titulo: string
   categoria: string
   duracion: string
   descripcion: string
+  audiencia: AudienciaTutorial
 }
 
 export type PrioridadNotificacionColaborador = 'BAJA' | 'NORMAL' | 'ALTA' | 'URGENTE'

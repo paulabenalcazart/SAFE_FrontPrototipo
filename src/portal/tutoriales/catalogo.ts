@@ -36,4 +36,5 @@ export const VIDEO_TUTORIALES: VideoTutorial[] = CATALOGO.map(([titulo, categori
   categoria,
   duracion,
   descripcion,
+  audiencia: 'EMPRESA',
 }))
