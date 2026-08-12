@@ -49,6 +49,7 @@ import { HistorialPagosScreen } from './portal/plan/HistorialPagosScreen'
 import { ConfiguracionScreen } from './portal/configuracion/ConfiguracionScreen'
 import { EditarCuentaScreen } from './portal/configuracion/EditarCuentaScreen'
 import { TutorialesScreen } from './portal/tutoriales/TutorialesScreen'
+import { CollaboratorTutorialsScreen } from './portal/colaborador/tutoriales/CollaboratorTutorialsScreen'
 import { PerfilColaboradorScreen } from './portal/colaborador/perfil/PerfilColaboradorScreen'
 import { EditarPerfilScreen } from './portal/colaborador/perfil/EditarPerfilScreen'
 import { VistaPreviaPerfilScreen } from './portal/colaborador/perfil/VistaPreviaPerfilScreen'
@@ -110,6 +111,11 @@ function RoleRoute({ allow, children }: { allow: AppRole[]; children: ReactNode 
 function DashboardResolver() {
   const { user } = useAuth()
   return user?.role === 'COLABORADOR' ? <CollaboratorDashboardScreen /> : <DashboardScreen />
+}
+
+function TutorialesResolver() {
+  const { user } = useAuth()
+  return user?.role === 'COLABORADOR' ? <CollaboratorTutorialsScreen /> : <TutorialesScreen />
 }
 
 function PublicLayout() {
@@ -462,7 +468,7 @@ export default function App() {
         />
         <Route path="configuracion" element={<ConfiguracionScreen />} />
         <Route path="configuracion/cuenta" element={<EditarCuentaScreen />} />
-        <Route path="tutoriales" element={<TutorialesScreen />} />
+        <Route path="tutoriales" element={<TutorialesResolver />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
