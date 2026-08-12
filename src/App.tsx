@@ -53,6 +53,7 @@ import { PerfilColaboradorScreen } from './portal/colaborador/perfil/PerfilColab
 import { EditarPerfilScreen } from './portal/colaborador/perfil/EditarPerfilScreen'
 import { VistaPreviaPerfilScreen } from './portal/colaborador/perfil/VistaPreviaPerfilScreen'
 import { TodasLasResenasScreen } from './portal/colaborador/perfil/TodasLasResenasScreen'
+import { SolicitudesScreen } from './portal/colaborador/solicitudes/SolicitudesScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -256,6 +257,22 @@ export default function App() {
           element={
             <RoleRoute allow={['COLABORADOR']}>
               <TodasLasResenasScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="solicitudes"
+          element={
+            <RoleRoute allow={['COLABORADOR']}>
+              <SolicitudesScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="solicitudes/:solicitudId"
+          element={
+            <RoleRoute allow={['COLABORADOR']}>
+              <SolicitudesScreen />
             </RoleRoute>
           }
         />
