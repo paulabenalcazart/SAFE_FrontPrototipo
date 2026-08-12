@@ -45,10 +45,20 @@ export function AceptarSolicitudDialog({
   const dialogRef = useRef<HTMLDivElement>(null)
   const dialogTitleRef = useRef<HTMLHeadingElement>(null)
   const onCerrarRef = useRef(onCerrar)
+  const onExitoRef = useRef(onExito)
+  const pasoRef = useRef(paso)
 
   useEffect(() => {
     onCerrarRef.current = onCerrar
   }, [onCerrar])
+
+  useEffect(() => {
+    onExitoRef.current = onExito
+  }, [onExito])
+
+  useEffect(() => {
+    pasoRef.current = paso
+  }, [paso])
 
   useEffect(() => {
     const focoAnterior = document.activeElement instanceof HTMLElement ? document.activeElement : null
@@ -60,7 +70,15 @@ export function AceptarSolicitudDialog({
     const manejarTeclado = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
-        onCerrarRef.current()
+        // Mirrors the backdrop-click / header-X gating: while confirming, Escape is just
+        // another "close without accepting" affordance (-> onCerrar). Once the accept has
+        // already succeeded (paso === 'EXITO'), the only exit is the same one the "Cerrar"
+        // button uses (-> onExito), so the parent still gets its post-success signal.
+        if (pasoRef.current === 'CONFIRMAR') {
+          onCerrarRef.current()
+        } else {
+          onExitoRef.current()
+        }
         return
       }
       if (event.key !== 'Tab') return
