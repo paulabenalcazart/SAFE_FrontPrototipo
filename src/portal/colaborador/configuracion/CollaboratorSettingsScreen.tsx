@@ -177,7 +177,7 @@ export function CollaboratorSettingsScreen() {
 
       <section className="rounded-xl border border-line bg-card p-4.5">
         <h2 className="text-[16px] font-semibold text-ink-900">Notificaciones</h2>
-        <div className="mt-3.5 hidden grid-cols-[1fr,140px,180px] gap-3 border-b border-line-soft pb-2.5 sm:grid">
+        <div className="mt-3.5 hidden grid-cols-[1fr_140px_180px] gap-3 border-b border-line-soft pb-2.5 sm:grid">
           <span className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-500">
             Tipo de notificación
           </span>
@@ -191,7 +191,7 @@ export function CollaboratorSettingsScreen() {
             return (
               <div
                 key={fila.categoria}
-                className="flex flex-col gap-2.5 py-3 sm:grid sm:grid-cols-[1fr,140px,180px] sm:items-center sm:gap-3"
+                className="flex flex-col gap-2.5 py-3 sm:grid sm:grid-cols-[1fr_140px_180px] sm:items-center sm:gap-3"
               >
                 <span className="text-[13.5px] font-medium text-ink-900">{fila.label}</span>
                 <Switch
