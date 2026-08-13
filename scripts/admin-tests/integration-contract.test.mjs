@@ -292,3 +292,50 @@ test('ADMIN content creates independently of edit selection and validates local 
     assert.match(drawer, /disabled=\{resolving\}/)
   }
 })
+
+test('ADMIN resolves tutorials and settings without changing shared role routes or titles', async () => {
+  const [app, titles, catalogo, account] = await Promise.all([
+    source('src/App.tsx'), source('src/titulos.ts'), source('src/portal/admin/catalogo.ts'), source('src/portal/components/AccountMenu.tsx'),
+  ])
+  const tutorials = blockAfter(app, 'function TutorialesResolver')
+  const settings = blockAfter(app, 'function ConfiguracionResolver')
+  assert.match(tutorials, /case 'EMPRESA': return <TutorialesScreen \/>/)
+  assert.match(tutorials, /case 'COLABORADOR': return <CollaboratorTutorialsScreen \/>/)
+  assert.match(tutorials, /case 'ADMIN': return <AdminTutorialsScreen \/>/)
+  assert.match(settings, /case 'EMPRESA': return <ConfiguracionScreen \/>/)
+  assert.match(settings, /case 'COLABORADOR': return <CollaboratorSettingsScreen \/>/)
+  assert.match(settings, /case 'ADMIN': return <AdminSettingsScreen \/>/)
+  assert.match(app, /AdminTutorialsScreen/)
+  assert.match(app, /AdminSettingsScreen/)
+  assert.match(app, /path="configuracion\/cuenta" element=\{<EditarCuentaScreen \/>\}/)
+  assert.match(titles, /'\/app\/tutoriales': 'Video tutoriales SAFE'/)
+  assert.match(titles, /'\/app\/configuracion': 'Configuración SAFE'/)
+  assert.match(titles, /'\/app\/configuracion\/cuenta': 'Editar cuenta SAFE'/)
+  assert.equal(Array.from(catalogo.matchAll(/label: '([^']+)'/g)).length, 8)
+  assert.match(account, /\/app\/configuracion\/cuenta/)
+})
+
+test('ADMIN tutorial library preserves guarded CRUD, validation and accessible data workflows', async () => {
+  const [screen, dialog] = await Promise.all([
+    source('src/portal/admin/tutoriales/AdminTutorialsScreen.tsx'), source('src/portal/admin/tutoriales/AdminTutorialDialog.tsx'),
+  ])
+  for (const token of ['Tutoriales publicados', 'Visualizaciones', 'Audiencias', 'Miniatura', 'Título', 'Categoría', 'Duración', 'Estado', 'Acciones', 'matchesQuery', 'titulo', 'categoria', 'modulo', 'descripcion', 'downloadExcel', 'pageSize={7}', 'upsertEntity', 'AdminDialog', 'Confirmar eliminación']) assert.match(screen, new RegExp(token.replace(/[{}]/g, '\\$&')))
+  assert.match(screen, /patchEntity\('tutorials'/)
+  assert.match(screen, /removeEntity\('tutorials'/)
+  for (const token of ['Título', 'Descripción', 'Módulo', 'Categoría', 'EMPRESA', 'COLABORADOR', 'ADMINISTRADOR', 'TODOS', 'BORRADOR', 'PUBLICADO', 'OCULTO', 'Duración', 'Orden', 'URL', 'Miniatura', 'Generar miniatura automáticamente', 'Notificar', 'crypto.randomUUID()', 'AHORA_ADMIN', 'role="alert"', 'Number.isFinite', 'duracion_segundos', 'orden_visualizacion', 'published_at']) assert.match(dialog, new RegExp(token.replace(/[(){}]/g, '\\$&')))
+  assert.match(dialog, /url_video/)
+  assert.match(dialog, /javascript:|data:/)
+  for (const item of [screen, dialog]) assert.doesNotMatch(item, /Date\.now|new Date|localStorage|sessionStorage|fetch\(|dangerouslySetInnerHTML|replaceAll|style=|BrowserRouter/)
+})
+
+test('ADMIN settings keeps identity, security, SMTP and system fields in auditable accessible form', async () => {
+  const settings = await source('src/portal/admin/configuracion/AdminSettingsScreen.tsx')
+  for (const token of ['Identidad y localización', 'Seguridad', 'Notificaciones', 'Plantillas de correo', 'Información del sistema', 'platformName', 'Español', 'English', 'America/Guayaquil', 'America/Bogota', 'America/Lima', 'strongPasswords', 'twoFactorAdmin', 'sessionMinutes', 'maxFailedAttempts', 'smtpServer', 'sender', 'remindersEnabled', 'emailTemplates', 'pageSize={5}', '/app/admin/alertas-contenido?tab=templates', 'updateSettings', 'role="status"', 'aria-live="polite"', 'URL.createObjectURL', 'URL.revokeObjectURL', 'OPERATIVO']) assert.match(settings, new RegExp(token.replace(/[?{}()]/g, '\\$&')))
+  assert.match(settings, /min="5"/)
+  assert.match(settings, /min="1"/)
+  assert.match(settings, /aria-pressed/)
+  assert.match(settings, /min-h-11/)
+  assert.match(settings, /role="alert"/)
+  assert.match(settings, /replace\(\/_\/g, ' '\)/)
+  assert.doesNotMatch(settings, /Date\.now|new Date|localStorage|sessionStorage|fetch\(|FileReader|base64|dangerouslySetInnerHTML|replaceAll|style=|BrowserRouter/)
+})

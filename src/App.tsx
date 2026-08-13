@@ -68,6 +68,8 @@ const AdminPlansScreen = lazy(() => import('./portal/admin/planes/AdminPlansScre
 const AdminContentScreen = lazy(() => import('./portal/admin/contenido/AdminContentScreen').then((module) => ({ default: module.AdminContentScreen })))
 const AdminAuditScreen = lazy(() => import('./portal/admin/auditoria/AdminAuditScreen').then((module) => ({ default: module.AdminAuditScreen })))
 const AdminSecurityAlertsScreen = lazy(() => import('./portal/admin/auditoria/AdminSecurityAlertsScreen').then((module) => ({ default: module.AdminSecurityAlertsScreen })))
+const AdminTutorialsScreen = lazy(() => import('./portal/admin/tutoriales/AdminTutorialsScreen').then((module) => ({ default: module.AdminTutorialsScreen })))
+const AdminSettingsScreen = lazy(() => import('./portal/admin/configuracion/AdminSettingsScreen').then((module) => ({ default: module.AdminSettingsScreen })))
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -149,7 +151,7 @@ function TutorialesResolver() {
   switch (role) {
     case 'EMPRESA': return <TutorialesScreen />
     case 'COLABORADOR': return <CollaboratorTutorialsScreen />
-    case 'ADMIN': return <Navigate to="/app/dashboard" replace />
+    case 'ADMIN': return <AdminTutorialsScreen />
     case undefined: return null
     default: return assertNever(role)
   }
@@ -161,7 +163,7 @@ function ConfiguracionResolver() {
   switch (role) {
     case 'EMPRESA': return <ConfiguracionScreen />
     case 'COLABORADOR': return <CollaboratorSettingsScreen />
-    case 'ADMIN': return <Navigate to="/app/dashboard" replace />
+    case 'ADMIN': return <AdminSettingsScreen />
     case undefined: return null
     default: return assertNever(role)
   }
