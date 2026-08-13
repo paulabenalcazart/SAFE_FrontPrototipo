@@ -339,3 +339,26 @@ test('ADMIN settings keeps identity, security, SMTP and system fields in auditab
   assert.match(settings, /replace\(\/_\/g, ' '\)/)
   assert.doesNotMatch(settings, /Date\.now|new Date|localStorage|sessionStorage|fetch\(|FileReader|base64|dangerouslySetInnerHTML|replaceAll|style=|BrowserRouter/)
 })
+
+test('ADMIN tutorial mutations are single-flight and never hide a draft', async () => {
+  const [screen, dialog] = await Promise.all([
+    source('src/portal/admin/tutoriales/AdminTutorialsScreen.tsx'), source('src/portal/admin/tutoriales/AdminTutorialDialog.tsx'),
+  ])
+  const toggle = blockAfter(screen, 'const toggle =')
+  const remove = blockAfter(screen, 'const confirmDelete =')
+  const save = blockAfter(dialog, 'const save =')
+  assert.match(toggle, /\['PUBLICADO', 'OCULTO'\]\.includes\(tutorial\.estado\)/)
+  assert.match(toggle, /togglingRef\.current\.has\(tutorial\.id\)/)
+  assert.match(toggle, /togglingRef\.current\.add\(tutorial\.id\)/)
+  assert.match(toggle, /patchEntity\('tutorials', tutorial\.id/)
+  assert.match(screen, /row\.estado !== 'BORRADOR'/)
+  assert.match(remove, /deletingRef\.current/)
+  assert.match(remove, /removeEntity\('tutorials', deleting\.id\)/)
+  assert.match(screen, /disabled=\{busyAction === row\.id \|\| deletingBusy\}/)
+  assert.match(dialog, /const \[saving, setSaving\] = useState\(false\)/)
+  assert.match(dialog, /const savingRef = useRef\(false\)/)
+  assert.match(save, /savingRef\.current \|\| saving/)
+  assert.match(save, /savingRef\.current = true/)
+  assert.match(save, /setSaving\(true\)/)
+  assert.match(dialog, /disabled=\{saving\}/)
+})
