@@ -47,7 +47,6 @@ type FormularioPerfil = {
   tarifaReferencial: number
   cvVisible: boolean
   estadoDisponibilidad: 'DISPONIBLE' | 'NO_DISPONIBLE'
-  visibleMarketplace: boolean
   fotoPerfilUrl?: string
   cvUrl?: string
   numeroLicencia?: string
@@ -81,8 +80,6 @@ const ZONAS_HORARIAS = [
   'America/New_York',
 ]
 
-const ESTADOS_DISPONIBILIDAD: FormularioPerfil['estadoDisponibilidad'][] = ['DISPONIBLE', 'NO_DISPONIBLE']
-
 const MAX_FOTO_BYTES = 5 * 1024 * 1024
 const MAX_ARCHIVO_BYTES = 10 * 1024 * 1024
 
@@ -106,7 +103,6 @@ function construirFormulario(user: AuthUser | null, colaborador: ColaboradorMark
     tarifaReferencial: colaborador.tarifaReferencial,
     cvVisible: colaborador.cvVisible,
     estadoDisponibilidad: colaborador.estadoDisponibilidad,
-    visibleMarketplace: colaborador.visibleMarketplace,
     fotoPerfilUrl: colaborador.fotoPerfilUrl,
     cvUrl: colaborador.cvUrl,
     numeroLicencia: colaborador.numeroLicencia,
@@ -404,7 +400,6 @@ export function EditarPerfilScreen() {
       tarifaReferencial: formulario.tarifaReferencial,
       cvVisible: formulario.cvVisible,
       estadoDisponibilidad: formulario.estadoDisponibilidad,
-      visibleMarketplace: formulario.visibleMarketplace,
       fotoPerfilUrl: formulario.fotoPerfilUrl,
       cvUrl: formulario.cvUrl,
       numeroLicencia: formulario.numeroLicencia || undefined,
@@ -429,6 +424,44 @@ export function EditarPerfilScreen() {
         </button>
         <h1 className="mt-1.5 text-[28px] font-bold leading-tight">Editar perfil profesional</h1>
       </div>
+
+      <section
+        aria-labelledby="disponibilidad-solicitudes-titulo"
+        className="rounded-xl border border-line bg-card p-4 sm:p-5"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 id="disponibilidad-solicitudes-titulo" className="text-[16px] font-semibold text-ink-900">
+                Disponible para nuevas solicitudes
+              </h2>
+              <span
+                className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                  formulario.estadoDisponibilidad === 'DISPONIBLE'
+                    ? 'bg-emerald-soft text-emerald-deep'
+                    : 'bg-surface text-ink-700'
+                }`}
+              >
+                {formatEstadoDisponibilidad(formulario.estadoDisponibilidad)}
+              </span>
+            </div>
+            <p className="mt-1.5 max-w-[70ch] text-[13px] leading-relaxed text-ink-500">
+              Indica si puedes recibir nuevas solicitudes. El cambio se aplica cuando guardas el perfil.
+            </p>
+          </div>
+          <Switch
+            checked={formulario.estadoDisponibilidad === 'DISPONIBLE'}
+            onCheckedChange={() =>
+              actualizar(
+                'estadoDisponibilidad',
+                formulario.estadoDisponibilidad === 'DISPONIBLE' ? 'NO_DISPONIBLE' : 'DISPONIBLE',
+              )
+            }
+            label="Disponible para nuevas solicitudes"
+            className="h-11 w-[66px] [&>span]:left-1.5 [&>span]:top-[11px] [&[aria-checked=true]>span]:translate-x-7"
+          />
+        </div>
+      </section>
 
       {hayCambiosSinGuardar && (
         <p
@@ -700,26 +733,6 @@ export function EditarPerfilScreen() {
             </Select>
             <FieldError message={errores.zonaHoraria} />
           </div>
-          <div>
-            <Label htmlFor="perfil-estado-disponibilidad">Estado de disponibilidad</Label>
-            <Select
-              value={formulario.estadoDisponibilidad}
-              onValueChange={(v) =>
-                actualizar('estadoDisponibilidad', v as FormularioPerfil['estadoDisponibilidad'])
-              }
-            >
-              <SelectTrigger id="perfil-estado-disponibilidad" className="mt-1.5">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ESTADOS_DISPONIBILIDAD.map((estado) => (
-                  <SelectItem key={estado} value={estado}>
-                    {formatEstadoDisponibilidad(estado)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         <div className="mt-4.5">
@@ -747,19 +760,6 @@ export function EditarPerfilScreen() {
               checked={formulario.cvVisible}
               onCheckedChange={() => actualizar('cvVisible', !formulario.cvVisible)}
               label="Hoja de vida visible públicamente"
-            />
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-[13.5px] font-semibold text-ink-900">Visible en el marketplace</p>
-              <p className="text-[12px] text-ink-500">
-                Controla si tu perfil aparece en las búsquedas del marketplace.
-              </p>
-            </div>
-            <Switch
-              checked={formulario.visibleMarketplace}
-              onCheckedChange={() => actualizar('visibleMarketplace', !formulario.visibleMarketplace)}
-              label="Visible en el marketplace"
             />
           </div>
         </div>

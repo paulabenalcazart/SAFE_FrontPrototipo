@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { CheckCircle2, ExternalLink, Eye, EyeOff, FileText, Star } from 'lucide-react'
+import { CheckCircle2, ExternalLink, FileText, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/auth/AuthContext'
 import { usePortalData } from '@/portal/PortalDataContext'
@@ -95,7 +95,6 @@ export function PerfilColaboradorScreen() {
         ? enlaceArchivo(colaboradorPerfil.archivoCredencialUrl, nombreArchivoCredencial ?? 'Ver credencial')
         : 'No cargada',
     },
-    { label: 'Visibilidad en marketplace', valor: colaboradorPerfil.visibleMarketplace ? 'Sí' : 'No' },
     { label: 'Estado de disponibilidad', valor: formatEstadoDisponibilidad(colaboradorPerfil.estadoDisponibilidad) },
   ]
 
@@ -128,25 +127,9 @@ export function PerfilColaboradorScreen() {
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="font-display text-[28px] font-bold leading-tight text-ink-900">
-                {colaboradorPerfil.nombres} {colaboradorPerfil.apellidos}
-              </h1>
-              <span
-                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-semibold ${
-                  colaboradorPerfil.visibleMarketplace
-                    ? 'bg-navy-100 text-navy-700'
-                    : 'border border-line bg-surface text-ink-700'
-                }`}
-              >
-                {colaboradorPerfil.visibleMarketplace ? (
-                  <Eye className="h-4 w-4" aria-hidden="true" />
-                ) : (
-                  <EyeOff className="h-4 w-4" aria-hidden="true" />
-                )}
-                {colaboradorPerfil.visibleMarketplace ? 'Visible en Marketplace' : 'Oculto en Marketplace'}
-              </span>
-            </div>
+            <h1 className="font-display text-[28px] font-bold leading-tight text-ink-900">
+              {colaboradorPerfil.nombres} {colaboradorPerfil.apellidos}
+            </h1>
             <p className="mt-2 text-[16px] font-semibold text-ink-700">{colaboradorPerfil.profesion}</p>
             <p className="mt-1 text-[14px] text-ink-500">{especialidadPrincipal?.nombre ?? 'Sin especialidad principal'}</p>
             <div className="mt-3 flex flex-wrap items-center gap-3 text-[14px]">
