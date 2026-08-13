@@ -8,14 +8,13 @@
 /build
 /out
 
-# No se porque se genera pero lo ignoro
+# TypeScript incremental build metadata
 tsconfig.tsbuildinfo
 
 # Testing and coverage
 /coverage
 
 # Logs
-----
 *.log
 npm-debug.log*
 yarn-debug.log*
