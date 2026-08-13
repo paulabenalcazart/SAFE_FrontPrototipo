@@ -233,7 +233,7 @@ test('ADMIN content supports controlled communications and safe email templates'
   assert.match(screen, /removeEntity\(deleting\.key, deleting\.id\)/)
   assert.match(screen, /Confirmar eliminación/)
   for (const value of ['AVISO', 'CAMBIO_NORMATIVO', 'NOTICIA', 'TUTORIAL', 'BANNER', 'CORREO_MASIVO', 'TODOS', 'EMPRESA', 'COLABORADOR', 'ADMINISTRADOR', 'PORTAL', 'CORREO']) assert.match(communication, new RegExp(value))
-  for (const requirement of ['crypto\.randomUUID\(\)', 'AHORA_ADMIN', 'role="alert"', 'checkValidity\(\)', 'PROGRAMADA', 'ACTIVA', 'BORRADOR']) assert.match(communication, new RegExp(requirement))
+  for (const requirement of ['crypto\.randomUUID\(\)', 'AHORA_ADMIN', 'role="alert"', 'checkValidity\(\)', 'PROGRAMADA', 'PUBLICADA', 'BORRADOR']) assert.match(communication, new RegExp(requirement))
   assert.match(communication, /upsertEntity\('communications'/)
   for (const value of ['USUARIO_CREADO', 'OBLIGACION_PROXIMA', 'POSTULACION_APROBADA', 'POSTULACION_RECHAZADA', 'MANTENIMIENTO', 'PAGO_CONFIRMADO', '{{nombre}}', '{{empresa}}', '{{fecha}}', '{{obligacion}}']) assert.match(template, new RegExp(value.replace(/[{}]/g, '\\$&')))
   assert.match(template, /replace\(\/\\{\\{nombre\\}\\}\/g/)
@@ -257,4 +257,31 @@ test('ADMIN audit and security screens filter, export and resolve through centra
   for (const value of ['filterSecurity', 'downloadExcel', 'Gravedad', 'Estado', 'Tipo', 'pageSize={7}', 'AdminSecurityAlertDrawer', '/app/admin/incidencias-auditoria']) assert.match(security, new RegExp(value.replace(/[{}]/g, '\\$&')))
   assert.match(alert, /patchEntity\('securityAlerts'/)
   assert.match(alert, /estado: 'RESUELTA'/)
+})
+
+test('ADMIN content creates independently of edit selection and validates local fields before native validity', async () => {
+  const [screen, communication, template, incident, security] = await Promise.all([
+    source('src/portal/admin/contenido/AdminContentScreen.tsx'),
+    source('src/portal/admin/contenido/AdminCommunicationDialog.tsx'),
+    source('src/portal/admin/contenido/AdminEmailTemplateDialog.tsx'),
+    source('src/portal/admin/auditoria/AdminIncidentDrawer.tsx'),
+    source('src/portal/admin/auditoria/AdminSecurityAlertDrawer.tsx'),
+  ])
+  for (const state of ['communicationOpen', 'templateOpen']) assert.match(screen, new RegExp(`\\[${state}, set${state[0].toUpperCase()}${state.slice(1)}\\]`))
+  assert.match(screen, /setEditingCommunication\(null\); setCommunicationOpen\(true\)/)
+  assert.match(screen, /setEditingTemplate\(null\); setTemplateOpen\(true\)/)
+  assert.match(screen, /setEditingCommunication\(row\); setCommunicationOpen\(true\)/)
+  assert.match(screen, /setEditingTemplate\(row\); setTemplateOpen\(true\)/)
+  assert.match(screen, /open=\{communicationOpen\}/)
+  assert.match(screen, /open=\{templateOpen\}/)
+  assert.match(communication, /if \(!form\.title\.trim\(\) \|\| !form\.description\.trim\(\)\).*checkValidity/s)
+  assert.match(communication, /titleRef\.current\?\.focus\(\)/)
+  assert.match(communication, /status: 'ACTIVA'.*'PUBLICADA'|PUBLICADA/s)
+  assert.match(template, /if \(!form\.name\.trim\(\) \|\| !form\.subject\.trim\(\) \|\| !form\.body\.trim\(\)\).*checkValidity/s)
+  assert.match(template, /nameRef\.current\?\.focus\(\)/)
+  for (const drawer of [incident, security]) {
+    assert.match(drawer, /const resolvingRef = useRef\(false\)/)
+    assert.match(drawer, /resolvingRef\.current = true/)
+    assert.match(drawer, /disabled=\{resolving\}/)
+  }
 })

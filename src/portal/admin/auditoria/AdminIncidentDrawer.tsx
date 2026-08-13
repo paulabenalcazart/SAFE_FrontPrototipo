@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { AHORA_ADMIN } from '@/portal/admin/catalogo'
 import { AdminButton } from '@/portal/admin/components/ui/AdminButton'
 import { AdminDrawer } from '@/portal/admin/components/ui/AdminDrawer'
@@ -8,6 +9,9 @@ import type { IncidentRecord } from '@/portal/admin/types'
 
 export function AdminIncidentDrawer({ incident, onClose }: { incident: IncidentRecord | null; onClose: () => void }) {
   const { patchEntity } = useAdminData()
-  const resolve = () => { if (!incident || incident.estado === 'RESUELTA') return; patchEntity('incidents', incident.id, { estado: 'RESUELTA', resolved_at: AHORA_ADMIN, updated_at: AHORA_ADMIN }); onClose() }
-  return <AdminDrawer open={Boolean(incident)} title={incident?.codigo ?? 'Incidencia'} subtitle={incident?.titulo} onClose={onClose} footer={incident?.estado !== 'RESUELTA' ? <AdminButton variant="success" onClick={resolve}>Marcar como resuelta</AdminButton> : <AdminButton onClick={onClose}>Cerrar</AdminButton>}>{incident ? <><dl className="grid grid-cols-1 gap-3"><div><dt>Estado</dt><dd><AdminStatusBadge status={incident.estado} /></dd></div><div><dt>Prioridad</dt><dd><AdminStatusBadge status={incident.priority} /></dd></div><div><dt>Módulo</dt><dd>{incident.modulo}</dd></div><div><dt>Código de error</dt><dd>{incident.codigo_error ?? '—'}</dd></div><div><dt>Responsable</dt><dd>{incident.assignee}</dd></div><div><dt>Creada</dt><dd>{formatDate(incident.created_at, true)}</dd></div><div><dt>Actualizada</dt><dd>{formatDate(incident.updated_at, true)}</dd></div></dl><section className="mt-5"><h3>Descripción</h3><p>{incident.descripcion}</p></section></> : null}</AdminDrawer>
+  const [resolving, setResolving] = useState(false)
+  const resolvingRef = useRef(false)
+  useEffect(() => { resolvingRef.current = false; setResolving(false) }, [incident?.id])
+  const resolve = () => { if (!incident || incident.estado === 'RESUELTA' || resolvingRef.current) return; resolvingRef.current = true; setResolving(true); patchEntity('incidents', incident.id, { estado: 'RESUELTA', resolved_at: AHORA_ADMIN, updated_at: AHORA_ADMIN }); onClose() }
+  return <AdminDrawer open={Boolean(incident)} title={incident?.codigo ?? 'Incidencia'} subtitle={incident?.titulo} onClose={onClose} footer={incident?.estado !== 'RESUELTA' ? <AdminButton variant="success" onClick={resolve} disabled={resolving}>Marcar como resuelta</AdminButton> : <AdminButton onClick={onClose}>Cerrar</AdminButton>}>{incident ? <><dl className="grid grid-cols-1 gap-3"><div><dt>Estado</dt><dd><AdminStatusBadge status={incident.estado} /></dd></div><div><dt>Prioridad</dt><dd><AdminStatusBadge status={incident.priority} /></dd></div><div><dt>Módulo</dt><dd>{incident.modulo}</dd></div><div><dt>Código de error</dt><dd>{incident.codigo_error ?? '—'}</dd></div><div><dt>Responsable</dt><dd>{incident.assignee}</dd></div><div><dt>Creada</dt><dd>{formatDate(incident.created_at, true)}</dd></div><div><dt>Actualizada</dt><dd>{formatDate(incident.updated_at, true)}</dd></div></dl><section className="mt-5"><h3>Descripción</h3><p>{incident.descripcion}</p></section></> : null}</AdminDrawer>
 }
