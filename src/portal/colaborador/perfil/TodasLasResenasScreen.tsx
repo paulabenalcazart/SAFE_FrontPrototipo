@@ -3,7 +3,7 @@ import { ArrowLeft, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
-import { Button } from '@/components/ui/button'
+import { Pagination } from '@/portal/components/Pagination'
 import { RESENAS_COLABORADORES } from '@/portal/marketplace/catalogo'
 import { calcularCalificacionPromedio } from '@/portal/colaborador/calculo'
 import { formatFecha } from '@/portal/obligaciones/formato'
@@ -145,32 +145,12 @@ export function TodasLasResenasScreen() {
         </div>
       )}
 
-      {/* Paginación */}
-      {resenasFiltradas.length > 0 && (
-        <div className="flex items-center justify-between gap-3 pt-1">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setPagina((p) => Math.max(1, p - 1))}
-            disabled={paginaSegura <= 1}
-          >
-            Anterior
-          </Button>
-          <span className="text-[12.5px] text-ink-500">
-            Página {paginaSegura} de {totalPaginas}
-          </span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
-            disabled={paginaSegura >= totalPaginas}
-          >
-            Siguiente
-          </Button>
-        </div>
-      )}
+      <Pagination
+        paginaActual={paginaSegura}
+        totalPaginas={totalPaginas}
+        onChange={setPagina}
+        ariaLabel="Páginas de todas las reseñas"
+      />
     </section>
   )
 }

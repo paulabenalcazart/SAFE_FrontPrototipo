@@ -1,13 +1,13 @@
 import { type RefObject } from 'react'
-import { BadgeCheck, Clock, Star } from 'lucide-react'
+import { Clock, ExternalLink, FileText, Star } from 'lucide-react'
 import type {
   ColaboradorMarketplace,
   HorarioDisponibilidad,
   ResenaColaborador,
   ServicioProfesional,
 } from '@/portal/types'
+import { formatEstadoDisponibilidad } from '@/portal/colaborador/formato'
 import { formatUSD } from '@/portal/financiero/formato'
-import { formatFecha } from '@/portal/obligaciones/formato'
 import { especialidadesDeColaborador } from './catalogo'
 import {
   formatDuracion,
@@ -17,6 +17,8 @@ import {
   formatTarifaHora,
 } from './formato'
 import { obtenerIniciales } from './calculo'
+import { esUrlDocumentoPermitida } from './documentos'
+import { ResenasProfesionalPanel } from './ResenasProfesionalPanel'
 
 const DIAS_SEMANA: { dia: 1 | 2 | 3 | 4 | 5 | 6 | 7; label: string }[] = [
   { dia: 1, label: 'Lunes' },
@@ -28,6 +30,12 @@ const DIAS_SEMANA: { dia: 1 | 2 | 3 | 4 | 5 | 6 | 7; label: string }[] = [
   { dia: 7, label: 'Domingo' },
 ]
 
+function nombreDocumento(url: string, fallback: string): string {
+  if (url.startsWith('blob:')) return fallback
+  const ruta = url.split(/[?#]/)[0]
+  const nombre = ruta.split('/').pop()
+  return nombre || fallback
+}
 export function PerfilProfesionalContenido({
   profesional,
   servicios,
@@ -47,6 +55,7 @@ export function PerfilProfesionalContenido({
 }) {
   const especialidades = especialidadesDeColaborador(profesional)
   const puedeSolicitarContacto = modo === 'marketplace' && servicios.length > 0
+  const nombreCompleto = `${profesional.nombres} ${profesional.apellidos}`
   const resumenCalificacion = formatResumenCalificacion({
     calificacion: profesional.calificacionPromedio,
     cantidadResenas: profesional.cantidadResenas,
@@ -58,91 +67,109 @@ export function PerfilProfesionalContenido({
     franjas: horarios.filter((horario) => horario.diaSemana === dia),
   })).filter((grupo) => grupo.franjas.length > 0)
 
-  const credenciales: { titulo: string; detalle: string }[] = [
-    { titulo: 'Perfil validado por SAFE', detalle: profesional.profesion },
-  ]
-  if (profesional.numeroLicencia && profesional.entidadEmisora) {
-    credenciales.push({
-      titulo: `Licencia ${profesional.numeroLicencia}`,
-      detalle: profesional.entidadEmisora,
-    })
-  } else if (profesional.trabajoActual) {
-    credenciales.push({
-      titulo: 'Experiencia declarada',
-      detalle: profesional.trabajoActual,
-    })
-  }
-
   const campos = [
     { label: 'Área', valor: profesional.areaEspecializacion },
     { label: 'Profesión', valor: profesional.profesion },
     { label: 'Trabajo actual', valor: profesional.trabajoActual ?? 'Independiente' },
     { label: 'Modalidad', valor: formatModalidad(profesional.modalidadAtencion) },
-    { label: 'País', valor: profesional.paisAtencion },
-    { label: 'Ciudad', valor: profesional.ciudadAtencion },
+    { label: 'País de atención', valor: profesional.paisAtencion },
+    { label: 'Ciudad de atención', valor: profesional.ciudadAtencion },
     { label: 'Zona horaria', valor: profesional.zonaHoraria },
     { label: 'Tarifa referencial', valor: formatTarifaHora(profesional.tarifaReferencial) },
     { label: 'Experiencia', valor: `${profesional.aniosExperiencia} años` },
-    { label: 'Disponibilidad', valor: `${horarios.length} franjas semanales` },
+    { label: 'Disponibilidad semanal', valor: `${horarios.length} franjas` },
     { label: 'Calificación', valor: resumenCalificacion },
-    {
-      label: 'Hoja de vida',
-      valor: profesional.cvVisible ? 'Disponible para empresas' : 'No compartida',
-    },
+    ...(profesional.numeroLicencia
+      ? [{ label: 'Número de licencia', valor: profesional.numeroLicencia }]
+      : []),
+    ...(profesional.entidadEmisora
+      ? [{ label: 'Entidad emisora', valor: profesional.entidadEmisora }]
+      : []),
   ]
+
+  const cvEnlazable =
+    profesional.cvVisible &&
+    Boolean(profesional.cvUrl) &&
+    esUrlDocumentoPermitida(profesional.cvUrl)
+  const credencialEnlazable =
+    Boolean(profesional.archivoCredencialUrl) &&
+    esUrlDocumentoPermitida(profesional.archivoCredencialUrl)
 
   return (
     <>
       <header className="flex flex-col gap-4 rounded-xl border border-line bg-card p-5 md:flex-row md:items-center">
-        <span
-          aria-hidden="true"
-          className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-navy-100 font-display text-[24px] font-bold text-navy-700"
-        >
-          {obtenerIniciales({ nombres: profesional.nombres, apellidos: profesional.apellidos })}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h1
-            ref={tituloRef}
-            tabIndex={-1}
-            className="text-[25px] font-bold leading-tight text-ink-900 outline-none"
+        {profesional.fotoPerfilUrl ? (
+          <img
+            src={profesional.fotoPerfilUrl}
+            alt={`Foto de ${nombreCompleto}`}
+            className="h-20 w-20 shrink-0 rounded-full bg-navy-100 object-cover"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-navy-100 font-display text-[24px] font-bold text-navy-700"
           >
-            {profesional.nombres} {profesional.apellidos}
-          </h1>
+            {obtenerIniciales({ nombres: profesional.nombres, apellidos: profesional.apellidos })}
+          </span>
+        )}
+
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1
+              ref={tituloRef}
+              tabIndex={-1}
+              className="text-[25px] font-bold leading-tight text-ink-900 outline-none"
+            >
+              {nombreCompleto}
+            </h1>
+            <span
+              className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                profesional.estadoDisponibilidad === 'DISPONIBLE'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'bg-surface text-ink-700'
+              }`}
+            >
+              {formatEstadoDisponibilidad(profesional.estadoDisponibilidad)}
+            </span>
+          </div>
+
           <p className="mt-1.5 max-w-[70ch] text-[13.5px] leading-relaxed text-ink-700">
             {profesional.descripcionProfesional}
           </p>
+
           <div
             role="group"
             className="mt-2.5 flex flex-wrap items-center gap-1.5"
             aria-label="Especialidades y calificación"
           >
-            {especialidades.map((especialidad) => (
-              <span
-                key={especialidad.id}
-                className="rounded-full bg-navy-100 px-2.5 py-1 text-[11.5px] font-semibold text-navy-700"
-              >
-                {especialidad.nombre}
-              </span>
-            ))}
+            {especialidades.map((especialidad) => {
+              const esPrincipal = especialidad.id === profesional.especialidadPrincipalId
+              return (
+                <span
+                  key={especialidad.id}
+                  className="rounded-full bg-navy-100 px-2.5 py-1 text-xs font-semibold text-navy-700"
+                >
+                  {especialidad.nombre}
+                  {esPrincipal ? ' · Principal' : ''}
+                </span>
+              )
+            })}
             <span
               role="img"
-              className="ml-1 flex items-center gap-1 text-[12.5px] text-ink-700"
+              className="ml-1 flex items-center gap-1 text-[13px] text-ink-700"
               aria-label={`Calificación ${profesional.calificacionPromedio.toFixed(1)} de 5, ${
                 profesional.cantidadResenas
               } ${profesional.cantidadResenas === 1 ? 'reseña' : 'reseñas'}`}
             >
-              <Star
-                className="h-3.5 w-3.5 fill-amber-deep text-amber-deep"
-                aria-hidden="true"
-              />
+              <Star className="h-4 w-4 fill-amber-deep text-amber-deep" aria-hidden="true" />
               <span aria-hidden="true">
-                {profesional.calificacionPromedio.toFixed(1)} ({profesional.cantidadResenas}{' '}
-                reseñas)
+                {profesional.calificacionPromedio.toFixed(1)} ({profesional.cantidadResenas} reseñas)
               </span>
             </span>
           </div>
         </div>
-        {modo === 'marketplace' ? (
+
+        {modo === 'marketplace' && (
           <button
             type="button"
             disabled={!puedeSolicitarContacto}
@@ -151,50 +178,44 @@ export function PerfilProfesionalContenido({
           >
             {puedeSolicitarContacto ? 'Solicitar contacto' : 'Sin servicios disponibles'}
           </button>
-        ) : (
-          <span className="rounded-full bg-navy-100 px-3.5 py-1.5 text-[12.5px] font-semibold text-navy-700 md:self-start">
-            Vista previa del perfil
-          </span>
         )}
       </header>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Información profesional</h2>
-        <dl className="mt-3 grid grid-cols-1 gap-x-5.5 gap-y-3 md:grid-cols-2 lg:grid-cols-3">
+      <section className="rounded-xl border border-line bg-card p-4 sm:p-5" aria-labelledby="informacion-publica-titulo">
+        <h2 id="informacion-publica-titulo" className="text-[18px] font-semibold text-ink-900">
+          Información profesional
+        </h2>
+        <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
           {campos.map((campo) => (
-            <div key={campo.label} className="min-w-0">
-              <dt className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-500">
-                {campo.label}
-              </dt>
-              <dd className="mt-1 break-words text-[13.5px] text-ink-900">{campo.valor}</dd>
+            <div key={campo.label} className="min-w-0 border-b border-line-soft pb-3">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-ink-500">{campo.label}</dt>
+              <dd className="mt-1 break-words text-[14px] text-ink-900">{campo.valor}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-4 rounded-lg bg-surface px-3.5 py-3 text-[12.5px] leading-relaxed text-ink-700">
-          Tus datos de contacto se mantienen protegidos; SAFE facilitará el contacto cuando el
-          profesional acepte la solicitud.
+        <p className="mt-4 rounded-lg bg-surface px-3.5 py-3 text-[13px] leading-relaxed text-ink-700">
+          Los datos personales de contacto se mantienen protegidos y solo se comparten mediante el flujo seguro de SAFE.
         </p>
       </section>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-xl border border-line bg-card p-4.5">
-          <h2 className="text-[16px] font-semibold text-ink-900">Servicios</h2>
+      <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-12 lg:items-start">
+        <section className="rounded-xl border border-line bg-card p-4 sm:p-5 lg:col-span-7" aria-labelledby="servicios-publicos-titulo">
+          <h2 id="servicios-publicos-titulo" className="text-[18px] font-semibold text-ink-900">
+            Servicios
+          </h2>
           {servicios.length === 0 ? (
             <p className="mt-3 rounded-lg border border-dashed border-line p-4 text-[13px] text-ink-500">
               Este profesional no tiene servicios activos por ahora.
             </p>
           ) : (
-            <div className="mt-3 flex flex-col gap-2.5">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {servicios.map((servicio) => (
-                <article
-                  key={servicio.id}
-                  className="rounded-xl border border-line/70 bg-surface p-3.5"
-                >
-                  <h3 className="text-[13.5px] font-semibold text-ink-900">{servicio.nombre}</h3>
-                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-700">
+                <article key={servicio.id} className="min-w-0 rounded-xl border border-line/70 bg-surface p-4">
+                  <h3 className="break-words text-[14px] font-semibold text-ink-900">{servicio.nombre}</h3>
+                  <p className="mt-2 break-words text-[13px] leading-relaxed text-ink-700">
                     {servicio.descripcion}
                   </p>
-                  <p className="mt-2 text-[12px] font-semibold text-navy-600">
+                  <p className="mt-3 text-xs font-semibold text-navy-600">
                     {formatDuracion(servicio.duracionEstimadaMinutos)} ·{' '}
                     {formatUSD(servicio.tarifaReferencial)} · {formatModalidad(servicio.modalidad)}
                   </p>
@@ -204,10 +225,10 @@ export function PerfilProfesionalContenido({
           )}
         </section>
 
-        <div className="flex flex-col gap-4">
-          <section className="rounded-xl border border-line bg-card p-4.5">
-            <h2 className="flex items-center gap-2 text-[16px] font-semibold text-ink-900">
-              <Clock className="h-4.5 w-4.5 text-navy-600" aria-hidden="true" />
+        <aside className="flex min-w-0 flex-col gap-4 lg:col-span-5" aria-label="Disponibilidad y documentos públicos">
+          <section className="rounded-xl border border-line bg-card p-4 sm:p-5" aria-labelledby="horarios-publicos-titulo">
+            <h2 id="horarios-publicos-titulo" className="flex items-center gap-2 text-[18px] font-semibold text-ink-900">
+              <Clock className="h-5 w-5 text-navy-600" aria-hidden="true" />
               Horarios de disponibilidad
             </h2>
             {horariosPorDia.length === 0 ? (
@@ -215,20 +236,14 @@ export function PerfilProfesionalContenido({
                 Este profesional no tiene horarios activos por ahora.
               </p>
             ) : (
-              <dl className="mt-3 flex flex-col gap-2.5">
+              <dl className="mt-4 flex flex-col divide-y divide-line-soft">
                 {horariosPorDia.map((grupo) => (
-                  <div
-                    key={grupo.dia}
-                    className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:gap-4"
-                  >
-                    <dt className="text-[13px] text-ink-500">{grupo.label}</dt>
+                  <div key={grupo.dia} className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:justify-between sm:gap-4">
+                    <dt className="text-[13px] font-medium text-ink-500">{grupo.label}</dt>
                     <dd className="m-0 text-[13px] text-ink-900 sm:text-right">
                       {grupo.franjas.map((franja) => (
                         <span key={franja.id} className="block">
-                          {formatRangoHorario({
-                            horaInicio: franja.horaInicio,
-                            horaFin: franja.horaFin,
-                          })}{' '}
+                          {formatRangoHorario({ horaInicio: franja.horaInicio, horaFin: franja.horaFin })}{' '}
                           · {formatModalidad(franja.modalidad)}
                         </span>
                       ))}
@@ -239,72 +254,70 @@ export function PerfilProfesionalContenido({
             )}
           </section>
 
-          <section className="rounded-xl border border-line bg-card p-4.5">
-            <h2 className="text-[16px] font-semibold text-ink-900">Credenciales</h2>
-            <div className="mt-3 flex flex-col gap-2.5">
-              {credenciales.map((credencial) => (
-                <div
-                  key={`${credencial.titulo}-${credencial.detalle}`}
-                  className="flex items-start gap-2.5"
-                >
-                  <BadgeCheck
-                    className="mt-0.5 h-4.5 w-4.5 shrink-0 text-navy-600"
-                    aria-hidden="true"
-                  />
-                  <p className="text-[13px] leading-relaxed text-ink-700">
-                    <strong className="font-semibold text-ink-900">{credencial.titulo}</strong> ·{' '}
-                    {credencial.detalle}
+          <section className="rounded-xl border border-line bg-card p-4 sm:p-5" aria-labelledby="documentos-publicos-titulo">
+            <h2 id="documentos-publicos-titulo" className="text-[18px] font-semibold text-ink-900">
+              Documentos públicos
+            </h2>
+            <div className="mt-4 flex flex-col divide-y divide-line-soft">
+              <article className="flex min-w-0 items-start gap-3 pb-4">
+                <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
+                  <FileText className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[14px] font-semibold text-ink-900">Hoja de vida (CV)</h3>
+                  <p className="mt-1 text-[13px] text-ink-500">
+                    {cvEnlazable
+                      ? 'Publicada para empresas'
+                      : profesional.cvVisible
+                        ? 'Marcada como pública · archivo no cargado'
+                        : 'No publicada'}
                   </p>
+                  {cvEnlazable && profesional.cvUrl && (
+                    <a
+                      href={profesional.cvUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex min-h-11 max-w-full items-center gap-2 rounded-lg px-2 text-[13px] font-semibold text-navy-700 hover:bg-navy-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40"
+                    >
+                      <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{nombreDocumento(profesional.cvUrl, 'Ver hoja de vida')}</span>
+                      <span className="sr-only"> (se abre en una nueva pestaña)</span>
+                    </a>
+                  )}
                 </div>
-              ))}
+              </article>
+
+              <article className="flex min-w-0 items-start gap-3 pt-4">
+                <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
+                  <FileText className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[14px] font-semibold text-ink-900">Credencial profesional</h3>
+                  <p className="mt-1 text-[13px] text-ink-500">
+                    {credencialEnlazable ? 'Documento publicado' : 'No cargada'}
+                  </p>
+                  {credencialEnlazable && profesional.archivoCredencialUrl && (
+                    <a
+                      href={profesional.archivoCredencialUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex min-h-11 max-w-full items-center gap-2 rounded-lg px-2 text-[13px] font-semibold text-navy-700 hover:bg-navy-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40"
+                    >
+                      <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />
+                      <span className="truncate">
+                        {nombreDocumento(profesional.archivoCredencialUrl, 'Ver credencial')}
+                      </span>
+                      <span className="sr-only"> (se abre en una nueva pestaña)</span>
+                    </a>
+                  )}
+                </div>
+              </article>
             </div>
           </section>
-        </div>
+        </aside>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Reseñas</h2>
-        {resenas.length === 0 ? (
-          <p className="mt-3 rounded-lg border border-dashed border-line p-5 text-center text-[13px] text-ink-500">
-            Este profesional aún no tiene reseñas publicadas.
-          </p>
-        ) : (
-          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {resenas.map((resena) => (
-              <article key={resena.id} className="rounded-xl border border-line/70 p-3.5">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="text-[13px] font-semibold text-ink-900">
-                    {resena.autorEmpresa}
-                  </h3>
-                  <span
-                    role="img"
-                    className="flex"
-                    aria-label={`${resena.calificacion} de 5 estrellas`}
-                  >
-                    {Array.from({ length: 5 }, (_, indice) => (
-                      <Star
-                        key={indice}
-                        aria-hidden="true"
-                        className={`h-3.5 w-3.5 ${
-                          indice < resena.calificacion
-                            ? 'fill-amber-deep text-amber-deep'
-                            : 'text-line'
-                        }`}
-                      />
-                    ))}
-                  </span>
-                </div>
-                <p className="mt-2 text-[12.5px] leading-relaxed text-ink-700">
-                  {resena.comentario}
-                </p>
-                <p className="mt-2 text-[11.5px] text-ink-500">
-                  {formatFecha(resena.fecha)}
-                </p>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+      <ResenasProfesionalPanel resenas={resenas} />
     </>
   )
 }

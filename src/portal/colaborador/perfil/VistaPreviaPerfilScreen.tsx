@@ -27,9 +27,6 @@ export function VistaPreviaPerfilScreen() {
           <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Volver a mi perfil
         </button>
       </div>
-      <div role="status" className="rounded-xl border border-navy-200 bg-navy-50 px-4 py-3 text-[13px] text-navy-800">
-        <strong className="font-semibold">Vista previa.</strong> Así verán tu perfil las empresas en SAFE.
-      </div>
       <PerfilProfesionalContenido
         profesional={colaboradorPerfil}
         servicios={serviciosColaborador.filter((s) => s.activo)}
