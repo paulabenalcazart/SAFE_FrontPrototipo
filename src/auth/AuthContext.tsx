@@ -32,13 +32,18 @@ const STORAGE_KEY = 'safe.auth.user'
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+function esTextoNoVacio(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0
+}
+
 function readStoredUser(): AuthUser | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw) as Partial<AuthUser>
     // Sesiones guardadas antes de separar nombres/apellidos (pre Fase 9) ya no son válidas.
-    if (typeof parsed.nombres !== 'string' || typeof parsed.apellidos !== 'string') return null
+    if (!esTextoNoVacio(parsed.nombres) || !esTextoNoVacio(parsed.apellidos) || !esTextoNoVacio(parsed.correo) || !esTextoNoVacio(parsed.telefono) || !esTextoNoVacio(parsed.pais) || !esTextoNoVacio(parsed.ciudad) || !esTextoNoVacio(parsed.iniciales)) return null
+    if (typeof parsed.mfaHabilitado !== 'boolean') return null
     if (parsed.role !== 'EMPRESA' && parsed.role !== 'COLABORADOR' && parsed.role !== 'ADMIN') return null
     return parsed as AuthUser
   } catch {

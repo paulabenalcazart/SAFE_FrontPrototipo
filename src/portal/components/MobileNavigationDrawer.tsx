@@ -30,7 +30,12 @@ export function MobileNavigationDrawer({ open, onClose }: { open: boolean; onClo
       if (!focusable?.length) return
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
-      if (event.shiftKey && document.activeElement === first) {
+      const activeIndex = Array.from(focusable).indexOf(document.activeElement as HTMLElement)
+      if (activeIndex === -1) {
+        event.preventDefault()
+        if (event.shiftKey) last.focus()
+        else first.focus()
+      } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault()
         last.focus()
       } else if (!event.shiftKey && document.activeElement === last) {
@@ -38,10 +43,16 @@ export function MobileNavigationDrawer({ open, onClose }: { open: boolean; onClo
         first.focus()
       }
     }
+    const desktopMedia = window.matchMedia('(min-width: 1024px)')
+    const closeAtDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) onClose()
+    }
     document.addEventListener('keydown', keydown)
+    desktopMedia.addEventListener('change', closeAtDesktop)
     return () => {
       cancelAnimationFrame(frame)
       document.removeEventListener('keydown', keydown)
+      desktopMedia.removeEventListener('change', closeAtDesktop)
       layer.release()
       releaseLock()
       if (previousFocus.current?.isConnected) previousFocus.current.focus()

@@ -27,8 +27,13 @@ function blockAfter(text, marker) {
 
 test('ADMIN is a valid stored role and only the auth session uses storage', async () => {
   const auth = await source('src/auth/AuthContext.tsx')
+  const reader = blockAfter(auth, 'function readStoredUser')
   assert.match(auth, /AppRole\s*=\s*'EMPRESA'\s*\|\s*'COLABORADOR'\s*\|\s*'ADMIN'/)
-  assert.match(auth, /parsed\.role !== 'EMPRESA'.*parsed\.role !== 'COLABORADOR'.*parsed\.role !== 'ADMIN'/s)
+  assert.match(reader, /parsed\.role !== 'EMPRESA'.*parsed\.role !== 'COLABORADOR'.*parsed\.role !== 'ADMIN'/s)
+  for (const field of ['nombres', 'apellidos', 'correo', 'telefono', 'pais', 'ciudad', 'iniciales']) {
+    assert.match(reader, new RegExp(`esTextoNoVacio\\(parsed\\.${field}\\)`), `readStoredUser debe rechazar ${field} vacío o no string`)
+  }
+  assert.match(reader, /typeof parsed\.mfaHabilitado !== 'boolean'/)
   assert.match(auth, /safe\.auth\.user/)
 })
 
@@ -55,10 +60,11 @@ test('role resolvers and navigation are explicit for all three roles', async () 
 })
 
 test('ADMIN boundary and topbar are lazy and isolated from PortalData', async () => {
-  const [app, boundary, topbar] = await Promise.all([
+  const [app, boundary, topbar, adminTopbar] = await Promise.all([
     source('src/App.tsx'),
     source('src/portal/admin/AdminDataBoundary.tsx'),
     source('src/portal/components/Topbar.tsx'),
+    source('src/portal/admin/components/AdminTopbar.tsx'),
   ])
   const roleBoundary = blockAfter(app, 'function PortalProviderByRole')
   assert.match(roleBoundary, /AdminDataBoundary/)
@@ -67,21 +73,49 @@ test('ADMIN boundary and topbar are lazy and isolated from PortalData', async ()
   assert.match(boundary, /import '\.\/admin\.css'/)
   assert.match(boundary, /<AdminDataProvider>/)
   assert.match(boundary, /className="admin-surface"/)
+  assert.doesNotMatch(boundary, /PortalDataProvider|localStorage|sessionStorage/)
+  const adminCase = blockAfter(app, 'function PortalProviderByRole').slice(blockAfter(app, 'function PortalProviderByRole').indexOf("case 'ADMIN'"))
+  assert.match(adminCase, /<AdminDataBoundary>/)
+  assert.doesNotMatch(adminCase.slice(0, adminCase.indexOf('case undefined')), /PortalDataProvider/)
   assert.match(topbar, /AdminTopbar/)
+  assert.match(adminTopbar, /Administración SAFE/)
+  assert.match(adminTopbar, /securityAlerts\.filter\(\(item\) => item\.estado === 'ABIERTA'\)/)
+  assert.match(adminTopbar, /\/app\/admin\/alertas-seguridad/)
+  assert.doesNotMatch(adminTopbar, /usePortalData|CompanySwitcher|obligaciones|notificacionesColaborador/)
 })
 
 test('shared mobile drawer meets the role-aware accessible shell contract', async () => {
-  const [sidebar, drawer, layout] = await Promise.all([
+  const [sidebar, drawer, layout, catalogo] = await Promise.all([
     source('src/portal/components/Sidebar.tsx'),
     source('src/portal/components/MobileNavigationDrawer.tsx'),
     source('src/portal/PortalLayout.tsx'),
+    source('src/portal/admin/catalogo.ts'),
   ])
+  const effect = blockAfter(drawer, 'useEffect(() =>')
   assert.match(sidebar, /navItemsParaRol/)
   assert.match(drawer, /role="dialog"/)
   assert.match(drawer, /aria-modal="true"/)
-  assert.match(drawer, /acquireBodyScrollLock/)
-  assert.match(drawer, /acquireDialogLayer/)
-  assert.match(drawer, /onClose/)
+  assert.match(effect, /acquireBodyScrollLock/)
+  assert.match(effect, /acquireDialogLayer/)
+  assert.match(effect, /requestAnimationFrame/)
+  assert.match(effect, /layer\.esTope\(\)/)
+  assert.match(effect, /event\.key === 'Escape'/)
+  assert.match(effect, /event\.key !== 'Tab'/)
+  assert.match(effect, /activeIndex === -1/)
+  assert.match(effect, /event\.shiftKey\) last\.focus\(\)/)
+  assert.match(effect, /else first\.focus\(\)/)
+  assert.match(effect, /previousFocus\.current\?\.isConnected/)
+  assert.match(effect, /matchMedia\('\(min-width: 1024px\)'\)/)
+  assert.match(effect, /addEventListener\('change'/)
+  assert.match(effect, /removeEventListener\('change'/)
+  assert.match(drawer, /h-11 w-11/)
+  assert.match(drawer, /overflow-y-auto overflow-x-hidden/)
+  assert.match(drawer, /const navItems = navItemsParaRol\(user\.role\)/)
+  const mobileNav = drawer.slice(drawer.indexOf('<nav '), drawer.indexOf('</nav>') + '</nav>'.length)
+  assert.match(mobileNav, /<NavLink/)
+  assert.match(mobileNav, /onClick=\{onClose\}/)
+  const labels = Array.from(catalogo.matchAll(/label: '([^']+)'/g), (match) => match[1])
+  assert.deepEqual(labels, ['Dashboard', 'Usuarios', 'Parámetros normativos', 'Planes y permisos', 'Alertas y contenido', 'Incidencias y auditoría', 'Video tutoriales', 'Configuración'])
   assert.match(layout, /MobileNavigationDrawer/)
 })
 
@@ -102,4 +136,9 @@ test('ADMIN account navigation, dashboard and titles use integrated routes', asy
   assert.match(dashboard, /AdminPlatformChart/)
   assert.match(activity, /\/app\/admin\/usuarios\?tab=companies/)
   assert.match(activity, /\/app\/admin\/usuarios\?tab=applications/)
+})
+
+test('ADMIN chart keeps zero-height bars when there is no monthly maximum', async () => {
+  const chart = await source('src/portal/admin/dashboard/AdminPlatformChart.tsx')
+  assert.match(chart, /max === 0 \? 0/)
 })
