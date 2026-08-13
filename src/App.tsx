@@ -65,6 +65,9 @@ const AdminDashboardScreen = lazy(() => import('./portal/admin/dashboard/AdminDa
 const AdminUsersScreen = lazy(() => import('./portal/admin/usuarios/AdminUsersScreen').then((module) => ({ default: module.AdminUsersScreen })))
 const AdminParametersScreen = lazy(() => import('./portal/admin/parametros/AdminParametersScreen').then((module) => ({ default: module.AdminParametersScreen })))
 const AdminPlansScreen = lazy(() => import('./portal/admin/planes/AdminPlansScreen').then((module) => ({ default: module.AdminPlansScreen })))
+const AdminContentScreen = lazy(() => import('./portal/admin/contenido/AdminContentScreen').then((module) => ({ default: module.AdminContentScreen })))
+const AdminAuditScreen = lazy(() => import('./portal/admin/auditoria/AdminAuditScreen').then((module) => ({ default: module.AdminAuditScreen })))
+const AdminSecurityAlertsScreen = lazy(() => import('./portal/admin/auditoria/AdminSecurityAlertsScreen').then((module) => ({ default: module.AdminSecurityAlertsScreen })))
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -315,6 +318,9 @@ export default function App() {
         />
         <Route path="admin/parametros" element={<RoleRoute allow={['ADMIN']}><AdminParametersScreen /></RoleRoute>} />
         <Route path="admin/planes-permisos" element={<RoleRoute allow={['ADMIN']}><AdminPlansScreen /></RoleRoute>} />
+        <Route path="admin/alertas-contenido" element={<RoleRoute allow={['ADMIN']}><AdminContentScreen /></RoleRoute>} />
+        <Route path="admin/incidencias-auditoria" element={<RoleRoute allow={['ADMIN']}><AdminAuditScreen /></RoleRoute>} />
+        <Route path="admin/alertas-seguridad" element={<RoleRoute allow={['ADMIN']}><AdminSecurityAlertsScreen /></RoleRoute>} />
         <Route
           path="perfil"
           element={

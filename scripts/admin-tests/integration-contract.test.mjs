@@ -202,3 +202,59 @@ test('ADMIN users stay synchronized with valid URL tabs and source registration 
   assert.match(review, /min-h-11 inline-flex items-center/)
   assert.match(review, /reasonRef\.current\?\.focus\(\)/)
 })
+
+test('ADMIN content, audit and security routes remain guarded, titled and outside the eight-item navigation', async () => {
+  const [app, titles, catalogo] = await Promise.all([
+    source('src/App.tsx'), source('src/titulos.ts'), source('src/portal/admin/catalogo.ts'),
+  ])
+  for (const [path, component, title] of [
+    ['alertas-contenido', 'AdminContentScreen', 'Alertas y contenido SAFE'],
+    ['incidencias-auditoria', 'AdminAuditScreen', 'Incidencias y auditoría SAFE'],
+    ['alertas-seguridad', 'AdminSecurityAlertsScreen', 'Alertas de seguridad SAFE'],
+  ]) {
+    assert.match(app, new RegExp(component))
+    assert.match(app, new RegExp(`path="admin/${path}"`))
+    assert.match(app, new RegExp(`<RoleRoute allow=\\{\\['ADMIN'\\]\\}>\\s*<${component} \\/>` , 's'))
+    assert.match(titles, new RegExp(`'/app/admin/${path}': '${title}'`))
+  }
+  assert.equal(Array.from(catalogo.matchAll(/label: '([^']+)'/g)).length, 8)
+  assert.doesNotMatch(catalogo, /Alertas de seguridad/)
+})
+
+test('ADMIN content supports controlled communications and safe email templates', async () => {
+  const [screen, communication, template] = await Promise.all([
+    source('src/portal/admin/contenido/AdminContentScreen.tsx'),
+    source('src/portal/admin/contenido/AdminCommunicationDialog.tsx'),
+    source('src/portal/admin/contenido/AdminEmailTemplateDialog.tsx'),
+  ])
+  for (const item of [screen, communication, template]) assert.doesNotMatch(item, /Date\.now|new Date|localStorage|sessionStorage|dangerouslySetInnerHTML|replaceAll|style=|fetch\(|BrowserRouter/)
+  for (const token of ['communications', 'templates', 'Comunicaciones activas', 'Programadas', 'Publicadas este mes', 'Borradores', 'Avisos', 'Cambios normativos', 'Noticias', 'Tutoriales', 'Banners', 'Correos masivos', 'downloadExcel', 'AdminDataTable', 'AdminTabs', 'AdminDialog']) assert.match(screen, new RegExp(token))
+  assert.match(screen, /pageSize=\{7\}/)
+  assert.match(screen, /removeEntity\(deleting\.key, deleting\.id\)/)
+  assert.match(screen, /Confirmar eliminación/)
+  for (const value of ['AVISO', 'CAMBIO_NORMATIVO', 'NOTICIA', 'TUTORIAL', 'BANNER', 'CORREO_MASIVO', 'TODOS', 'EMPRESA', 'COLABORADOR', 'ADMINISTRADOR', 'PORTAL', 'CORREO']) assert.match(communication, new RegExp(value))
+  for (const requirement of ['crypto\.randomUUID\(\)', 'AHORA_ADMIN', 'role="alert"', 'checkValidity\(\)', 'PROGRAMADA', 'ACTIVA', 'BORRADOR']) assert.match(communication, new RegExp(requirement))
+  assert.match(communication, /upsertEntity\('communications'/)
+  for (const value of ['USUARIO_CREADO', 'OBLIGACION_PROXIMA', 'POSTULACION_APROBADA', 'POSTULACION_RECHAZADA', 'MANTENIMIENTO', 'PAGO_CONFIRMADO', '{{nombre}}', '{{empresa}}', '{{fecha}}', '{{obligacion}}']) assert.match(template, new RegExp(value.replace(/[{}]/g, '\\$&')))
+  assert.match(template, /replace\(\/\\{\\{nombre\\}\\}\/g/)
+  assert.match(template, /upsertEntity\('emailTemplates'/)
+  assert.match(template, /role="alert"/)
+})
+
+test('ADMIN audit and security screens filter, export and resolve through central audited mutations', async () => {
+  const [audit, incident, security, alert] = await Promise.all([
+    source('src/portal/admin/auditoria/AdminAuditScreen.tsx'),
+    source('src/portal/admin/auditoria/AdminIncidentDrawer.tsx'),
+    source('src/portal/admin/auditoria/AdminSecurityAlertsScreen.tsx'),
+    source('src/portal/admin/auditoria/AdminSecurityAlertDrawer.tsx'),
+  ])
+  for (const item of [audit, incident, security, alert]) assert.doesNotMatch(item, /Date\.now|new Date|localStorage|sessionStorage|dangerouslySetInnerHTML|replaceAll|style=|fetch\(|BrowserRouter|upsertEntity\('audits'/)
+  for (const value of ['incidents', 'logs', 'audits', 'Incidencias abiertas', 'Incidencias críticas', 'En proceso', 'Resueltas', 'downloadExcel', 'matchesQuery', 'uniqueValues', 'displayValue', 'pageSize={7}', 'AdminIncidentDrawer', '/app/admin/alertas-seguridad']) assert.match(audit, new RegExp(value.replace(/[{}]/g, '\\$&')))
+  assert.match(audit, /replace\(\/_\/g, ' '\)/)
+  assert.match(incident, /patchEntity\('incidents'/)
+  assert.match(incident, /AHORA_ADMIN/)
+  assert.match(incident, /estado: 'RESUELTA'/)
+  for (const value of ['filterSecurity', 'downloadExcel', 'Gravedad', 'Estado', 'Tipo', 'pageSize={7}', 'AdminSecurityAlertDrawer', '/app/admin/incidencias-auditoria']) assert.match(security, new RegExp(value.replace(/[{}]/g, '\\$&')))
+  assert.match(alert, /patchEntity\('securityAlerts'/)
+  assert.match(alert, /estado: 'RESUELTA'/)
+})
