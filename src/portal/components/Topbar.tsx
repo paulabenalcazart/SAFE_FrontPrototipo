@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Bell, ChevronDown, TriangleAlert } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { notificaciones, obligaciones } from '@/portal/data/mock-portal-data'
@@ -7,10 +7,21 @@ import { formatFecha } from '@/portal/obligaciones/formato'
 import { AccountMenu } from './AccountMenu'
 import { CompanySwitcher } from './CompanySwitcher'
 import { NotificationsPanel, type PanelItem } from './NotificationsPanel'
+import { MobileMenuButton } from './MobileNavigationDrawer'
+
+const AdminTopbar = lazy(() => import('@/portal/admin/components/AdminTopbar').then((module) => ({ default: module.AdminTopbar })))
 
 type OpenPanel = 'alerts' | 'notifications' | 'account' | null
 
-export function Topbar() {
+export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
+  const { user } = useAuth()
+  if (user?.role === 'ADMIN') {
+    return <Suspense fallback={<header className="sticky top-0 z-20 flex min-h-[60px] items-center border-b border-line bg-card px-2 sm:px-4"><MobileMenuButton onOpen={onOpenMenu} /><span role="status" className="ml-2 text-sm text-ink-700">Cargando administración…</span></header>}><AdminTopbar onOpenMenu={onOpenMenu} /></Suspense>
+  }
+  return <PortalTopbar onOpenMenu={onOpenMenu} />
+}
+
+function PortalTopbar({ onOpenMenu }: { onOpenMenu: () => void }) {
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null)
   const { user } = useAuth()
   const esColaborador = user?.role === 'COLABORADOR'
@@ -40,6 +51,7 @@ export function Topbar() {
 
   return (
     <header className="sticky top-0 z-20 flex min-h-[60px] items-center gap-1 border-b border-line bg-card px-2 sm:gap-3 sm:px-4">
+      <MobileMenuButton onOpen={onOpenMenu} />
       {esColaborador ? (
         <span className="min-w-0 flex-1 truncate text-[14px] font-semibold text-ink-900 sm:flex-none">
           Perfil Colaborador

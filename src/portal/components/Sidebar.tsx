@@ -1,12 +1,11 @@
 import { NavLink } from 'react-router-dom'
 import safeLogoLight from '@/assets/safe-logo-light.png'
 import { useAuth } from '@/auth/AuthContext'
-import { navItemsColaborador, navItemsEmpresa } from '@/portal/data/mock-portal-data'
+import { navItemsParaRol } from '@/portal/navigation'
 
 export function Sidebar() {
   const { user } = useAuth()
-  const esColaborador = user?.role === 'COLABORADOR'
-  const navItems = esColaborador ? navItemsColaborador : navItemsEmpresa
+  const navItems = user ? navItemsParaRol(user.role) : []
 
   return (
     <nav

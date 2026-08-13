@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
-export type AppRole = 'EMPRESA' | 'COLABORADOR'
+export type AppRole = 'EMPRESA' | 'COLABORADOR' | 'ADMIN'
 
 export type AuthUser = {
   role: AppRole
@@ -39,7 +39,7 @@ function readStoredUser(): AuthUser | null {
     const parsed = JSON.parse(raw) as Partial<AuthUser>
     // Sesiones guardadas antes de separar nombres/apellidos (pre Fase 9) ya no son válidas.
     if (typeof parsed.nombres !== 'string' || typeof parsed.apellidos !== 'string') return null
-    if (parsed.role !== 'EMPRESA' && parsed.role !== 'COLABORADOR') return null
+    if (parsed.role !== 'EMPRESA' && parsed.role !== 'COLABORADOR' && parsed.role !== 'ADMIN') return null
     return parsed as AuthUser
   } catch {
     return null

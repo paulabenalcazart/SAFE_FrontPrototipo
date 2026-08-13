@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
@@ -57,6 +57,11 @@ import { VistaPreviaPerfilScreen } from './portal/colaborador/perfil/VistaPrevia
 import { TodasLasResenasScreen } from './portal/colaborador/perfil/TodasLasResenasScreen'
 import { SolicitudesScreen } from './portal/colaborador/solicitudes/SolicitudesScreen'
 import { tituloParaRuta } from './titulos'
+import { ADMIN_DEMO_EMAIL, ADMIN_DEMO_USER } from './portal/admin/catalogo'
+import { assertNever } from './portal/navigation'
+
+const AdminDataBoundary = lazy(() => import('./portal/admin/AdminDataBoundary').then((module) => ({ default: module.AdminDataBoundary })))
+const AdminDashboardScreen = lazy(() => import('./portal/admin/dashboard/AdminDashboardScreen').then((module) => ({ default: module.AdminDashboardScreen })))
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -122,17 +127,54 @@ function RoleRoute({ allow, children }: { allow: AppRole[]; children: ReactNode 
 
 function DashboardResolver() {
   const { user } = useAuth()
-  return user?.role === 'COLABORADOR' ? <CollaboratorDashboardScreen /> : <DashboardScreen />
+  const role = user?.role
+  switch (role) {
+    case 'EMPRESA': return <DashboardScreen />
+    case 'COLABORADOR': return <CollaboratorDashboardScreen />
+    case 'ADMIN': return <AdminDashboardScreen />
+    case undefined: return null
+    default: return assertNever(role)
+  }
 }
 
 function TutorialesResolver() {
   const { user } = useAuth()
-  return user?.role === 'COLABORADOR' ? <CollaboratorTutorialsScreen /> : <TutorialesScreen />
+  const role = user?.role
+  switch (role) {
+    case 'EMPRESA': return <TutorialesScreen />
+    case 'COLABORADOR': return <CollaboratorTutorialsScreen />
+    case 'ADMIN': return <Navigate to="/app/dashboard" replace />
+    case undefined: return null
+    default: return assertNever(role)
+  }
 }
 
 function ConfiguracionResolver() {
   const { user } = useAuth()
-  return user?.role === 'COLABORADOR' ? <CollaboratorSettingsScreen /> : <ConfiguracionScreen />
+  const role = user?.role
+  switch (role) {
+    case 'EMPRESA': return <ConfiguracionScreen />
+    case 'COLABORADOR': return <CollaboratorSettingsScreen />
+    case 'ADMIN': return <Navigate to="/app/dashboard" replace />
+    case undefined: return null
+    default: return assertNever(role)
+  }
+}
+
+function PortalProviderByRole({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
+  const role = user?.role
+  switch (role) {
+    case 'EMPRESA':
+    case 'COLABORADOR':
+      return <PortalDataProvider>{children}</PortalDataProvider>
+    case 'ADMIN':
+      return <Suspense fallback={<div role="status" className="grid min-h-screen place-items-center text-sm text-ink-700">Cargando administración…</div>}><AdminDataBoundary>{children}</AdminDataBoundary></Suspense>
+    case undefined:
+      return null
+    default:
+      return assertNever(role)
+  }
 }
 
 function PublicLayout() {
@@ -154,9 +196,16 @@ function PublicLayout() {
   const goToPlanes = () => handleNavigate('planes')
   const goToPostulacion = () => handleNavigate('postulacion')
 
-  const loginDemo = (correoTipeado: string) => {
-    const esColaborador = correoTipeado.trim().toLowerCase() === CORREO_COLABORADOR_DEMO
-    login(esColaborador ? usuarioColaboradorDemo : usuarioEmpresaDemo)
+  function loginDemo(correoTipeado: string) {
+    const correoNormalizado = correoTipeado.trim().toLowerCase()
+    if (correoNormalizado === ADMIN_DEMO_EMAIL) login(ADMIN_DEMO_USER)
+    else if (correoNormalizado === CORREO_COLABORADOR_DEMO) login(usuarioColaboradorDemo)
+    else login(usuarioEmpresaDemo)
+    navigate('/app/dashboard')
+  }
+
+  function signupEmpresaDemo(_correoTipeado: string) {
+    login(usuarioEmpresaDemo)
     navigate('/app/dashboard')
   }
 
@@ -221,7 +270,7 @@ function PublicLayout() {
           path="/signup"
           element={
             <SignupPage
-              onCrearCuenta={loginDemo}
+              onCrearCuenta={signupEmpresaDemo}
               onIrLogin={() => handleNavigate('login')}
               onIrInicio={() => handleNavigate('inicio')}
               onIrTerminos={() => handleNavigate('terminos')}
@@ -245,9 +294,9 @@ export default function App() {
         path="/app"
         element={
           <RequireAuth>
-            <PortalDataProvider>
+            <PortalProviderByRole>
               <PortalLayout />
-            </PortalDataProvider>
+            </PortalProviderByRole>
           </RequireAuth>
         }
       >
