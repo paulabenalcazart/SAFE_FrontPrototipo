@@ -7,6 +7,11 @@ export function useAdminOverlay(open: boolean, onClose: () => void): { dialogRef
   const dialogRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
+  const onCloseRef = useRef(onClose)
+
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!open) return
@@ -18,7 +23,7 @@ export function useAdminOverlay(open: boolean, onClose: () => void): { dialogRef
       if (!layer.esTope()) return
       if (event.key === 'Escape') {
         event.preventDefault()
-        onClose()
+        onCloseRef.current()
         return
       }
       if (event.key !== 'Tab') return
@@ -32,10 +37,16 @@ export function useAdminOverlay(open: boolean, onClose: () => void): { dialogRef
       }
       const first = elements[0]
       const last = elements[elements.length - 1]
-      if (event.shiftKey && document.activeElement === first) {
+      const activeElement = document.activeElement
+      const activeIndex = elements.indexOf(activeElement as HTMLElement)
+      if (activeIndex === -1) {
+        event.preventDefault()
+        if (event.shiftKey) last.focus()
+        else first.focus()
+      } else if (event.shiftKey && activeElement === first) {
         event.preventDefault()
         last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
+      } else if (!event.shiftKey && activeElement === last) {
         event.preventDefault()
         first.focus()
       }
@@ -49,7 +60,7 @@ export function useAdminOverlay(open: boolean, onClose: () => void): { dialogRef
       const previous = previousFocusRef.current
       if (previous?.isConnected) previous.focus()
     }
-  }, [onClose, open])
+  }, [open])
 
   return { dialogRef, titleRef }
 }
