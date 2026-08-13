@@ -56,6 +56,7 @@ import { EditarPerfilScreen } from './portal/colaborador/perfil/EditarPerfilScre
 import { VistaPreviaPerfilScreen } from './portal/colaborador/perfil/VistaPreviaPerfilScreen'
 import { TodasLasResenasScreen } from './portal/colaborador/perfil/TodasLasResenasScreen'
 import { SolicitudesScreen } from './portal/colaborador/solicitudes/SolicitudesScreen'
+import { tituloParaRuta } from './titulos'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -77,6 +78,16 @@ const PATH_TO_NAV_KEY: Record<string, string> = Object.fromEntries(
 )
 
 const CORREO_COLABORADOR_DEMO = 'maria.lopez@safe-demo.ec'
+
+function DocumentTitle() {
+  const location = useLocation()
+
+  useEffect(() => {
+    document.title = tituloParaRuta(location.pathname)
+  }, [location.pathname])
+
+  return null
+}
 
 const usuarioEmpresaDemo: AuthUser = {
   role: 'EMPRESA',
@@ -227,7 +238,9 @@ function PublicLayout() {
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <DocumentTitle />
+      <Routes>
       <Route
         path="/app"
         element={
@@ -478,6 +491,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="/*" element={<PublicLayout />} />
-    </Routes>
+      </Routes>
+    </>
   )
 }
