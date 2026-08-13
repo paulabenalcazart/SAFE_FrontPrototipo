@@ -31,14 +31,26 @@ test('parameter utilities flatten scenario children without mutating source rows
 
 test('parameter form renders relations, JSON and field-level validation accessibly', async () => {
   const dialog = await source('src/portal/admin/parametros/AdminParameterFormDialog.tsx')
-  for (const token of ['relationOptions', 'getParameterRows(data', 'field.optionsFrom', "field.type === 'json'", "field.type === 'radio'", "field.type === 'multiselect'", 'multiple', 'aria-checked', '<textarea', 'JSON.parse', 'Number.isFinite', 'crypto.randomUUID()', 'AHORA_ADMIN', 'role="alert"', 'aria-describedby', 'htmlFor={id}']) assert.match(dialog, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  for (const token of ['relationOptions', 'getParameterRows(data', 'field.optionsFrom', "field.type === 'json'", "field.type === 'radio'", "field.type === 'multiselect'", 'multiple', 'aria-checked', '<textarea', 'JSON.parse', 'Number.isFinite', 'isRequiredParameterValueBlank(value)', 'crypto.randomUUID()', 'AHORA_ADMIN', 'role="alert"', 'aria-describedby', 'htmlFor={id}']) assert.match(dialog, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  assert.match(dialog, /if \(firstError\) \{[\s\S]*requestAnimationFrame\([\s\S]*\.focus\(\)[\s\S]*return[\s\S]*\}\s*onSave\(/)
   assert.doesNotMatch(dialog, /Date\.now|new Date|replaceAll|style=|localStorage|sessionStorage/)
+})
+
+test('required parameter values reject whitespace-only text and JSON', async () => {
+  const { isRequiredParameterValueBlank } = await importTs('src/portal/admin/parametros/schemas.ts')
+  assert.equal(typeof isRequiredParameterValueBlank, 'function')
+  for (const value of ['', '   ', '\n\t', null, undefined]) assert.equal(isRequiredParameterValueBlank(value), true)
+  for (const value of ['SAFE', '{}', 0, false, []]) assert.equal(isRequiredParameterValueBlank(value), false)
 })
 
 test('parameter screen keeps filtered export, nested scenario writes and audit history', async () => {
   const screen = await source('src/portal/admin/parametros/AdminParametersScreen.tsx')
   for (const token of ['useAdminData', 'useDeferredValue', 'AdminTabs', 'AdminDataTable', 'AdminFilterBar', 'AdminSelectFilter', 'downloadExcel', 'getParameterRows', 'getCollectionKey', 'patchEntity', "patchEntity('scenarios'", "upsertEntity(key", 'data.audits', 'tabla_afectada', 'valores_anteriores', 'valores_nuevos', 'formatDate', 'AHORA_ADMIN', 'pageSize={7}', 'pageSize={6}', 'caption=', 'actionsLabel="Acciones"']) assert.match(screen, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
   assert.doesNotMatch(screen, /upsertEntity\('audits'|Date\.now|new Date|replaceAll|gridTemplateColumns|localStorage|sessionStorage/)
+  assert.match(screen, /role="group" aria-label={`Catálogos de \$\{area\.label\}`}/)
+  assert.match(screen, /aria-pressed=\{id === schema\.id\}/)
+  assert.match(screen, /min-h-11/)
+  assert.doesNotMatch(screen, /role="tablist"|role="tab"|aria-selected=/)
 })
 
 test('plans expose complete validated CRUD, metrics, details and read-only RBAC', async () => {

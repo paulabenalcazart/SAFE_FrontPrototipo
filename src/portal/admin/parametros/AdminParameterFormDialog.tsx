@@ -5,7 +5,7 @@ import { AdminDialog } from '@/portal/admin/components/ui/AdminDialog'
 import type { AdminData, EntityRecord } from '@/portal/admin/types'
 import { displayValue } from '@/portal/admin/lib/format'
 import { getParameterRows } from './parameterUtils'
-import type { FormFieldSchema, ParameterEntityId, ParameterEntitySchema } from './schemas'
+import { isRequiredParameterValueBlank, type FormFieldSchema, type ParameterEntityId, type ParameterEntitySchema } from './schemas'
 
 type FieldErrors = Record<string, string>
 
@@ -82,7 +82,7 @@ export function AdminParameterFormDialog({ open, onClose, schema, record, data, 
     const nextErrors: FieldErrors = {}
     for (const field of schema.fields) {
       let value = values[field.key]
-      if (field.required && (value === '' || value === null || value === undefined)) {
+      if (field.required && isRequiredParameterValueBlank(value)) {
         nextErrors[field.key] = `${field.label} es obligatorio.`
       }
       if (field.type === 'number') {

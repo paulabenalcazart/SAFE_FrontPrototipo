@@ -9,6 +9,10 @@ export type ParameterEntityId =
 export type FieldType = 'text' | 'textarea' | 'number' | 'date' | 'url' | 'checkbox' | 'radio' | 'select' | 'multiselect' | 'json'
 export type CellType = 'text' | 'status' | 'boolean' | 'date' | 'number' | 'relation' | 'json'
 
+export function isRequiredParameterValueBlank(value: unknown): boolean {
+  return value === null || value === undefined || (typeof value === 'string' && value.trim() === '')
+}
+
 export interface FormFieldSchema {
   key: string
   label: string
