@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Star } from 'lucide-react'
+import { CheckCircle2, ExternalLink, Eye, EyeOff, FileText, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/auth/AuthContext'
 import { usePortalData } from '@/portal/PortalDataContext'
@@ -16,11 +16,11 @@ type Campo = { label: string; valor: ReactNode }
 
 function CamposDl({ campos }: { campos: Campo[] }) {
   return (
-    <dl className="mt-3 grid grid-cols-1 gap-x-5.5 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+    <dl className="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2">
       {campos.map((campo) => (
-        <div key={campo.label} className="min-w-0">
-          <dt className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-500">{campo.label}</dt>
-          <dd className="mt-1 break-words text-[13.5px] text-ink-900">{campo.valor}</dd>
+        <div key={campo.label} className="min-w-0 border-b border-line-soft pb-3 last:border-b-0 sm:last:border-b">
+          <dt className="text-[12px] font-semibold uppercase tracking-wide text-ink-500">{campo.label}</dt>
+          <dd className="mt-1 break-words text-[14px] leading-relaxed text-ink-900">{campo.valor}</dd>
         </div>
       ))}
     </dl>
@@ -36,7 +36,6 @@ export function PerfilColaboradorScreen() {
   const resenas = RESENAS_COLABORADORES.filter((r) => r.colaboradorId === colaboradorPerfil.id)
   const { promedio, cantidad } = calcularCalificacionPromedio(resenas)
 
-  // --- 12.3 Información profesional ---
   const otrasEspecialidades = colaboradorPerfil.especialidades
     .filter((relacion) => !relacion.esPrincipal)
     .map((relacion) => especialidadProfesionalPorId(relacion.especialidadId)?.nombre)
@@ -44,8 +43,23 @@ export function PerfilColaboradorScreen() {
     .join(', ')
 
   const nombreArchivoCv = colaboradorPerfil.cvUrl ? colaboradorPerfil.cvUrl.split('/').pop() : null
+  const nombreArchivoCredencial = colaboradorPerfil.archivoCredencialUrl
+    ? colaboradorPerfil.archivoCredencialUrl.split('/').pop()
+    : null
 
-  const camposPersonales: Campo[] = [
+  const enlaceArchivo = (url: string, texto: string) => (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex min-h-11 items-center gap-2 rounded-md font-semibold text-navy-600 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 focus-visible:ring-offset-2"
+    >
+      {texto}
+      <ExternalLink className="h-4 w-4" aria-hidden="true" />
+    </a>
+  )
+
+  const camposCuenta: Campo[] = [
     { label: 'Nombres', valor: user?.nombres ?? '—' },
     { label: 'Apellidos', valor: user?.apellidos ?? '—' },
     { label: 'Correo electrónico', valor: user?.correo ?? '—' },
@@ -60,275 +74,301 @@ export function PerfilColaboradorScreen() {
     { label: 'Especialidad principal', valor: especialidadPrincipal?.nombre ?? '—' },
     { label: 'Otras especialidades', valor: otrasEspecialidades || '—' },
     { label: 'Trabajo actual', valor: colaboradorPerfil.trabajoActual ?? 'No especificado' },
-    {
-      label: 'Hoja de vida',
-      valor: colaboradorPerfil.cvUrl ? (
-        <>
-          {nombreArchivoCv}{' '}
-          <a
-            href={colaboradorPerfil.cvUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="font-semibold text-navy-600 hover:underline"
-          >
-            Ver
-          </a>
-        </>
-      ) : (
-        'No cargada'
-      ),
-    },
-    { label: 'Hoja de vida visible públicamente', valor: colaboradorPerfil.cvVisible ? 'Sí' : 'No' },
     { label: 'Años de experiencia', valor: `${colaboradorPerfil.aniosExperiencia} años` },
     { label: 'Modalidad de atención', valor: formatModalidadEtiqueta(colaboradorPerfil.modalidadAtencion) },
     { label: 'País de atención', valor: colaboradorPerfil.paisAtencion },
     { label: 'Ciudad de atención', valor: colaboradorPerfil.ciudadAtencion },
     { label: 'Zona horaria', valor: colaboradorPerfil.zonaHoraria },
     { label: 'Tarifa referencial', valor: formatTarifaHora(colaboradorPerfil.tarifaReferencial) },
-    ...(colaboradorPerfil.numeroLicencia
-      ? [{ label: 'Número de licencia', valor: colaboradorPerfil.numeroLicencia }]
-      : []),
-    ...(colaboradorPerfil.entidadEmisora
-      ? [{ label: 'Entidad emisora', valor: colaboradorPerfil.entidadEmisora }]
-      : []),
+    { label: 'Número de licencia', valor: colaboradorPerfil.numeroLicencia ?? 'No especificado' },
+    { label: 'Entidad emisora', valor: colaboradorPerfil.entidadEmisora ?? 'No especificada' },
+    {
+      label: 'Hoja de vida',
+      valor: colaboradorPerfil.cvUrl
+        ? enlaceArchivo(colaboradorPerfil.cvUrl, nombreArchivoCv ?? 'Ver hoja de vida')
+        : 'No cargada',
+    },
+    { label: 'Hoja de vida visible públicamente', valor: colaboradorPerfil.cvVisible ? 'Sí' : 'No' },
     {
       label: 'Credencial profesional',
-      valor: colaboradorPerfil.archivoCredencialUrl ? (
-        <>
-          Cargada{' '}
-          <a
-            href={colaboradorPerfil.archivoCredencialUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="font-semibold text-navy-600 hover:underline"
-          >
-            Ver
-          </a>
-        </>
-      ) : (
-        'No cargada'
-      ),
+      valor: colaboradorPerfil.archivoCredencialUrl
+        ? enlaceArchivo(colaboradorPerfil.archivoCredencialUrl, nombreArchivoCredencial ?? 'Ver credencial')
+        : 'No cargada',
     },
     { label: 'Visibilidad en marketplace', valor: colaboradorPerfil.visibleMarketplace ? 'Sí' : 'No' },
     { label: 'Estado de disponibilidad', valor: formatEstadoDisponibilidad(colaboradorPerfil.estadoDisponibilidad) },
   ]
 
-  // --- 12.5 Servicios ofrecidos ---
   const serviciosActivos = serviciosColaborador.filter((servicio) => servicio.activo)
-
-  // --- 12.6 Horarios de atención ---
   const disponibilidad = agruparDisponibilidadPorDia(horariosColaborador)
-
-  // --- 12.7 Reseñas (3 más recientes) ---
   const resenasRecientes = resenas
     .filter((r) => r.estado === 'PUBLICADA')
     .sort((a, b) => b.fecha.localeCompare(a.fecha))
     .slice(0, 3)
 
   return (
-    <section className="flex flex-col gap-4.5">
-      {/* 12.1 Cabecera */}
-      <header className="flex flex-col gap-4 rounded-xl border border-line bg-card p-5 md:flex-row md:items-center">
-        <span
-          aria-hidden="true"
-          className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-navy-100 font-display text-[24px] font-bold text-navy-700"
-        >
-          {colaboradorPerfil.fotoPerfilUrl ? (
-            <img src={colaboradorPerfil.fotoPerfilUrl} alt="" className="h-full w-full object-cover" />
-          ) : (
-            inicialesDeNombre(`${colaboradorPerfil.nombres} ${colaboradorPerfil.apellidos}`)
-          )}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h1 className="text-[25px] font-bold leading-tight text-ink-900">
-            {colaboradorPerfil.nombres} {colaboradorPerfil.apellidos}
-          </h1>
-          <p className="mt-1 text-[14px] text-ink-700">{colaboradorPerfil.profesion}</p>
-          <p className="mt-0.5 text-[13px] text-ink-500">{especialidadPrincipal?.nombre}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-2.5 text-[13px]">
-            <span
-              role="img"
-              aria-label={`Calificación ${promedio?.toFixed(1) ?? 'sin datos'} de 5, ${cantidad} reseñas`}
-              className="flex items-center gap-1 font-semibold text-ink-900"
+    <section className="flex min-w-0 flex-col gap-5">
+      <header className="surface-card overflow-hidden">
+        <div className="flex flex-col gap-5 p-5 sm:p-6 md:flex-row md:items-center">
+          <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-card bg-navy-100 shadow-sm">
+            {colaboradorPerfil.fotoPerfilUrl ? (
+              <img
+                src={colaboradorPerfil.fotoPerfilUrl}
+                alt={`Foto de perfil de ${colaboradorPerfil.nombres} ${colaboradorPerfil.apellidos}`}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="grid h-full w-full place-items-center font-display text-[28px] font-bold text-navy-700"
+              >
+                {inicialesDeNombre(`${colaboradorPerfil.nombres} ${colaboradorPerfil.apellidos}`)}
+              </span>
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="font-display text-[28px] font-bold leading-tight text-ink-900">
+                {colaboradorPerfil.nombres} {colaboradorPerfil.apellidos}
+              </h1>
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-semibold ${
+                  colaboradorPerfil.visibleMarketplace
+                    ? 'bg-navy-100 text-navy-700'
+                    : 'border border-line bg-surface text-ink-700'
+                }`}
+              >
+                {colaboradorPerfil.visibleMarketplace ? (
+                  <Eye className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <EyeOff className="h-4 w-4" aria-hidden="true" />
+                )}
+                {colaboradorPerfil.visibleMarketplace ? 'Visible en Marketplace' : 'Oculto en Marketplace'}
+              </span>
+            </div>
+            <p className="mt-2 text-[16px] font-semibold text-ink-700">{colaboradorPerfil.profesion}</p>
+            <p className="mt-1 text-[14px] text-ink-500">{especialidadPrincipal?.nombre ?? 'Sin especialidad principal'}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-[14px]">
+              <span
+                role="img"
+                aria-label={`Calificación ${promedio?.toFixed(1) ?? 'sin datos'} de 5, ${cantidad} reseñas`}
+                className="inline-flex items-center gap-1 font-semibold text-ink-900"
+              >
+                <Star className="h-4 w-4 fill-amber-deep text-amber-deep" aria-hidden="true" />
+                {promedio === null ? 'Sin reseñas' : `${promedio.toFixed(1)} (${cantidad} reseñas)`}
+              </span>
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-semibold ${
+                  colaboradorPerfil.estadoDisponibilidad === 'DISPONIBLE'
+                    ? 'bg-emerald-soft text-emerald-deep'
+                    : 'bg-surface text-ink-700'
+                }`}
+              >
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                {formatEstadoDisponibilidad(colaboradorPerfil.estadoDisponibilidad)}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row md:flex-col xl:flex-row">
+            <Button
+              variant="outline"
+              className="min-h-11 w-full px-4 focus-visible:ring-2 focus-visible:ring-navy-500/40 sm:w-auto"
+              onClick={() => navigate('/app/perfil/vista-previa')}
             >
-              <Star className="h-4 w-4 fill-amber-deep text-amber-deep" aria-hidden="true" />
-              {promedio === null ? 'Sin reseñas' : `${promedio.toFixed(1)} (${cantidad} reseñas)`}
-            </span>
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${colaboradorPerfil.estadoDisponibilidad === 'DISPONIBLE' ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'}`}
+              Vista previa
+            </Button>
+            <Button
+              className="min-h-11 w-full px-4 focus-visible:ring-2 focus-visible:ring-navy-500/40 sm:w-auto"
+              onClick={() => navigate('/app/perfil/editar')}
             >
-              {formatEstadoDisponibilidad(colaboradorPerfil.estadoDisponibilidad)}
-            </span>
+              Editar perfil
+            </Button>
           </div>
         </div>
-        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-          <Button variant="outline" onClick={() => navigate('/app/perfil/vista-previa')}>
-            Vista previa
-          </Button>
-          <Button onClick={() => navigate('/app/perfil/editar')}>Editar perfil</Button>
-        </div>
-      </header>
 
-      {/* 12.2 Información personal */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Información personal</h2>
-        <CamposDl campos={camposPersonales} />
-      </section>
-
-      {/* 12.3 Información profesional */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Información profesional</h2>
-        <CamposDl campos={camposProfesionales} />
-        <div className="mt-4">
-          <h3 className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-500">
-            Descripción profesional
-          </h3>
-          <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-700">
-            {colaboradorPerfil.descripcionProfesional}
-          </p>
-        </div>
-      </section>
-
-      {/* 12.4 Especialidades */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Especialidades</h2>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full min-w-[480px] border-collapse text-[13px]">
-            <thead>
-              <tr className="border-b border-line-soft text-left text-[11.5px] font-semibold uppercase tracking-wide text-ink-500">
-                <th className="py-2 pr-3">Especialidad</th>
-                <th className="py-2 pr-3">Principal</th>
-                <th className="py-2 pr-3">Años de experiencia</th>
-                <th className="py-2">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {colaboradorPerfil.especialidades.map((relacion) => {
-                const especialidad = especialidadProfesionalPorId(relacion.especialidadId)
-                return (
-                  <tr key={relacion.especialidadId} className="border-b border-line-soft/70 last:border-b-0">
-                    <td className="py-2.5 pr-3 font-semibold text-ink-900">
-                      {especialidad?.nombre ?? 'Especialidad'}
-                    </td>
-                    <td className="py-2.5 pr-3 text-ink-700">
-                      {relacion.esPrincipal ? (
-                        <span className="rounded-full bg-navy-100 px-2.5 py-0.5 text-[11.5px] font-semibold text-navy-700">
-                          Principal
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="py-2.5 pr-3 text-ink-700">{relacion.aniosExperiencia} años</td>
-                    <td className="py-2.5">
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${relacion.activo ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'}`}
-                      >
-                        {relacion.activo ? 'Activa' : 'Inactiva'}
-                      </span>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* 12.5 Servicios ofrecidos */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Servicios ofrecidos</h2>
-        {serviciosActivos.length === 0 ? (
-          <p className="mt-3 rounded-lg border border-dashed border-line p-5 text-center text-[13px] text-ink-500">
-            Aún no tienes servicios activos. Agrégalos desde Editar perfil.
-          </p>
-        ) : (
-          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {serviciosActivos.map((servicio) => {
-              const LucideIcon = ICONO_SERVICIO[iconosServicio[servicio.id] ?? 'accounting']
-              return (
-                <article key={servicio.id} className="rounded-xl border border-line/70 bg-surface p-3.5">
-                  <div className="flex items-start gap-2.5">
-                    <span
-                      aria-hidden="true"
-                      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700"
-                    >
-                      <LucideIcon className="h-4 w-4" />
-                    </span>
-                    <h3 className="text-[13.5px] font-semibold text-ink-900">{servicio.nombre}</h3>
-                  </div>
-                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-700">{servicio.descripcion}</p>
-                  <p className="mt-2 text-[12px] font-semibold text-navy-600">
-                    {formatDuracion(servicio.duracionEstimadaMinutos)} · {formatPrecioServicio(servicio.tarifaReferencial)}{' '}
-                    · {formatModalidad(servicio.modalidad)}
-                  </p>
-                </article>
-              )
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* 12.6 Horarios de atención */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold text-ink-900">Horarios de atención</h2>
-        <dl className="mt-3 flex flex-col gap-2.5">
-          {disponibilidad.map((dia) => (
-            <div key={dia.diaSemana} className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:gap-4">
-              <dt className="text-[13px] text-ink-500">{dia.label}</dt>
-              <dd className="m-0 flex flex-col gap-1 text-[13px] text-ink-900 sm:items-end">
-                {dia.bloques.length === 0
-                  ? 'No disponible'
-                  : dia.bloques.map((bloque, indice) => (
-                      <span key={indice} className="flex flex-wrap items-center gap-x-2">
-                        <span>
-                          {bloque.horaInicio} - {bloque.horaFin}
-                        </span>
-                        <span className="text-ink-500">{formatModalidadEtiqueta(bloque.modalidad)}</span>
-                      </span>
-                    ))}
-              </dd>
+        <dl className="grid grid-cols-2 border-t border-line bg-surface sm:grid-cols-4">
+          {[
+            { label: 'Experiencia', valor: `${colaboradorPerfil.aniosExperiencia} años` },
+            { label: 'Modalidad', valor: formatModalidadEtiqueta(colaboradorPerfil.modalidadAtencion) },
+            { label: 'Tarifa', valor: formatTarifaHora(colaboradorPerfil.tarifaReferencial) },
+            { label: 'Ciudad', valor: colaboradorPerfil.ciudadAtencion },
+          ].map((dato, indice) => (
+            <div
+              key={dato.label}
+              className={`min-w-0 border-line-soft p-4 ${indice < 2 ? 'border-b' : ''} ${
+                indice % 2 === 0 ? 'border-r' : ''
+              } ${indice < 3 ? 'sm:border-r' : 'sm:border-r-0'} sm:border-b-0`}
+            >
+              <dt className="text-[12px] font-semibold uppercase tracking-wide text-ink-500">{dato.label}</dt>
+              <dd className="mt-1 break-words text-[14px] font-semibold text-ink-900">{dato.valor}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-3 text-[12.5px] text-ink-500">Zona horaria: {colaboradorPerfil.zonaHoraria}</p>
-      </section>
+      </header>
 
-      {/* 12.7 Reseñas */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-[16px] font-semibold text-ink-900">Reseñas</h2>
-          <Button variant="outline" size="sm" onClick={() => navigate('/app/perfil/resenas')}>
-            Ver todas las reseñas
-          </Button>
+      <div className="grid min-w-0 gap-5 lg:grid-cols-12 lg:items-start">
+        <div className="flex min-w-0 flex-col gap-5 lg:col-span-8">
+          <section className="surface-card p-5 sm:p-6" aria-labelledby="perfil-acerca">
+            <h2 id="perfil-acerca" className="text-[20px] font-semibold text-ink-900">Descripción profesional</h2>
+            <p className="mt-3 max-w-3xl text-[14px] leading-relaxed text-ink-700">
+              {colaboradorPerfil.descripcionProfesional}
+            </p>
+          </section>
+
+          <section className="surface-card p-5 sm:p-6" aria-labelledby="perfil-servicios">
+            <h2 id="perfil-servicios" className="text-[20px] font-semibold text-ink-900">Servicios ofrecidos</h2>
+            {serviciosActivos.length === 0 ? (
+              <p className="mt-4 rounded-lg border border-dashed border-line p-5 text-center text-[14px] text-ink-500">
+                Aún no tienes servicios activos. Agrégalos desde Editar perfil.
+              </p>
+            ) : (
+              <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                {serviciosActivos.map((servicio) => {
+                  const LucideIcon = ICONO_SERVICIO[iconosServicio[servicio.id] ?? 'accounting']
+                  return (
+                    <article key={servicio.id} className="min-w-0 rounded-xl border border-line bg-surface p-4">
+                      <div className="flex items-start gap-3">
+                        <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
+                          <LucideIcon className="h-5 w-5" />
+                        </span>
+                        <div className="min-w-0">
+                          <h3 className="break-words text-[16px] font-semibold text-ink-900">{servicio.nombre}</h3>
+                          <p className="mt-1 text-[12px] font-semibold text-navy-600">
+                            {formatDuracion(servicio.duracionEstimadaMinutos)} · {formatPrecioServicio(servicio.tarifaReferencial)} · {formatModalidad(servicio.modalidad)}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="mt-3 break-words text-[14px] leading-relaxed text-ink-700">{servicio.descripcion}</p>
+                    </article>
+                  )
+                })}
+              </div>
+            )}
+          </section>
+
+          <section className="surface-card p-5 sm:p-6" aria-labelledby="perfil-especialidades">
+            <h2 id="perfil-especialidades" className="text-[20px] font-semibold text-ink-900">Especialidades</h2>
+            <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {colaboradorPerfil.especialidades.map((relacion) => {
+                const especialidad = especialidadProfesionalPorId(relacion.especialidadId)
+                return (
+                  <li key={relacion.especialidadId} className="min-w-0 rounded-xl border border-line bg-surface p-4">
+                    <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
+                      <h3 className="min-w-0 break-words text-[16px] font-semibold text-ink-900">
+                        {especialidad?.nombre ?? 'Especialidad'}
+                      </h3>
+                      {relacion.esPrincipal ? (
+                        <span className="rounded-full bg-navy-100 px-3 py-1 text-[12px] font-semibold text-navy-700">Principal</span>
+                      ) : null}
+                    </div>
+                    <dl className="mt-3 grid grid-cols-2 gap-3">
+                      <div>
+                        <dt className="text-[12px] text-ink-500">Experiencia</dt>
+                        <dd className="mt-1 text-[14px] font-semibold text-ink-900">{relacion.aniosExperiencia} años</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[12px] text-ink-500">Estado</dt>
+                        <dd className="mt-1 text-[14px] font-semibold text-ink-900">{relacion.activo ? 'Activa' : 'Inactiva'}</dd>
+                      </div>
+                    </dl>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+
+          <section className="surface-card p-5 sm:p-6" aria-labelledby="perfil-cuenta">
+            <h2 id="perfil-cuenta" className="text-[20px] font-semibold text-ink-900">Datos de cuenta</h2>
+            <p className="mt-2 text-[14px] leading-relaxed text-ink-500">Información privada de tu cuenta</p>
+            <div className="mt-5">
+              <CamposDl campos={camposCuenta} />
+            </div>
+          </section>
+
+          <section className="surface-card p-5 sm:p-6" aria-labelledby="perfil-resenas">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 id="perfil-resenas" className="text-[20px] font-semibold text-ink-900">Reseñas</h2>
+                <p className="mt-1 text-[14px] text-ink-500">Las tres opiniones publicadas más recientes.</p>
+              </div>
+              <Button
+                variant="outline"
+                className="min-h-11 w-full px-4 focus-visible:ring-2 focus-visible:ring-navy-500/40 sm:w-auto"
+                onClick={() => navigate('/app/perfil/resenas')}
+              >
+                Ver todas
+              </Button>
+            </div>
+            {resenasRecientes.length === 0 ? (
+              <p className="mt-4 rounded-lg border border-dashed border-line p-5 text-center text-[14px] text-ink-500">
+                Aún no tienes reseñas publicadas.
+              </p>
+            ) : (
+              <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                {resenasRecientes.map((resena) => (
+                  <article key={resena.id} className="min-w-0 rounded-xl border border-line bg-surface p-4">
+                    <CompanyIdentity nombre={resena.autorEmpresa} size="sm" />
+                    <span role="img" className="mt-3 flex" aria-label={`${resena.calificacion} de 5 estrellas`}>
+                      {Array.from({ length: 5 }, (_, indice) => (
+                        <Star
+                          key={indice}
+                          aria-hidden="true"
+                          className={`h-4 w-4 ${indice < resena.calificacion ? 'fill-amber-deep text-amber-deep' : 'text-line'}`}
+                        />
+                      ))}
+                    </span>
+                    <p className="mt-3 break-words text-[14px] leading-relaxed text-ink-700">{resena.comentario}</p>
+                    <p className="mt-3 text-[12px] text-ink-500">{formatFecha(resena.fecha)}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
-        {resenasRecientes.length === 0 ? (
-          <p className="mt-3 rounded-lg border border-dashed border-line p-5 text-center text-[13px] text-ink-500">
-            Aún no tienes reseñas publicadas.
-          </p>
-        ) : (
-          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
-            {resenasRecientes.map((resena) => (
-              <article key={resena.id} className="rounded-xl border border-line/70 p-3.5">
-                <CompanyIdentity nombre={resena.autorEmpresa} size="sm" />
-                <span
-                  role="img"
-                  className="mt-2 flex"
-                  aria-label={`${resena.calificacion} de 5 estrellas`}
-                >
-                  {Array.from({ length: 5 }, (_, indice) => (
-                    <Star
-                      key={indice}
-                      aria-hidden="true"
-                      className={`h-3.5 w-3.5 ${indice < resena.calificacion ? 'fill-amber-deep text-amber-deep' : 'text-line'}`}
-                    />
-                  ))}
-                </span>
-                <p className="mt-2 text-[12.5px] leading-relaxed text-ink-700">{resena.comentario}</p>
-                <p className="mt-2 text-[11.5px] text-ink-500">{formatFecha(resena.fecha)}</p>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+
+        <aside className="flex min-w-0 flex-col gap-5 lg:col-span-4">
+          <section className="surface-card p-5" aria-labelledby="perfil-horario">
+            <h2 id="perfil-horario" className="text-[20px] font-semibold text-ink-900">Horario de atención</h2>
+            <dl className="mt-4 flex flex-col divide-y divide-line-soft">
+              {disponibilidad.map((dia) => (
+                <div key={dia.diaSemana} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] gap-3 py-3 first:pt-0 last:pb-0">
+                  <dt className="text-[14px] font-semibold text-ink-700">{dia.label}</dt>
+                  <dd className="m-0 min-w-0 text-right text-[14px] text-ink-900">
+                    {dia.bloques.length === 0
+                      ? 'No disponible'
+                      : dia.bloques.map((bloque, indice) => (
+                          <span key={indice} className="block break-words">
+                            {bloque.horaInicio}–{bloque.horaFin}
+                            <span className="block text-[12px] text-ink-500">{formatModalidadEtiqueta(bloque.modalidad)}</span>
+                          </span>
+                        ))}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-4 border-t border-line-soft pt-4 text-[12px] text-ink-500">
+              Zona horaria: <span className="font-semibold text-ink-700">{colaboradorPerfil.zonaHoraria}</span>
+            </p>
+          </section>
+
+          <section className="surface-card p-5" aria-labelledby="perfil-credenciales">
+            <div className="flex items-center gap-3">
+              <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
+                <FileText className="h-5 w-5" />
+              </span>
+              <h2 id="perfil-credenciales" className="text-[20px] font-semibold leading-tight text-ink-900">
+                Información profesional
+              </h2>
+            </div>
+            <div className="mt-5">
+              <CamposDl campos={camposProfesionales} />
+            </div>
+          </section>
+
+        </aside>
+      </div>
     </section>
   )
 }
