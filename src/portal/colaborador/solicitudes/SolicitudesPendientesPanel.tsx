@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Pagination } from '@/portal/components/Pagination'
 import { buscarSolicitudesPorEmpresa } from '@/portal/colaborador/calculo'
 import { empresaSolicitantePorId } from '@/portal/colaborador/semilla'
 import type { SolicitudContacto } from '@/portal/types'
 import { SolicitudPendienteCard } from './SolicitudPendienteCard'
 
-const POR_PAGINA = 3
+const POR_PAGINA = 2
 
 export function SolicitudesPendientesPanel({
   solicitudes,
@@ -114,29 +115,12 @@ export function SolicitudesPendientesPanel({
         </div>
       )}
 
-      {totalPaginas > 1 && (
-        <nav
-          aria-label="Páginas de solicitudes pendientes"
-          className="flex flex-wrap justify-center gap-x-1.5 gap-y-1.5"
-        >
-          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setPagina(n)}
-              aria-current={n === paginaActual ? 'page' : undefined}
-              aria-label={`Ir a la página ${n}`}
-              className={`num grid h-11 min-w-11 place-items-center rounded-lg text-[12.5px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 ${
-                n === paginaActual
-                  ? 'bg-navy-600 text-white'
-                  : 'border border-line bg-card text-ink-700 hover:bg-surface'
-              }`}
-            >
-              {n}
-            </button>
-          ))}
-        </nav>
-      )}
+      <Pagination
+        paginaActual={paginaActual}
+        totalPaginas={totalPaginas}
+        onChange={setPagina}
+        ariaLabel="Páginas de solicitudes pendientes"
+      />
     </section>
   )
 }
