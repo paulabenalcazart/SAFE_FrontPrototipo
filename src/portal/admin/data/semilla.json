@@ -1,0 +1,2474 @@
+{
+  "meta": {
+    "version": 4,
+    "generatedAt": "2026-08-12T01:37:00-05:00"
+  },
+  "admin": {
+    "id": "usr-admin-001",
+    "nombres": "Emilio",
+    "apellidos": "Pino",
+    "correo": "admin@safe-demo.ec",
+    "iniciales": "EP",
+    "role": "ADMINISTRADOR"
+  },
+  "dashboard": {
+    "metrics": [
+      {
+        "id": "users",
+        "label": "Usuarios activos",
+        "value": 1248,
+        "delta": "+12%",
+        "note": "vs. mes anterior",
+        "icon": "users"
+      },
+      {
+        "id": "companies",
+        "label": "Empresas registradas",
+        "value": 356,
+        "delta": "+8%",
+        "note": "vs. mes anterior",
+        "icon": "building"
+      },
+      {
+        "id": "subscriptions",
+        "label": "Suscripciones vigentes",
+        "value": 289,
+        "delta": "+10%",
+        "note": "vs. mes anterior",
+        "icon": "card"
+      },
+      {
+        "id": "professionals",
+        "label": "Profesionales validados",
+        "value": 842,
+        "delta": "+15%",
+        "note": "vs. mes anterior",
+        "icon": "badge"
+      }
+    ],
+    "monthly": [
+      {
+        "month": "Ene",
+        "registrations": 430,
+        "subscriptions": 260
+      },
+      {
+        "month": "Feb",
+        "registrations": 610,
+        "subscriptions": 410
+      },
+      {
+        "month": "Mar",
+        "registrations": 720,
+        "subscriptions": 520
+      },
+      {
+        "month": "Abr",
+        "registrations": 680,
+        "subscriptions": 380
+      },
+      {
+        "month": "May",
+        "registrations": 760,
+        "subscriptions": 440
+      },
+      {
+        "month": "Jun",
+        "registrations": 920,
+        "subscriptions": 640
+      },
+      {
+        "month": "Jul",
+        "registrations": 750,
+        "subscriptions": 550
+      },
+      {
+        "month": "Ago",
+        "registrations": 650,
+        "subscriptions": 460
+      },
+      {
+        "month": "Sep",
+        "registrations": 800,
+        "subscriptions": 600
+      },
+      {
+        "month": "Oct",
+        "registrations": 900,
+        "subscriptions": 710
+      },
+      {
+        "month": "Nov",
+        "registrations": 1000,
+        "subscriptions": 810
+      },
+      {
+        "month": "Dic",
+        "registrations": 1100,
+        "subscriptions": 900
+      }
+    ]
+  },
+  "users": [
+    {
+      "id": "usr-001",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "Juan Mario",
+      "apellidos": "Pérez Rodríguez",
+      "correo": "juan.perez@construyendo.ec",
+      "telefono": "+593 99 402 1134",
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "correo_verificado": true,
+      "mfa_habilitado": true,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-10T10:20:13-05:00",
+      "created_at": "2025-05-24T08:00:00-05:00"
+    },
+    {
+      "id": "usr-002",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "María Fernanda",
+      "apellidos": "Torres",
+      "correo": "maria@industriasnorte.ec",
+      "telefono": "+593 98 144 9200",
+      "pais": "Ecuador",
+      "ciudad": "Quito",
+      "correo_verificado": true,
+      "mfa_habilitado": false,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-09T17:35:00-05:00",
+      "created_at": "2025-05-23T08:00:00-05:00"
+    },
+    {
+      "id": "usr-003",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "Luis Alberto",
+      "apellidos": "Cedeño",
+      "correo": "luis@logisticasegura.ec",
+      "telefono": "+593 96 883 1902",
+      "pais": "Ecuador",
+      "ciudad": "Manta",
+      "correo_verificado": true,
+      "mfa_habilitado": false,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-10T08:12:00-05:00",
+      "created_at": "2025-05-23T09:20:00-05:00"
+    },
+    {
+      "id": "usr-004",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "Daniela",
+      "apellidos": "Rivas",
+      "correo": "daniela@saludintegral.ec",
+      "telefono": "+593 99 770 8831",
+      "pais": "Ecuador",
+      "ciudad": "Cuenca",
+      "correo_verificado": true,
+      "mfa_habilitado": true,
+      "estado": "SUSPENDIDO",
+      "ultimo_acceso": "2026-08-01T11:45:00-05:00",
+      "created_at": "2025-05-22T11:00:00-05:00"
+    },
+    {
+      "id": "usr-005",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "Carlos",
+      "apellidos": "Mendoza",
+      "correo": "carlos@energiaambiente.ec",
+      "telefono": "+593 99 778 6601",
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "correo_verificado": false,
+      "mfa_habilitado": false,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-07T12:30:00-05:00",
+      "created_at": "2025-05-21T09:45:00-05:00"
+    },
+    {
+      "id": "usr-101",
+      "role": "COLABORADOR",
+      "nombres": "Ana",
+      "apellidos": "López",
+      "correo": "ana.lopez@profesional.ec",
+      "telefono": "+593 99 100 2200",
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "correo_verificado": true,
+      "mfa_habilitado": true,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-10T16:30:00-05:00",
+      "created_at": "2025-11-10T10:10:00-05:00"
+    },
+    {
+      "id": "usr-102",
+      "role": "COLABORADOR",
+      "nombres": "Juan",
+      "apellidos": "Moro",
+      "correo": "juan.moro@profesional.ec",
+      "telefono": "+593 98 833 1100",
+      "pais": "Ecuador",
+      "ciudad": "Quito",
+      "correo_verificado": true,
+      "mfa_habilitado": false,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-10T14:12:00-05:00",
+      "created_at": "2026-01-07T09:00:00-05:00"
+    },
+    {
+      "id": "usr-103",
+      "role": "COLABORADOR",
+      "nombres": "Carla",
+      "apellidos": "Tapia",
+      "correo": "carla.tapia@profesional.ec",
+      "telefono": "+593 96 777 5511",
+      "pais": "Ecuador",
+      "ciudad": "Cuenca",
+      "correo_verificado": true,
+      "mfa_habilitado": true,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-09T18:40:00-05:00",
+      "created_at": "2026-02-19T08:55:00-05:00"
+    },
+    {
+      "id": "usr-104",
+      "role": "COLABORADOR",
+      "nombres": "Marco",
+      "apellidos": "Pérez",
+      "correo": "marco.perez@profesional.ec",
+      "telefono": "+593 99 221 6767",
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "correo_verificado": true,
+      "mfa_habilitado": false,
+      "estado": "SUSPENDIDO",
+      "ultimo_acceso": "2026-07-30T07:10:00-05:00",
+      "created_at": "2026-02-20T11:20:00-05:00"
+    },
+    {
+      "id": "usr-201",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "Sofía",
+      "apellidos": "Alvarado",
+      "correo": "sofia.alvarado@gmail.com",
+      "telefono": null,
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "correo_verificado": true,
+      "mfa_habilitado": false,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-10T20:10:00-05:00",
+      "created_at": "2026-08-08T18:00:00-05:00",
+      "noCompany": true
+    },
+    {
+      "id": "usr-202",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "Mateo",
+      "apellidos": "Vélez",
+      "correo": "mateo.velez@gmail.com",
+      "telefono": null,
+      "pais": "Ecuador",
+      "ciudad": "Quito",
+      "correo_verificado": true,
+      "mfa_habilitado": false,
+      "estado": "ACTIVO",
+      "ultimo_acceso": "2026-08-10T09:00:00-05:00",
+      "created_at": "2026-08-07T14:00:00-05:00",
+      "noCompany": true
+    },
+    {
+      "id": "usr-203",
+      "role": "USUARIO_EMPRESA",
+      "nombres": "Valentina",
+      "apellidos": "Paz",
+      "correo": "valentina.paz@gmail.com",
+      "telefono": null,
+      "pais": "Ecuador",
+      "ciudad": "Loja",
+      "correo_verificado": false,
+      "mfa_habilitado": false,
+      "estado": "BLOQUEADO",
+      "ultimo_acceso": "2026-08-06T19:15:00-05:00",
+      "created_at": "2026-08-06T19:00:00-05:00",
+      "noCompany": true
+    }
+  ],
+  "companies": [
+    {
+      "id": "emp-001",
+      "usuario_id": "usr-001",
+      "ruc": "0993122000001",
+      "razon_social": "Construyendo Futuro S.A.",
+      "nombre_comercial": "Construyendo Futuro",
+      "correo_empresarial": "contacto@construyendo.ec",
+      "telefono_empresarial": "+593 4 250 1200",
+      "direccion": "Av. Las Monjas 234",
+      "ciudad": "Guayaquil",
+      "provincia": "Guayas",
+      "sitio_web": "https://construyendo.ec",
+      "fecha_constitucion": "2018-05-14",
+      "giro_negocio": "Construcción y servicios de ingeniería",
+      "tamano_empresa": "MEDIANA",
+      "etapa_negocio": "CONSOLIDACION",
+      "numero_empleados": 86,
+      "lleva_contabilidad": true,
+      "declara_impuestos": true,
+      "objetivo_principal": "Optimizar liquidez y control tributario",
+      "meta_financiera": "Incrementar margen neto al 18%",
+      "estado": "ACTIVA",
+      "plan": "Plan Crecimiento",
+      "subscriptionState": "ACTIVA",
+      "renewal": "2026-09-24",
+      "simulationsUsed": 5,
+      "marketplaceContacts": 3,
+      "lastFinancialUpload": "2026-08-04",
+      "created_at": "2025-05-24",
+      "actividad_economica_id": "act-003",
+      "cluster_id": "clu-man",
+      "estructura_societaria_id": "str-sas",
+      "tipo_contribuyente_id": "tax-001"
+    },
+    {
+      "id": "emp-002",
+      "usuario_id": "usr-002",
+      "ruc": "1792416739001",
+      "razon_social": "Industrias del Norte Cía. Ltda.",
+      "nombre_comercial": "Industrias del Norte",
+      "correo_empresarial": "finanzas@industriasnorte.ec",
+      "telefono_empresarial": "+593 2 399 5540",
+      "direccion": "Av. Galo Plaza Lasso N48-120",
+      "ciudad": "Quito",
+      "provincia": "Pichincha",
+      "sitio_web": "https://industriasnorte.ec",
+      "fecha_constitucion": "2013-09-08",
+      "giro_negocio": "Manufactura",
+      "tamano_empresa": "MEDIANA",
+      "etapa_negocio": "CONSOLIDACION",
+      "numero_empleados": 112,
+      "lleva_contabilidad": true,
+      "declara_impuestos": true,
+      "objetivo_principal": "Control de costos",
+      "meta_financiera": "Reducir gastos operacionales 7%",
+      "estado": "ACTIVA",
+      "plan": "Plan Corporativo",
+      "subscriptionState": "ACTIVA",
+      "renewal": "2026-10-02",
+      "simulationsUsed": 12,
+      "marketplaceContacts": 7,
+      "lastFinancialUpload": "2026-08-01",
+      "created_at": "2025-05-23",
+      "actividad_economica_id": "act-002",
+      "cluster_id": "clu-com",
+      "estructura_societaria_id": "str-ltda",
+      "tipo_contribuyente_id": "tax-001"
+    },
+    {
+      "id": "emp-003",
+      "usuario_id": "usr-003",
+      "ruc": "1391876500001",
+      "razon_social": "Logística Segura S.A.S.",
+      "nombre_comercial": "Logística Segura",
+      "correo_empresarial": "admin@logisticasegura.ec",
+      "telefono_empresarial": "+593 5 262 4477",
+      "direccion": "Vía Manta - Montecristi km 4",
+      "ciudad": "Manta",
+      "provincia": "Manabí",
+      "sitio_web": "https://logisticasegura.ec",
+      "fecha_constitucion": "2021-02-11",
+      "giro_negocio": "Transporte y logística",
+      "tamano_empresa": "PEQUENA",
+      "etapa_negocio": "CRECIMIENTO",
+      "numero_empleados": 31,
+      "lleva_contabilidad": true,
+      "declara_impuestos": true,
+      "objetivo_principal": "Mejorar flujo de caja",
+      "meta_financiera": "Cobranza promedio menor a 35 días",
+      "estado": "ACTIVA",
+      "plan": "Plan Esencial",
+      "subscriptionState": "ACTIVA",
+      "renewal": "2026-08-30",
+      "simulationsUsed": 1,
+      "marketplaceContacts": 0,
+      "lastFinancialUpload": "2026-07-28",
+      "created_at": "2025-05-23",
+      "actividad_economica_id": "act-002",
+      "cluster_id": "clu-com",
+      "estructura_societaria_id": "str-sas",
+      "tipo_contribuyente_id": "tax-001"
+    },
+    {
+      "id": "emp-004",
+      "usuario_id": "usr-004",
+      "ruc": "0190464432001",
+      "razon_social": "Salud Integral del Austro S.A.",
+      "nombre_comercial": "Salud Integral",
+      "correo_empresarial": "gerencia@saludintegral.ec",
+      "telefono_empresarial": "+593 7 288 3090",
+      "direccion": "Av. Remigio Crespo 5-44",
+      "ciudad": "Cuenca",
+      "provincia": "Azuay",
+      "sitio_web": "https://saludintegral.ec",
+      "fecha_constitucion": "2016-11-24",
+      "giro_negocio": "Servicios de salud",
+      "tamano_empresa": "MEDIANA",
+      "etapa_negocio": "CONSOLIDACION",
+      "numero_empleados": 74,
+      "lleva_contabilidad": true,
+      "declara_impuestos": true,
+      "objetivo_principal": "Planificación financiera",
+      "meta_financiera": "Mantener liquidez > 1.5",
+      "estado": "SUSPENDIDA",
+      "plan": "Plan Crecimiento",
+      "subscriptionState": "SUSPENDIDA",
+      "renewal": "2026-08-19",
+      "simulationsUsed": 4,
+      "marketplaceContacts": 2,
+      "lastFinancialUpload": "2026-07-04",
+      "created_at": "2025-05-22",
+      "actividad_economica_id": "act-001",
+      "cluster_id": "clu-serv",
+      "estructura_societaria_id": "str-ltda",
+      "tipo_contribuyente_id": "tax-002"
+    },
+    {
+      "id": "emp-005",
+      "usuario_id": "usr-005",
+      "ruc": "0993377610001",
+      "razon_social": "Energía y Ambiente S.A.",
+      "nombre_comercial": "Energía y Ambiente",
+      "correo_empresarial": "info@energiaambiente.ec",
+      "telefono_empresarial": "+593 4 382 9940",
+      "direccion": "Av. Joaquín Orrantia 125",
+      "ciudad": "Guayaquil",
+      "provincia": "Guayas",
+      "sitio_web": "https://energiaambiente.ec",
+      "fecha_constitucion": "2024-04-03",
+      "giro_negocio": "Consultoría ambiental",
+      "tamano_empresa": "PEQUENA",
+      "etapa_negocio": "INICIO",
+      "numero_empleados": 14,
+      "lleva_contabilidad": true,
+      "declara_impuestos": true,
+      "objetivo_principal": "Ordenar obligaciones",
+      "meta_financiera": "Construir reserva de caja",
+      "estado": "INCOMPLETA",
+      "plan": "Plan Esencial",
+      "subscriptionState": "PENDIENTE",
+      "renewal": "2026-08-22",
+      "simulationsUsed": 0,
+      "marketplaceContacts": 0,
+      "lastFinancialUpload": null,
+      "created_at": "2025-05-21",
+      "actividad_economica_id": "act-001",
+      "cluster_id": "clu-serv",
+      "estructura_societaria_id": "str-sas",
+      "tipo_contribuyente_id": "tax-001"
+    }
+  ],
+  "collaborators": [
+    {
+      "id": "col-001",
+      "usuario_id": "usr-101",
+      "postulacion_id": "post-003",
+      "area_especializacion": "Legal",
+      "profesion": "Abogada corporativa",
+      "trabajo_actual": "Consultora independiente",
+      "cv_url": "cv/ana-lopez.pdf",
+      "numero_licencia": "FORO-EC-41982",
+      "entidad_emisora": "Foro de Abogados",
+      "descripcion_profesional": "Asesoro a PYMES en cumplimiento societario, contratos y gobierno corporativo.",
+      "modalidad_atencion": "AMBAS",
+      "pais_atencion": "Ecuador",
+      "ciudad_atencion": "Guayaquil",
+      "zona_horaria": "America/Guayaquil",
+      "tarifa_referencial": 65,
+      "anios_experiencia": 8,
+      "cv_visible": true,
+      "estado_disponibilidad": "DISPONIBLE",
+      "visible_marketplace": true,
+      "estado": "ACTIVO",
+      "approved_at": "2026-03-02",
+      "rating": 4.9,
+      "reviews": 38,
+      "specialties": [
+        "Derecho societario",
+        "Contratos comerciales"
+      ],
+      "services": [
+        {
+          "name": "Revisión societaria",
+          "duration": 60,
+          "price": 65,
+          "description": "Sesión especializada de revisión societaria",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "name": "Consulta contractual",
+          "duration": 45,
+          "price": 55,
+          "description": "Sesión especializada de consulta contractual",
+          "modality": "AMBAS",
+          "active": true
+        }
+      ],
+      "archivo_credencial_url": "docs/credencial-1.pdf",
+      "foto_perfil_url": null,
+      "created_at": "2026-03-02",
+      "updated_at": "2026-08-10",
+      "schedules": [
+        {
+          "day": 1,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 2,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 3,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 4,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 5,
+          "start": "08:00",
+          "end": "12:00",
+          "modality": "AMBAS",
+          "active": true
+        }
+      ],
+      "reviewItems": [
+        {
+          "rating": 5,
+          "comment": "Asesoría clara y muy práctica para nuestro caso.",
+          "company": "Construyendo Futuro",
+          "date": "2026-07-18",
+          "status": "PUBLICADA"
+        },
+        {
+          "rating": 4,
+          "comment": "Buena orientación y respuesta puntual.",
+          "company": "Industrias del Norte",
+          "date": "2026-06-02",
+          "status": "PUBLICADA"
+        }
+      ]
+    },
+    {
+      "id": "col-002",
+      "usuario_id": "usr-102",
+      "postulacion_id": "post-004",
+      "area_especializacion": "Finanzas",
+      "profesion": "Asesor financiero",
+      "trabajo_actual": "Moro Consultores",
+      "cv_url": "cv/juan-moro.pdf",
+      "numero_licencia": null,
+      "entidad_emisora": null,
+      "descripcion_profesional": "Planificación financiera, presupuestos y control de gestión para empresas en crecimiento.",
+      "modalidad_atencion": "VIRTUAL",
+      "pais_atencion": "Ecuador",
+      "ciudad_atencion": "Quito",
+      "zona_horaria": "America/Guayaquil",
+      "tarifa_referencial": 58,
+      "anios_experiencia": 10,
+      "cv_visible": true,
+      "estado_disponibilidad": "DISPONIBLE",
+      "visible_marketplace": true,
+      "estado": "ACTIVO",
+      "approved_at": "2026-02-14",
+      "rating": 4.8,
+      "reviews": 51,
+      "specialties": [
+        "Planificación financiera",
+        "Control de gestión"
+      ],
+      "services": [
+        {
+          "name": "Plan financiero",
+          "duration": 90,
+          "price": 85,
+          "description": "Sesión especializada de plan financiero",
+          "modality": "VIRTUAL",
+          "active": true
+        }
+      ],
+      "archivo_credencial_url": "docs/credencial-2.pdf",
+      "foto_perfil_url": null,
+      "created_at": "2026-02-14",
+      "updated_at": "2026-08-10",
+      "schedules": [
+        {
+          "day": 1,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "VIRTUAL",
+          "active": true
+        },
+        {
+          "day": 2,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "VIRTUAL",
+          "active": true
+        },
+        {
+          "day": 3,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "VIRTUAL",
+          "active": true
+        },
+        {
+          "day": 4,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "VIRTUAL",
+          "active": true
+        },
+        {
+          "day": 5,
+          "start": "08:00",
+          "end": "12:00",
+          "modality": "VIRTUAL",
+          "active": true
+        }
+      ],
+      "reviewItems": [
+        {
+          "rating": 5,
+          "comment": "Asesoría clara y muy práctica para nuestro caso.",
+          "company": "Industrias del Norte",
+          "date": "2026-07-18",
+          "status": "PUBLICADA"
+        },
+        {
+          "rating": 4,
+          "comment": "Buena orientación y respuesta puntual.",
+          "company": "Logística Segura",
+          "date": "2026-06-02",
+          "status": "PUBLICADA"
+        }
+      ]
+    },
+    {
+      "id": "col-003",
+      "usuario_id": "usr-103",
+      "postulacion_id": "post-005",
+      "area_especializacion": "Tributaria",
+      "profesion": "Contadora CPA",
+      "trabajo_actual": "Tapia & Asociados",
+      "cv_url": "cv/carla-tapia.pdf",
+      "numero_licencia": "CPA-EC-83221",
+      "entidad_emisora": "Colegio de Contadores",
+      "descripcion_profesional": "Especialista en obligaciones tributarias y cierres mensuales para PYMES.",
+      "modalidad_atencion": "AMBAS",
+      "pais_atencion": "Ecuador",
+      "ciudad_atencion": "Cuenca",
+      "zona_horaria": "America/Guayaquil",
+      "tarifa_referencial": 50,
+      "anios_experiencia": 7,
+      "cv_visible": false,
+      "estado_disponibilidad": "NO_DISPONIBLE",
+      "visible_marketplace": true,
+      "estado": "ACTIVO",
+      "approved_at": "2026-02-25",
+      "rating": 4.7,
+      "reviews": 29,
+      "specialties": [
+        "Tributación",
+        "Contabilidad"
+      ],
+      "services": [
+        {
+          "name": "Diagnóstico tributario",
+          "duration": 60,
+          "price": 50,
+          "description": "Sesión especializada de diagnóstico tributario",
+          "modality": "AMBAS",
+          "active": true
+        }
+      ],
+      "archivo_credencial_url": "docs/credencial-3.pdf",
+      "foto_perfil_url": null,
+      "created_at": "2026-02-25",
+      "updated_at": "2026-08-10",
+      "schedules": [
+        {
+          "day": 1,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 2,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 3,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 4,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "AMBAS",
+          "active": true
+        },
+        {
+          "day": 5,
+          "start": "08:00",
+          "end": "12:00",
+          "modality": "AMBAS",
+          "active": true
+        }
+      ],
+      "reviewItems": [
+        {
+          "rating": 5,
+          "comment": "Asesoría clara y muy práctica para nuestro caso.",
+          "company": "Logística Segura",
+          "date": "2026-07-18",
+          "status": "PUBLICADA"
+        },
+        {
+          "rating": 4,
+          "comment": "Buena orientación y respuesta puntual.",
+          "company": "Salud Integral",
+          "date": "2026-06-02",
+          "status": "PUBLICADA"
+        }
+      ]
+    },
+    {
+      "id": "col-004",
+      "usuario_id": "usr-104",
+      "postulacion_id": "post-006",
+      "area_especializacion": "Legal",
+      "profesion": "Abogado laboral",
+      "trabajo_actual": "Estudio Pérez",
+      "cv_url": "cv/marco-perez.pdf",
+      "numero_licencia": "FORO-EC-55220",
+      "entidad_emisora": "Foro de Abogados",
+      "descripcion_profesional": "Asesoría laboral para empleadores.",
+      "modalidad_atencion": "PRESENCIAL",
+      "pais_atencion": "Ecuador",
+      "ciudad_atencion": "Guayaquil",
+      "zona_horaria": "America/Guayaquil",
+      "tarifa_referencial": 70,
+      "anios_experiencia": 12,
+      "cv_visible": true,
+      "estado_disponibilidad": "NO_DISPONIBLE",
+      "visible_marketplace": false,
+      "estado": "SUSPENDIDO",
+      "approved_at": "2026-03-10",
+      "rating": 4.6,
+      "reviews": 18,
+      "specialties": [
+        "Derecho laboral"
+      ],
+      "services": [
+        {
+          "name": "Consulta laboral",
+          "duration": 60,
+          "price": 70,
+          "description": "Sesión especializada de consulta laboral",
+          "modality": "PRESENCIAL",
+          "active": true
+        }
+      ],
+      "archivo_credencial_url": "docs/credencial-4.pdf",
+      "foto_perfil_url": null,
+      "created_at": "2026-03-10",
+      "updated_at": "2026-08-10",
+      "schedules": [
+        {
+          "day": 1,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "PRESENCIAL",
+          "active": true
+        },
+        {
+          "day": 2,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "PRESENCIAL",
+          "active": true
+        },
+        {
+          "day": 3,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "PRESENCIAL",
+          "active": true
+        },
+        {
+          "day": 4,
+          "start": "08:00",
+          "end": "17:00",
+          "modality": "PRESENCIAL",
+          "active": true
+        },
+        {
+          "day": 5,
+          "start": "08:00",
+          "end": "12:00",
+          "modality": "PRESENCIAL",
+          "active": true
+        }
+      ],
+      "reviewItems": [
+        {
+          "rating": 5,
+          "comment": "Asesoría clara y muy práctica para nuestro caso.",
+          "company": "Salud Integral",
+          "date": "2026-07-18",
+          "status": "PUBLICADA"
+        },
+        {
+          "rating": 4,
+          "comment": "Buena orientación y respuesta puntual.",
+          "company": "Construyendo Futuro",
+          "date": "2026-06-02",
+          "status": "PUBLICADA"
+        }
+      ]
+    }
+  ],
+  "applications": [
+    {
+      "id": "post-001",
+      "nombres": "Andrea",
+      "apellidos": "Vega",
+      "correo": "andrea.vega@gmail.com",
+      "telefono": "+593 99 430 1450",
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "area_especializacion": "Finanzas",
+      "especialidad_principal": "Planificación financiera",
+      "trabajo_actual": "Analista Senior",
+      "cv_url": "docs/cv-andrea-vega.pdf",
+      "numero_licencia": null,
+      "entidad_emisora": null,
+      "archivo_credencial_url": "docs/certificacion-finanzas.pdf",
+      "como_llego_safe": "LinkedIn",
+      "codigo_invitacion": null,
+      "descripcion_profesional": "Economista con experiencia en presupuestos, proyecciones y análisis de rentabilidad para PYMES.",
+      "modalidad_atencion": "VIRTUAL",
+      "tarifa_referencial": 55,
+      "dias_disponibles": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hora_inicio_referencial": "08:00",
+      "hora_fin_referencial": "17:00",
+      "acepta_validacion": true,
+      "acepta_terminos": true,
+      "estado": "PENDIENTE",
+      "motivo_rechazo": null,
+      "created_at": "2026-08-10T08:30:00-05:00",
+      "reviewed_at": null
+    },
+    {
+      "id": "post-002",
+      "nombres": "Sebastián",
+      "apellidos": "León",
+      "correo": "sebastian.leon@gmail.com",
+      "telefono": "+593 98 300 7271",
+      "pais": "Ecuador",
+      "ciudad": "Quito",
+      "area_especializacion": "Legal",
+      "especialidad_principal": "Derecho tributario",
+      "trabajo_actual": "Abogado asociado",
+      "cv_url": "docs/cv-sebastian-leon.pdf",
+      "numero_licencia": "FORO-EC-91825",
+      "entidad_emisora": "Foro de Abogados",
+      "archivo_credencial_url": "docs/licencia-sebastian.pdf",
+      "como_llego_safe": "Referido",
+      "codigo_invitacion": "SAFE-PRO-26",
+      "descripcion_profesional": "Abogado enfocado en tributación empresarial y controversias administrativas.",
+      "modalidad_atencion": "AMBAS",
+      "tarifa_referencial": 75,
+      "dias_disponibles": [
+        2,
+        4,
+        5
+      ],
+      "hora_inicio_referencial": "09:00",
+      "hora_fin_referencial": "16:30",
+      "acepta_validacion": true,
+      "acepta_terminos": true,
+      "estado": "EN_REVISION",
+      "motivo_rechazo": null,
+      "created_at": "2026-08-09T12:10:00-05:00",
+      "reviewed_at": "2026-08-10T09:00:00-05:00"
+    },
+    {
+      "id": "post-003",
+      "nombres": "Ana",
+      "apellidos": "López",
+      "correo": "ana.lopez@profesional.ec",
+      "telefono": "+593 99 100 2200",
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "area_especializacion": "Legal",
+      "especialidad_principal": "Derecho societario",
+      "trabajo_actual": "Consultora independiente",
+      "cv_url": "cv/ana-lopez.pdf",
+      "numero_licencia": "FORO-EC-41982",
+      "entidad_emisora": "Foro de Abogados",
+      "archivo_credencial_url": "docs/licencia-ana.pdf",
+      "como_llego_safe": "Web",
+      "codigo_invitacion": null,
+      "descripcion_profesional": "Asesoría societaria para PYMES.",
+      "modalidad_atencion": "AMBAS",
+      "tarifa_referencial": 65,
+      "dias_disponibles": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hora_inicio_referencial": "08:00",
+      "hora_fin_referencial": "17:00",
+      "acepta_validacion": true,
+      "acepta_terminos": true,
+      "estado": "APROBADA",
+      "motivo_rechazo": null,
+      "created_at": "2026-02-20T10:00:00-05:00",
+      "reviewed_at": "2026-03-02T15:00:00-05:00"
+    },
+    {
+      "id": "post-004",
+      "nombres": "Juan",
+      "apellidos": "Moro",
+      "correo": "juan.moro@profesional.ec",
+      "telefono": "+593 98 833 1100",
+      "pais": "Ecuador",
+      "ciudad": "Quito",
+      "area_especializacion": "Finanzas",
+      "especialidad_principal": "Planificación financiera",
+      "trabajo_actual": "Moro Consultores",
+      "cv_url": "cv/juan-moro.pdf",
+      "numero_licencia": null,
+      "entidad_emisora": null,
+      "archivo_credencial_url": "docs/credencial-2.pdf",
+      "como_llego_safe": "Referido",
+      "codigo_invitacion": null,
+      "descripcion_profesional": "Planificación financiera, presupuestos y control de gestión para empresas en crecimiento.",
+      "modalidad_atencion": "VIRTUAL",
+      "tarifa_referencial": 58,
+      "dias_disponibles": [1, 2, 3, 4, 5],
+      "hora_inicio_referencial": "08:00",
+      "hora_fin_referencial": "17:00",
+      "acepta_validacion": true,
+      "acepta_terminos": true,
+      "estado": "APROBADA",
+      "motivo_rechazo": null,
+      "created_at": "2026-02-08T09:00:00-05:00",
+      "reviewed_at": "2026-02-14T10:00:00-05:00"
+    },
+    {
+      "id": "post-005",
+      "nombres": "Carla",
+      "apellidos": "Tapia",
+      "correo": "carla.tapia@profesional.ec",
+      "telefono": "+593 96 777 5511",
+      "pais": "Ecuador",
+      "ciudad": "Cuenca",
+      "area_especializacion": "Tributaria",
+      "especialidad_principal": "Tributación",
+      "trabajo_actual": "Tapia & Asociados",
+      "cv_url": "cv/carla-tapia.pdf",
+      "numero_licencia": "CPA-EC-83221",
+      "entidad_emisora": "Colegio de Contadores",
+      "archivo_credencial_url": "docs/credencial-3.pdf",
+      "como_llego_safe": "Web",
+      "codigo_invitacion": null,
+      "descripcion_profesional": "Especialista en obligaciones tributarias y cierres mensuales para PYMES.",
+      "modalidad_atencion": "AMBAS",
+      "tarifa_referencial": 50,
+      "dias_disponibles": [1, 2, 3, 4, 5],
+      "hora_inicio_referencial": "08:00",
+      "hora_fin_referencial": "17:00",
+      "acepta_validacion": true,
+      "acepta_terminos": true,
+      "estado": "APROBADA",
+      "motivo_rechazo": null,
+      "created_at": "2026-02-19T08:00:00-05:00",
+      "reviewed_at": "2026-02-25T10:00:00-05:00"
+    },
+    {
+      "id": "post-006",
+      "nombres": "Marco",
+      "apellidos": "Pérez",
+      "correo": "marco.perez@profesional.ec",
+      "telefono": "+593 99 221 6767",
+      "pais": "Ecuador",
+      "ciudad": "Guayaquil",
+      "area_especializacion": "Legal",
+      "especialidad_principal": "Derecho laboral",
+      "trabajo_actual": "Estudio Pérez",
+      "cv_url": "cv/marco-perez.pdf",
+      "numero_licencia": "FORO-EC-55220",
+      "entidad_emisora": "Foro de Abogados",
+      "archivo_credencial_url": "docs/credencial-4.pdf",
+      "como_llego_safe": "Web",
+      "codigo_invitacion": null,
+      "descripcion_profesional": "Asesoría laboral para empleadores.",
+      "modalidad_atencion": "PRESENCIAL",
+      "tarifa_referencial": 70,
+      "dias_disponibles": [1, 2, 3, 4, 5],
+      "hora_inicio_referencial": "08:00",
+      "hora_fin_referencial": "17:00",
+      "acepta_validacion": true,
+      "acepta_terminos": true,
+      "estado": "APROBADA",
+      "motivo_rechazo": null,
+      "created_at": "2026-03-02T08:00:00-05:00",
+      "reviewed_at": "2026-03-10T10:00:00-05:00"
+    }
+  ],
+  "plans": [
+    {
+      "id": "plan-ess",
+      "codigo": "ESENCIAL",
+      "nombre": "Plan Esencial",
+      "descripcion": "Base financiera y tributaria para una empresa.",
+      "precio_mensual": 29,
+      "moneda": "USD",
+      "dias_prueba": 7,
+      "nivel_soporte": "GENERAL",
+      "renovacion_automatica_default": true,
+      "orden_visualizacion": 1,
+      "activo": true,
+      "users": 74,
+      "updated_at": "2026-08-07",
+      "limits": {
+        "EMPRESAS": 1,
+        "SIMULACIONES_MENSUALES": 5,
+        "CONTACTOS_MENSUALES": 0,
+        "INFORMES_MENSUALES": 2
+      },
+      "modules": [
+        "EMPRESAS",
+        "FINANZAS",
+        "OBLIGACIONES",
+        "TUTORIALES",
+        "NOTIFICACIONES",
+        "SUSCRIPCIONES"
+      ]
+    },
+    {
+      "id": "plan-grow",
+      "codigo": "CRECIMIENTO",
+      "nombre": "Plan Crecimiento",
+      "descripcion": "Análisis avanzado, simulador y marketplace.",
+      "precio_mensual": 59,
+      "moneda": "USD",
+      "dias_prueba": 14,
+      "nivel_soporte": "PRIORITARIO",
+      "renovacion_automatica_default": true,
+      "orden_visualizacion": 2,
+      "activo": true,
+      "users": 128,
+      "updated_at": "2026-08-10",
+      "limits": {
+        "EMPRESAS": 3,
+        "SIMULACIONES_MENSUALES": 20,
+        "CONTACTOS_MENSUALES": 5,
+        "INFORMES_MENSUALES": 10
+      },
+      "modules": [
+        "EMPRESAS",
+        "FINANZAS",
+        "OBLIGACIONES",
+        "SIMULADOR",
+        "MARKETPLACE",
+        "TUTORIALES",
+        "NOTIFICACIONES",
+        "SUSCRIPCIONES"
+      ]
+    },
+    {
+      "id": "plan-corp",
+      "codigo": "CORPORATIVO",
+      "nombre": "Plan Corporativo",
+      "descripcion": "Capacidad ampliada y acompañamiento prioritario.",
+      "precio_mensual": 119,
+      "moneda": "USD",
+      "dias_prueba": 14,
+      "nivel_soporte": "PRIORITARIO_DEDICADO",
+      "renovacion_automatica_default": true,
+      "orden_visualizacion": 3,
+      "activo": true,
+      "users": 87,
+      "updated_at": "2026-08-11",
+      "limits": {
+        "EMPRESAS": 10,
+        "SIMULACIONES_MENSUALES": 999,
+        "CONTACTOS_MENSUALES": 20,
+        "INFORMES_MENSUALES": 999
+      },
+      "modules": [
+        "EMPRESAS",
+        "FINANZAS",
+        "OBLIGACIONES",
+        "SIMULADOR",
+        "MARKETPLACE",
+        "TUTORIALES",
+        "NOTIFICACIONES",
+        "SUSCRIPCIONES"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "codigo": "EMPRESAS",
+      "nombre": "Empresas",
+      "descripcion": "Perfil y gestión de empresas"
+    },
+    {
+      "codigo": "FINANZAS",
+      "nombre": "Finanzas",
+      "descripcion": "Registros, indicadores y diagnósticos"
+    },
+    {
+      "codigo": "OBLIGACIONES",
+      "nombre": "Obligaciones",
+      "descripcion": "Calendario y reglas normativas"
+    },
+    {
+      "codigo": "SIMULADOR",
+      "nombre": "Simulador",
+      "descripcion": "Escenarios y resultados"
+    },
+    {
+      "codigo": "MARKETPLACE",
+      "nombre": "Marketplace",
+      "descripcion": "Profesionales y contactos"
+    },
+    {
+      "codigo": "TUTORIALES",
+      "nombre": "Tutoriales",
+      "descripcion": "Contenido educativo"
+    },
+    {
+      "codigo": "NOTIFICACIONES",
+      "nombre": "Notificaciones",
+      "descripcion": "Alertas por empresa y colaborador"
+    },
+    {
+      "codigo": "SUSCRIPCIONES",
+      "nombre": "Suscripciones",
+      "descripcion": "Planes y pagos"
+    },
+    {
+      "codigo": "ADMINISTRACION",
+      "nombre": "Administración",
+      "descripcion": "Control operativo"
+    }
+  ],
+  "permissions": [
+    "empresa.ver",
+    "empresa.crear",
+    "empresa.editar",
+    "finanzas.registrar",
+    "finanzas.ver",
+    "obligaciones.ver",
+    "simulaciones.ejecutar",
+    "marketplace.ver",
+    "marketplace.contactar",
+    "colaborador.perfil",
+    "colaborador.solicitudes",
+    "admin.usuarios",
+    "admin.postulaciones",
+    "admin.planes",
+    "admin.normativa",
+    "admin.indicadores",
+    "admin.tutoriales",
+    "admin.incidencias",
+    "admin.logs",
+    "admin.auditoria",
+    "citas.gestionar"
+  ],
+  "industryClusters": [
+    {
+      "id": "clu-serv",
+      "codigo": "SERVICIOS",
+      "nombre": "Servicios",
+      "descripcion": "Empresas de servicios profesionales y empresariales.",
+      "activo": true
+    },
+    {
+      "id": "clu-com",
+      "codigo": "COMERCIO",
+      "nombre": "Comercio",
+      "descripcion": "Actividades comerciales y distribución.",
+      "activo": true
+    },
+    {
+      "id": "clu-man",
+      "codigo": "MANUFACTURA",
+      "nombre": "Manufactura",
+      "descripcion": "Producción y transformación de bienes.",
+      "activo": true
+    }
+  ],
+  "economicActivities": [
+    {
+      "id": "act-001",
+      "cluster_predeterminado_id": "clu-serv",
+      "codigo_ciiu": "M7020.04",
+      "nombre": "Consultoría de gestión empresarial",
+      "descripcion": "Servicios de asesoría administrativa y financiera.",
+      "sector": "Servicios",
+      "categoria": "Consultoría",
+      "activo": true
+    },
+    {
+      "id": "act-002",
+      "cluster_predeterminado_id": "clu-com",
+      "codigo_ciiu": "G4690.00",
+      "nombre": "Comercio al por mayor no especializado",
+      "descripcion": "Comercialización mayorista de bienes diversos.",
+      "sector": "Comercio",
+      "categoria": "Mayorista",
+      "activo": true
+    },
+    {
+      "id": "act-003",
+      "cluster_predeterminado_id": "clu-man",
+      "codigo_ciiu": "C2599.09",
+      "nombre": "Otras industrias manufactureras",
+      "descripcion": "Fabricación de productos metálicos y afines.",
+      "sector": "Manufactura",
+      "categoria": "Industrial",
+      "activo": true
+    }
+  ],
+  "corporateStructures": [
+    {
+      "id": "str-sas",
+      "codigo": "SAS",
+      "nombre": "Sociedad por Acciones Simplificada",
+      "descripcion": "Sociedad mercantil simplificada.",
+      "tipo_persona": "JURIDICA",
+      "activo": true
+    },
+    {
+      "id": "str-ltda",
+      "codigo": "CIA_LTDA",
+      "nombre": "Compañía Limitada",
+      "descripcion": "Sociedad de responsabilidad limitada.",
+      "tipo_persona": "JURIDICA",
+      "activo": true
+    },
+    {
+      "id": "str-nat",
+      "codigo": "PERSONA_NATURAL",
+      "nombre": "Persona natural",
+      "descripcion": "Persona natural con actividad económica.",
+      "tipo_persona": "NATURAL",
+      "activo": true
+    }
+  ],
+  "taxpayerTypes": [
+    {
+      "id": "tax-001",
+      "codigo": "SOCIEDAD_GENERAL",
+      "nombre": "Sociedad régimen general",
+      "descripcion": "Sociedad sujeta al régimen general.",
+      "tipo_persona": "JURIDICA",
+      "regimen_tributario": "GENERAL",
+      "obligado_contabilidad": true,
+      "contribuyente_especial": false,
+      "agente_retencion": true,
+      "gran_contribuyente": false,
+      "declara_iva": true,
+      "periodicidad_iva": "MENSUAL",
+      "declara_renta": true,
+      "emite_factura": true,
+      "activo": true
+    },
+    {
+      "id": "tax-002",
+      "codigo": "RIMPE_EMPRENDEDOR",
+      "nombre": "RIMPE Emprendedor",
+      "descripcion": "Contribuyente dentro del régimen RIMPE Emprendedor.",
+      "tipo_persona": "NATURAL",
+      "regimen_tributario": "RIMPE",
+      "obligado_contabilidad": false,
+      "contribuyente_especial": false,
+      "agente_retencion": false,
+      "gran_contribuyente": false,
+      "declara_iva": true,
+      "periodicidad_iva": "SEMESTRAL",
+      "declara_renta": true,
+      "emite_factura": true,
+      "activo": true
+    },
+    {
+      "id": "tax-003",
+      "codigo": "RIMPE_NEGOCIO_POPULAR",
+      "nombre": "RIMPE Negocio Popular",
+      "descripcion": "Persona natural bajo condiciones de negocio popular.",
+      "tipo_persona": "NATURAL",
+      "regimen_tributario": "RIMPE",
+      "obligado_contabilidad": false,
+      "contribuyente_especial": false,
+      "agente_retencion": false,
+      "gran_contribuyente": false,
+      "declara_iva": false,
+      "periodicidad_iva": "NO_APLICA",
+      "declara_renta": true,
+      "emite_factura": true,
+      "activo": true
+    }
+  ],
+  "obligations": [
+    {
+      "id": "obl-001",
+      "codigo": "IVA_MENSUAL",
+      "nombre": "Declaración de IVA",
+      "descripcion": "Declaración mensual del Impuesto al Valor Agregado.",
+      "categoria": "TRIBUTARIA",
+      "institucion": "SRI",
+      "periodicidad": "MENSUAL",
+      "usa_noveno_digito": true,
+      "permite_monto_estimado": true,
+      "activo": true,
+      "updated_at": "2026-08-04"
+    },
+    {
+      "id": "obl-002",
+      "codigo": "RET_FUENTE",
+      "nombre": "Retenciones en la fuente",
+      "descripcion": "Declaración de retenciones practicadas.",
+      "categoria": "TRIBUTARIA",
+      "institucion": "SRI",
+      "periodicidad": "MENSUAL",
+      "usa_noveno_digito": true,
+      "permite_monto_estimado": true,
+      "activo": true,
+      "updated_at": "2026-08-03"
+    },
+    {
+      "id": "obl-003",
+      "codigo": "IR_ANUAL",
+      "nombre": "Impuesto a la renta anual",
+      "descripcion": "Declaración anual del impuesto a la renta.",
+      "categoria": "TRIBUTARIA",
+      "institucion": "SRI",
+      "periodicidad": "ANUAL",
+      "usa_noveno_digito": false,
+      "permite_monto_estimado": true,
+      "activo": true,
+      "updated_at": "2026-07-22"
+    },
+    {
+      "id": "obl-004",
+      "codigo": "DECIMO_TERCERO",
+      "nombre": "Décimo tercer sueldo",
+      "descripcion": "Registro y pago de décimo tercer sueldo.",
+      "categoria": "LABORAL",
+      "institucion": "Ministerio del Trabajo",
+      "periodicidad": "ANUAL",
+      "usa_noveno_digito": false,
+      "permite_monto_estimado": false,
+      "activo": true,
+      "updated_at": "2026-06-18"
+    },
+    {
+      "id": "obl-005",
+      "codigo": "PATENTE_MUNICIPAL",
+      "nombre": "Patente municipal",
+      "descripcion": "Obligación municipal aplicable según cantón.",
+      "categoria": "MUNICIPAL",
+      "institucion": "GAD Municipal",
+      "periodicidad": "ANUAL",
+      "usa_noveno_digito": false,
+      "permite_monto_estimado": true,
+      "activo": true,
+      "updated_at": "2026-05-14"
+    }
+  ],
+  "obligationRules": [
+    {
+      "id": "rule-001",
+      "obligacion_id": "obl-001",
+      "norma_legal_id": "norm-002",
+      "nombre": "IVA mensual general",
+      "descripcion": "Aplica declaración mensual de IVA a sociedades del régimen general.",
+      "tipo_contribuyente_id": "tax-001",
+      "estructura_societaria_id": null,
+      "actividad_economica_id": null,
+      "cluster_id": null,
+      "tamano_empresa": null,
+      "requiere_contabilidad": true,
+      "requiere_declaracion_impuestos": true,
+      "noveno_digito_desde": 0,
+      "noveno_digito_hasta": 9,
+      "formula_fecha": "FECHA_SEGUN_NOVENO_DIGITO(periodo, noveno_digito)",
+      "formula_fecha_validada": true,
+      "formula_monto": "BASE_IVA * IVA_TARIFA_GENERAL / 100",
+      "formula_monto_validada": true,
+      "prioridad": 100,
+      "vigente_desde": "2024-04-01",
+      "vigente_hasta": null,
+      "activo": true
+    },
+    {
+      "id": "rule-002",
+      "obligacion_id": "obl-002",
+      "norma_legal_id": "norm-002",
+      "nombre": "Retenciones mensuales",
+      "descripcion": "Aplica a agentes de retención con declaración mensual.",
+      "tipo_contribuyente_id": "tax-001",
+      "estructura_societaria_id": null,
+      "actividad_economica_id": null,
+      "cluster_id": null,
+      "tamano_empresa": null,
+      "requiere_contabilidad": true,
+      "requiere_declaracion_impuestos": true,
+      "noveno_digito_desde": 0,
+      "noveno_digito_hasta": 9,
+      "formula_fecha": "FECHA_SEGUN_NOVENO_DIGITO(periodo, noveno_digito)",
+      "formula_fecha_validada": true,
+      "formula_monto": "RETENCIONES_PRACTICADAS",
+      "formula_monto_validada": true,
+      "prioridad": 90,
+      "vigente_desde": "2024-01-01",
+      "vigente_hasta": null,
+      "activo": true
+    },
+    {
+      "id": "rule-003",
+      "obligacion_id": "obl-003",
+      "norma_legal_id": "norm-001",
+      "nombre": "Impuesto a la renta sociedades",
+      "descripcion": "Declaración anual para sociedades con obligación de declarar renta.",
+      "tipo_contribuyente_id": "tax-001",
+      "estructura_societaria_id": null,
+      "actividad_economica_id": null,
+      "cluster_id": null,
+      "tamano_empresa": null,
+      "requiere_contabilidad": true,
+      "requiere_declaracion_impuestos": true,
+      "noveno_digito_desde": null,
+      "noveno_digito_hasta": null,
+      "formula_fecha": "FECHA_IR_ANUAL(periodo)",
+      "formula_fecha_validada": true,
+      "formula_monto": "BASE_IMPONIBLE_RENTA * TARIFA_IR",
+      "formula_monto_validada": false,
+      "prioridad": 80,
+      "vigente_desde": "2025-01-01",
+      "vigente_hasta": null,
+      "activo": true
+    }
+  ],
+  "norms": [
+    {
+      "id": "norm-001",
+      "nombre": "Ley de Régimen Tributario Interno",
+      "tipo": "LEY",
+      "institucion": "Asamblea Nacional",
+      "numero": "LRTI",
+      "url_fuente": "https://www.sri.gob.ec",
+      "fecha_publicacion": "2004-11-17",
+      "fecha_vigencia": "2004-11-17",
+      "estado": "VIGENTE"
+    },
+    {
+      "id": "norm-002",
+      "nombre": "Reglamento para la aplicación de la LRTI",
+      "tipo": "REGLAMENTO",
+      "institucion": "Presidencia de la República",
+      "numero": "RALRTI",
+      "url_fuente": "https://www.sri.gob.ec",
+      "fecha_publicacion": "2010-06-08",
+      "fecha_vigencia": "2010-06-08",
+      "estado": "VIGENTE"
+    }
+  ],
+  "normativeParams": [
+    {
+      "id": "param-001",
+      "norma_legal_id": "norm-001",
+      "codigo": "IVA_TARIFA_GENERAL",
+      "nombre": "Tarifa general de IVA",
+      "categoria": "TRIBUTARIA",
+      "descripcion": "Tarifa general aplicable para cálculos del sistema.",
+      "tipo_valor": "PORCENTAJE",
+      "valor": 15,
+      "unidad": "%",
+      "fuente": "SRI",
+      "vigente_desde": "2024-04-01",
+      "vigente_hasta": null,
+      "activo": true
+    },
+    {
+      "id": "param-002",
+      "norma_legal_id": null,
+      "codigo": "ANTELACION_ALERTA_TRIB",
+      "nombre": "Antelación alerta tributaria",
+      "categoria": "TRIBUTARIA",
+      "descripcion": "Días antes de vencimiento para generar alerta.",
+      "tipo_valor": "NUMERO",
+      "valor": 5,
+      "unidad": "días",
+      "fuente": "Configuración SAFE",
+      "vigente_desde": "2026-01-01",
+      "vigente_hasta": null,
+      "activo": true
+    }
+  ],
+  "financialConcepts": [
+    {
+      "id": "cf-001",
+      "codigo": "EFECTIVO",
+      "nombre": "Efectivo y equivalentes",
+      "bloque": "ACTIVO",
+      "descripcion": "Efectivo disponible y equivalentes de alta liquidez.",
+      "tipo_dato": "NUMERICO",
+      "unidad": "USD",
+      "es_universal": true,
+      "obligatorio": true,
+      "regla_validacion": {
+        "min": 0
+      },
+      "orden_visualizacion": 10,
+      "activo": true
+    },
+    {
+      "id": "cf-002",
+      "codigo": "CUENTAS_COBRAR",
+      "nombre": "Cuentas por cobrar",
+      "bloque": "ACTIVO",
+      "descripcion": "Saldo pendiente de cobro a clientes.",
+      "tipo_dato": "NUMERICO",
+      "unidad": "USD",
+      "es_universal": true,
+      "obligatorio": true,
+      "regla_validacion": {
+        "min": 0
+      },
+      "orden_visualizacion": 20,
+      "activo": true
+    },
+    {
+      "id": "cf-003",
+      "codigo": "INVENTARIOS",
+      "nombre": "Inventarios",
+      "bloque": "ACTIVO",
+      "descripcion": "Existencias disponibles para venta o producción.",
+      "tipo_dato": "NUMERICO",
+      "unidad": "USD",
+      "es_universal": false,
+      "obligatorio": false,
+      "regla_validacion": {
+        "min": 0
+      },
+      "orden_visualizacion": 30,
+      "activo": true
+    },
+    {
+      "id": "cf-004",
+      "codigo": "CUENTAS_PAGAR",
+      "nombre": "Cuentas por pagar",
+      "bloque": "PASIVO",
+      "descripcion": "Obligaciones corrientes con proveedores.",
+      "tipo_dato": "NUMERICO",
+      "unidad": "USD",
+      "es_universal": true,
+      "obligatorio": true,
+      "regla_validacion": {
+        "min": 0
+      },
+      "orden_visualizacion": 40,
+      "activo": true
+    },
+    {
+      "id": "cf-005",
+      "codigo": "INGRESOS_OPERACIONALES",
+      "nombre": "Ingresos operacionales",
+      "bloque": "INGRESO",
+      "descripcion": "Ingresos provenientes de la operación principal.",
+      "tipo_dato": "NUMERICO",
+      "unidad": "USD",
+      "es_universal": true,
+      "obligatorio": true,
+      "regla_validacion": {
+        "min": 0
+      },
+      "orden_visualizacion": 50,
+      "activo": true
+    },
+    {
+      "id": "cf-006",
+      "codigo": "UTILIDAD_NETA",
+      "nombre": "Utilidad neta",
+      "bloque": "INGRESO",
+      "descripcion": "Resultado neto del periodo.",
+      "tipo_dato": "NUMERICO",
+      "unidad": "USD",
+      "es_universal": true,
+      "obligatorio": true,
+      "regla_validacion": {},
+      "orden_visualizacion": 60,
+      "activo": true
+    }
+  ],
+  "clusterConcepts": [
+    {
+      "id": "cc-001",
+      "cluster_id": "clu-man",
+      "concepto_financiero_id": "cf-003",
+      "obligatorio": true
+    },
+    {
+      "id": "cc-002",
+      "cluster_id": "clu-serv",
+      "concepto_financiero_id": "cf-003",
+      "obligatorio": false
+    },
+    {
+      "id": "cc-003",
+      "cluster_id": "clu-com",
+      "concepto_financiero_id": "cf-003",
+      "obligatorio": true
+    }
+  ],
+  "derivedMagnitudes": [
+    {
+      "id": "mag-001",
+      "cluster_id": null,
+      "codigo": "ACTIVO_CORRIENTE",
+      "nombre": "Activo corriente",
+      "expresion": "EFECTIVO + CUENTAS_COBRAR + INVENTARIOS",
+      "version": "1.0",
+      "formula_validada": true,
+      "descripcion": "Suma de activos corrientes utilizados por los indicadores.",
+      "activo": true
+    },
+    {
+      "id": "mag-002",
+      "cluster_id": null,
+      "codigo": "PASIVO_CORRIENTE",
+      "nombre": "Pasivo corriente",
+      "expresion": "CUENTAS_PAGAR + DEUDA_CORTO_PLAZO + OTROS_PASIVOS_CORRIENTES",
+      "version": "1.0",
+      "formula_validada": true,
+      "descripcion": "Total de obligaciones corrientes.",
+      "activo": true
+    },
+    {
+      "id": "mag-003",
+      "cluster_id": null,
+      "codigo": "PATRIMONIO",
+      "nombre": "Patrimonio",
+      "expresion": "ACTIVO_TOTAL - PASIVO_TOTAL",
+      "version": "1.0",
+      "formula_validada": true,
+      "descripcion": "Patrimonio calculado del periodo.",
+      "activo": true
+    }
+  ],
+  "indicators": [
+    {
+      "id": "ind-001",
+      "codigo": "LIQ_01",
+      "factor": "LIQUIDEZ",
+      "nombre": "Liquidez corriente",
+      "descripcion": "Mide la capacidad de pago de obligaciones de corto plazo.",
+      "formula": "ACTIVO_CORRIENTE / PASIVO_CORRIENTE",
+      "formula_validada": true,
+      "interpretacion": "Capacidad para cubrir pasivos corrientes",
+      "unidad": "RATIO",
+      "fase": "MVP",
+      "fuente": "Superintendencia de Compañías, Valores y Seguros del Ecuador",
+      "version_formula": "1.0",
+      "peso_salud_financiera": 0.2,
+      "activo": true
+    },
+    {
+      "id": "ind-002",
+      "codigo": "LIQ_02",
+      "factor": "LIQUIDEZ",
+      "nombre": "Prueba ácida",
+      "descripcion": "Mide liquidez inmediata excluyendo inventarios.",
+      "formula": "(ACTIVO_CORRIENTE - INVENTARIOS) / PASIVO_CORRIENTE",
+      "formula_validada": true,
+      "interpretacion": "Liquidez sin depender del inventario",
+      "unidad": "RATIO",
+      "fase": "MVP",
+      "fuente": "Superintendencia de Compañías, Valores y Seguros del Ecuador",
+      "version_formula": "1.0",
+      "peso_salud_financiera": 0.2,
+      "activo": true
+    },
+    {
+      "id": "ind-003",
+      "codigo": "SOL_01",
+      "factor": "SOLVENCIA",
+      "nombre": "Endeudamiento del activo",
+      "descripcion": "Mide el peso del pasivo sobre los activos.",
+      "formula": "PASIVO_TOTAL / ACTIVO_TOTAL",
+      "formula_validada": true,
+      "interpretacion": "Participación de acreedores en los activos",
+      "unidad": "PORCENTAJE",
+      "fase": "MVP",
+      "fuente": "Superintendencia de Compañías, Valores y Seguros del Ecuador",
+      "version_formula": "1.0",
+      "peso_salud_financiera": 0.2,
+      "activo": true
+    },
+    {
+      "id": "ind-004",
+      "codigo": "REN_04",
+      "factor": "RENTABILIDAD",
+      "nombre": "Rentabilidad neta de ventas",
+      "descripcion": "Mide la utilidad neta obtenida por cada unidad de venta.",
+      "formula": "UTILIDAD_NETA / INGRESOS_OPERACIONALES",
+      "formula_validada": true,
+      "interpretacion": "Utilidad neta por venta",
+      "unidad": "PORCENTAJE",
+      "fase": "MVP",
+      "fuente": "Superintendencia de Compañías, Valores y Seguros del Ecuador",
+      "version_formula": "1.0",
+      "peso_salud_financiera": 0.2,
+      "activo": true
+    },
+    {
+      "id": "ind-005",
+      "codigo": "REN_08",
+      "factor": "RENTABILIDAD",
+      "nombre": "ROE",
+      "descripcion": "Mide la rentabilidad sobre el patrimonio.",
+      "formula": "UTILIDAD_NETA / PATRIMONIO",
+      "formula_validada": true,
+      "interpretacion": "Rentabilidad neta del patrimonio",
+      "unidad": "PORCENTAJE",
+      "fase": "MVP",
+      "fuente": "Superintendencia de Compañías, Valores y Seguros del Ecuador",
+      "version_formula": "1.0",
+      "peso_salud_financiera": 0.2,
+      "activo": true
+    }
+  ],
+  "clusterIndicators": [
+    {
+      "id": "ci-001",
+      "cluster_id": "clu-serv",
+      "indicador_id": "ind-001",
+      "es_principal": true,
+      "activo": true
+    },
+    {
+      "id": "ci-002",
+      "cluster_id": "clu-serv",
+      "indicador_id": "ind-002",
+      "es_principal": false,
+      "activo": true
+    },
+    {
+      "id": "ci-003",
+      "cluster_id": "clu-serv",
+      "indicador_id": "ind-004",
+      "es_principal": true,
+      "activo": true
+    },
+    {
+      "id": "ci-004",
+      "cluster_id": "clu-com",
+      "indicador_id": "ind-001",
+      "es_principal": true,
+      "activo": true
+    },
+    {
+      "id": "ci-005",
+      "cluster_id": "clu-man",
+      "indicador_id": "ind-003",
+      "es_principal": true,
+      "activo": true
+    }
+  ],
+  "benchmarks": [
+    {
+      "id": "bench-001",
+      "indicador_id": "ind-001",
+      "cluster_id": "clu-serv",
+      "banda_tamano": "PEQUENA",
+      "periodo_referencia": "2026-01-01",
+      "fuente": "Muestra sectorial SAFE",
+      "percentil_10": 0.75,
+      "percentil_25": 1.05,
+      "percentil_50": 1.42,
+      "percentil_75": 1.88,
+      "percentil_90": 2.4,
+      "cantidad_muestra": 224,
+      "vigente_desde": "2026-01-01",
+      "vigente_hasta": null,
+      "activo": true
+    },
+    {
+      "id": "bench-002",
+      "indicador_id": "ind-005",
+      "cluster_id": "clu-serv",
+      "banda_tamano": "PEQUENA",
+      "periodo_referencia": "2026-01-01",
+      "fuente": "Muestra sectorial SAFE",
+      "percentil_10": 0.03,
+      "percentil_25": 0.07,
+      "percentil_50": 0.12,
+      "percentil_75": 0.19,
+      "percentil_90": 0.27,
+      "cantidad_muestra": 198,
+      "vigente_desde": "2026-01-01",
+      "vigente_hasta": null,
+      "activo": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "esc-001",
+      "codigo": "CONTRATACION_PERSONAL",
+      "nombre": "Contratación de personal",
+      "categoria": "LABORAL",
+      "descripcion": "Evalúa el impacto de incorporar nuevos empleados.",
+      "activo": true,
+      "variables": [
+        {
+          "id": "var-001",
+          "codigo": "NUM_EMPLEADOS",
+          "nombre": "Número de empleados",
+          "descripcion": "Cantidad de nuevas contrataciones.",
+          "tipo_dato": "NUMERO",
+          "unidad": "personas",
+          "valor_minimo": 1,
+          "valor_maximo": 50,
+          "obligatoria": true,
+          "orden_visualizacion": 1,
+          "activo": true
+        },
+        {
+          "id": "var-002",
+          "codigo": "SUELDO_PROMEDIO",
+          "nombre": "Sueldo promedio",
+          "descripcion": "Remuneración promedio estimada.",
+          "tipo_dato": "MONEDA",
+          "unidad": "USD",
+          "valor_minimo": 460,
+          "valor_maximo": 10000,
+          "obligatoria": true,
+          "orden_visualizacion": 2,
+          "activo": true
+        }
+      ],
+      "results": [
+        {
+          "id": "res-001",
+          "codigo": "COSTO_MENSUAL",
+          "nombre": "Costo mensual estimado",
+          "descripcion": "Costo laboral mensual aproximado.",
+          "formula": "NUM_EMPLEADOS * SUELDO_PROMEDIO * 1.21",
+          "formula_validada": true,
+          "tipo_resultado": "MONEDA",
+          "unidad": "USD",
+          "orden_visualizacion": 1,
+          "activo": true
+        }
+      ]
+    },
+    {
+      "id": "esc-002",
+      "codigo": "CAMBIO_PRECIO",
+      "nombre": "Cambio de precios",
+      "categoria": "FINANCIERO",
+      "descripcion": "Evalúa el efecto de aumentar o reducir precios.",
+      "activo": true,
+      "variables": [
+        {
+          "id": "var-003",
+          "codigo": "CAMBIO_PCT",
+          "nombre": "Cambio de precio",
+          "descripcion": "Variación porcentual a aplicar.",
+          "tipo_dato": "PORCENTAJE",
+          "unidad": "%",
+          "valor_minimo": -50,
+          "valor_maximo": 100,
+          "obligatoria": true,
+          "orden_visualizacion": 1,
+          "activo": true
+        }
+      ],
+      "results": [
+        {
+          "id": "res-002",
+          "codigo": "MARGEN_PROYECTADO",
+          "nombre": "Margen proyectado",
+          "descripcion": "Margen estimado luego de aplicar el cambio.",
+          "formula": "MARGEN_ACTUAL * (1 + CAMBIO_PCT)",
+          "formula_validada": true,
+          "tipo_resultado": "PORCENTAJE",
+          "unidad": "%",
+          "orden_visualizacion": 1,
+          "activo": true
+        }
+      ]
+    },
+    {
+      "id": "esc-003",
+      "codigo": "IVA_VARIACION",
+      "nombre": "Variación de IVA",
+      "categoria": "TRIBUTARIO",
+      "descripcion": "Evalúa el impacto de una variación en la tarifa de IVA.",
+      "activo": false,
+      "variables": [
+        {
+          "id": "var-004",
+          "codigo": "NUEVA_TARIFA",
+          "nombre": "Nueva tarifa",
+          "descripcion": "Tarifa de IVA propuesta.",
+          "tipo_dato": "PORCENTAJE",
+          "unidad": "%",
+          "valor_minimo": 0,
+          "valor_maximo": 30,
+          "obligatoria": true,
+          "orden_visualizacion": 1,
+          "activo": true
+        }
+      ],
+      "results": [
+        {
+          "id": "res-003",
+          "codigo": "IMPACTO_CAJA",
+          "nombre": "Impacto en caja",
+          "descripcion": "Efecto estimado sobre el flujo de caja.",
+          "formula": "VENTAS_GRAVADAS * NUEVA_TARIFA",
+          "formula_validada": false,
+          "tipo_resultado": "MONEDA",
+          "unidad": "USD",
+          "orden_visualizacion": 1,
+          "activo": true
+        }
+      ]
+    }
+  ],
+  "communications": [
+    {
+      "id": "com-001",
+      "title": "Actualización de política de privacidad",
+      "type": "AVISO",
+      "audience": "TODOS",
+      "status": "ACTIVA",
+      "schedule": "Publicada",
+      "updated": "2026-08-09T10:30:00-05:00",
+      "description": "Se publicó una nueva versión del documento de privacidad.",
+      "channels": [
+        "PORTAL",
+        "CORREO"
+      ]
+    },
+    {
+      "id": "com-002",
+      "title": "Mantenimiento programado del sistema",
+      "type": "AVISO",
+      "audience": "TODOS",
+      "status": "PROGRAMADA",
+      "schedule": "2026-08-15 09:00",
+      "updated": "2026-08-10T14:10:00-05:00",
+      "description": "Ventana de mantenimiento preventivo de infraestructura.",
+      "channels": [
+        "PORTAL",
+        "CORREO"
+      ]
+    },
+    {
+      "id": "com-003",
+      "title": "Nuevo escenario de simulación",
+      "type": "NOTICIA",
+      "audience": "EMPRESA",
+      "status": "ACTIVA",
+      "schedule": "Publicada",
+      "updated": "2026-08-08T11:30:00-05:00",
+      "description": "Ya está disponible un escenario adicional en el simulador.",
+      "channels": [
+        "PORTAL"
+      ]
+    },
+    {
+      "id": "com-004",
+      "title": "Recordatorio: carga financiera mensual",
+      "type": "AVISO",
+      "audience": "EMPRESA",
+      "status": "ACTIVA",
+      "schedule": "Publicada",
+      "updated": "2026-08-08T08:15:00-05:00",
+      "description": "Recuerda mantener actualizados tus estados financieros.",
+      "channels": [
+        "PORTAL",
+        "CORREO"
+      ]
+    },
+    {
+      "id": "com-005",
+      "title": "Webinar: buenas prácticas de atención",
+      "type": "TUTORIAL",
+      "audience": "COLABORADOR",
+      "status": "PROGRAMADA",
+      "schedule": "2026-08-18 15:00",
+      "updated": "2026-08-07T15:30:00-05:00",
+      "description": "Sesión para profesionales de SAFE.",
+      "channels": [
+        "CORREO"
+      ]
+    },
+    {
+      "id": "com-006",
+      "title": "Guía de seguridad de cuenta",
+      "type": "BANNER",
+      "audience": "TODOS",
+      "status": "BORRADOR",
+      "schedule": "Sin programar",
+      "updated": "2026-08-05T17:30:00-05:00",
+      "description": "Recomendaciones para proteger credenciales.",
+      "channels": [
+        "PORTAL"
+      ]
+    }
+  ],
+  "securityAlerts": [
+    {
+      "id": "sec-001",
+      "tipo": "AUTENTICACION",
+      "titulo": "Intentos fallidos consecutivos",
+      "descripcion": "La cuenta acumuló tres intentos fallidos en menos de diez minutos.",
+      "gravedad": "ALTA",
+      "estado": "ABIERTA",
+      "cuenta": "maria@industriasnorte.ec",
+      "direccion_ip": "186.47.81.12",
+      "ubicacion": "Quito",
+      "created_at": "2026-08-11T08:12:05-05:00"
+    },
+    {
+      "id": "sec-002",
+      "tipo": "SESION",
+      "titulo": "Sesión administrativa desde IP nueva",
+      "descripcion": "Se detectó un inicio de sesión administrativo desde una dirección IP no utilizada anteriormente.",
+      "gravedad": "MEDIA",
+      "estado": "REVISADA",
+      "cuenta": "admin@safe.ec",
+      "direccion_ip": "190.95.44.21",
+      "ubicacion": "Quito",
+      "created_at": "2026-08-10T22:18:00-05:00"
+    },
+    {
+      "id": "sec-003",
+      "tipo": "CUENTA",
+      "titulo": "Cuenta bloqueada por intentos fallidos",
+      "descripcion": "El sistema bloqueó temporalmente una cuenta después de superar el máximo de intentos.",
+      "gravedad": "ALTA",
+      "estado": "RESUELTA",
+      "cuenta": "valentina.paz@gmail.com",
+      "direccion_ip": "181.198.15.74",
+      "ubicacion": "Loja",
+      "created_at": "2026-08-06T19:16:00-05:00"
+    },
+    {
+      "id": "sec-004",
+      "tipo": "PERMISOS",
+      "titulo": "Cambio sensible de permisos administrativos",
+      "descripcion": "Se modificó una asignación de permisos del rol administrador.",
+      "gravedad": "MEDIA",
+      "estado": "REVISADA",
+      "cuenta": "admin@safe.ec",
+      "direccion_ip": "190.95.44.21",
+      "ubicacion": "Guayaquil",
+      "created_at": "2026-08-06T11:15:00-05:00"
+    },
+    {
+      "id": "sec-005",
+      "tipo": "AUTENTICACION",
+      "titulo": "Acceso desde ubicación inusual",
+      "descripcion": "Inicio de sesión correcto desde una ubicación diferente a las sesiones recientes.",
+      "gravedad": "BAJA",
+      "estado": "RESUELTA",
+      "cuenta": "juan.perez@construyendo.ec",
+      "direccion_ip": "181.39.22.105",
+      "ubicacion": "Samborondón",
+      "created_at": "2026-08-05T07:22:00-05:00"
+    },
+    {
+      "id": "sec-006",
+      "tipo": "SESION",
+      "titulo": "Sesión prolongada finalizada",
+      "descripcion": "Se revocó una sesión administrativa que superó la política de duración establecida.",
+      "gravedad": "BAJA",
+      "estado": "RESUELTA",
+      "cuenta": "admin@safe.ec",
+      "direccion_ip": "190.95.44.21",
+      "ubicacion": "Guayaquil",
+      "created_at": "2026-08-03T18:30:00-05:00"
+    }
+  ],
+  "incidents": [
+    {
+      "id": "inc-001",
+      "codigo": "INC-2026-0842",
+      "codigo_error": "AUTH-401",
+      "titulo": "Usuario no puede iniciar sesión",
+      "descripcion": "Múltiples intentos reportan respuesta de credenciales inválidas pese a restablecimiento reciente.",
+      "modulo": "AUTENTICACION",
+      "estado": "ABIERTA",
+      "created_at": "2026-08-11T08:12:00-05:00",
+      "updated_at": "2026-08-11T08:12:00-05:00",
+      "resolved_at": null,
+      "priority": "CRITICA",
+      "assignee": "Equipo Plataforma",
+      "sourceUser": "usr-002"
+    },
+    {
+      "id": "inc-002",
+      "codigo": "INC-2026-0839",
+      "codigo_error": "PORTAL-502",
+      "titulo": "Contenido no visible en tutoriales",
+      "descripcion": "Una miniatura publicada no carga para parte de los usuarios.",
+      "modulo": "TUTORIALES",
+      "estado": "REVISADA",
+      "created_at": "2026-08-10T16:40:00-05:00",
+      "updated_at": "2026-08-11T09:10:00-05:00",
+      "resolved_at": null,
+      "priority": "MEDIA",
+      "assignee": "María Ruiz",
+      "sourceUser": "usr-101"
+    },
+    {
+      "id": "inc-003",
+      "codigo": "INC-2026-0834",
+      "codigo_error": "SIM-VAL-011",
+      "titulo": "Validación de fórmula rechazada",
+      "descripcion": "El escenario tributario contiene una fórmula no validada.",
+      "modulo": "SIMULADOR",
+      "estado": "ABIERTA",
+      "created_at": "2026-08-09T14:22:00-05:00",
+      "updated_at": "2026-08-10T10:05:00-05:00",
+      "resolved_at": null,
+      "priority": "ALTA",
+      "assignee": "César Mena",
+      "sourceUser": "usr-admin-001"
+    },
+    {
+      "id": "inc-004",
+      "codigo": "INC-2026-0821",
+      "codigo_error": null,
+      "titulo": "Permiso administrativo corregido",
+      "descripcion": "Se detectó y corrigió una asignación inconsistente de permiso.",
+      "modulo": "PERMISOS",
+      "estado": "RESUELTA",
+      "created_at": "2026-08-06T09:35:00-05:00",
+      "updated_at": "2026-08-06T11:20:00-05:00",
+      "resolved_at": "2026-08-06T11:20:00-05:00",
+      "priority": "MEDIA",
+      "assignee": "Emilio Pino",
+      "sourceUser": "usr-admin-001"
+    }
+  ],
+  "logs": [
+    {
+      "id": "log-001",
+      "usuario_id": "usr-001",
+      "correo_usuario": "juan.perez@construyendo.ec",
+      "direccion_ip": "181.39.22.105",
+      "accion": "LOGIN_OK",
+      "modulo": "AUTENTICACION",
+      "created_at": "2026-08-11T09:02:01-05:00",
+      "result": "EXITO"
+    },
+    {
+      "id": "log-002",
+      "usuario_id": "usr-admin-001",
+      "correo_usuario": "admin@safe.ec",
+      "direccion_ip": "190.95.44.21",
+      "accion": "UPDATE_PARAMETRO",
+      "modulo": "NORMATIVA",
+      "created_at": "2026-08-11T08:55:41-05:00",
+      "result": "EXITO"
+    },
+    {
+      "id": "log-003",
+      "usuario_id": "usr-002",
+      "correo_usuario": "maria@industriasnorte.ec",
+      "direccion_ip": "186.47.81.12",
+      "accion": "LOGIN_FAIL",
+      "modulo": "AUTENTICACION",
+      "created_at": "2026-08-11T08:12:05-05:00",
+      "result": "FALLIDO"
+    },
+    {
+      "id": "log-004",
+      "usuario_id": "usr-101",
+      "correo_usuario": "ana.lopez@profesional.ec",
+      "direccion_ip": "190.152.18.61",
+      "accion": "PROFILE_UPDATE",
+      "modulo": "COLABORADOR",
+      "created_at": "2026-08-10T17:20:11-05:00",
+      "result": "EXITO"
+    }
+  ],
+  "audits": [
+    {
+      "id": "aud-001",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "parametro_normativo",
+      "registro_id": "param-001",
+      "accion": "UPDATE",
+      "valores_anteriores": {
+        "valor": 12
+      },
+      "valores_nuevos": {
+        "valor": 15
+      },
+      "created_at": "2026-08-11T08:55:41-05:00"
+    },
+    {
+      "id": "aud-002",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "plan",
+      "registro_id": "plan-grow",
+      "accion": "UPDATE",
+      "valores_anteriores": {
+        "dias_prueba": 7
+      },
+      "valores_nuevos": {
+        "dias_prueba": 14
+      },
+      "created_at": "2026-08-10T15:11:20-05:00"
+    },
+    {
+      "id": "aud-003",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "postulacion_profesional",
+      "registro_id": "post-003",
+      "accion": "UPDATE",
+      "valores_anteriores": {
+        "estado": "EN_REVISION"
+      },
+      "valores_nuevos": {
+        "estado": "APROBADA"
+      },
+      "created_at": "2026-03-02T15:00:00-05:00"
+    }
+  ],
+  "tutorials": [
+    {
+      "id": "vid-001",
+      "modulo": "FINANZAS",
+      "titulo": "Cómo registrar tu carga financiera",
+      "descripcion": "Paso a paso para completar un periodo financiero.",
+      "categoria": "Estados financieros",
+      "audiencia": "EMPRESA",
+      "url_video": "media/carga-financiera.mp4",
+      "url_miniatura": "assets/thumb-finance-review.webp",
+      "duracion_segundos": 382,
+      "estado": "PUBLICADO",
+      "orden_visualizacion": 1,
+      "views": 1248,
+      "updated_at": "2026-08-09",
+      "published_at": "2026-07-28"
+    },
+    {
+      "id": "vid-002",
+      "modulo": "OBLIGACIONES",
+      "titulo": "Calendario de obligaciones",
+      "descripcion": "Interpreta estados, vencimientos y alertas.",
+      "categoria": "Obligaciones tributarias",
+      "audiencia": "EMPRESA",
+      "url_video": "media/obligaciones.mp4",
+      "url_miniatura": "assets/thumb-office.webp",
+      "duracion_segundos": 294,
+      "estado": "PUBLICADO",
+      "orden_visualizacion": 2,
+      "views": 830,
+      "updated_at": "2026-08-06",
+      "published_at": "2026-07-20"
+    },
+    {
+      "id": "vid-003",
+      "modulo": "COLABORADOR",
+      "titulo": "Administra tu perfil profesional",
+      "descripcion": "Configura servicios, especialidades y disponibilidad.",
+      "categoria": "Perfil profesional",
+      "audiencia": "COLABORADOR",
+      "url_video": "media/perfil-colaborador.mp4",
+      "url_miniatura": "assets/thumb-professional.webp",
+      "duracion_segundos": 451,
+      "estado": "PUBLICADO",
+      "orden_visualizacion": 1,
+      "views": 536,
+      "updated_at": "2026-08-08",
+      "published_at": "2026-07-30"
+    },
+    {
+      "id": "vid-004",
+      "modulo": "ADMINISTRACION",
+      "titulo": "Revisión de postulaciones",
+      "descripcion": "Flujo de validación para nuevos profesionales.",
+      "categoria": "Usuarios",
+      "audiencia": "ADMINISTRADOR",
+      "url_video": "media/admin-postulaciones.mp4",
+      "url_miniatura": "assets/thumb-team.webp",
+      "duracion_segundos": 326,
+      "estado": "BORRADOR",
+      "orden_visualizacion": 1,
+      "views": 0,
+      "updated_at": "2026-08-11",
+      "published_at": null
+    },
+    {
+      "id": "vid-005",
+      "modulo": "SEGURIDAD",
+      "titulo": "Buenas prácticas de seguridad en SAFE",
+      "descripcion": "Recomendaciones generales de acceso y protección.",
+      "categoria": "Configuración",
+      "audiencia": "TODOS",
+      "url_video": "media/seguridad.mp4",
+      "url_miniatura": "assets/thumb-advisory.webp",
+      "duracion_segundos": 276,
+      "estado": "OCULTO",
+      "orden_visualizacion": 3,
+      "views": 289,
+      "updated_at": "2026-08-05",
+      "published_at": "2026-06-18"
+    }
+  ],
+  "emailTemplates": [
+    {
+      "id": "tpl-001",
+      "name": "Bienvenida a SAFE",
+      "event": "USUARIO_CREADO",
+      "subject": "Bienvenido a SAFE, {{nombre}}",
+      "status": "ACTIVA",
+      "updated": "2026-08-01",
+      "body": "Hola {{nombre}},\n\nTu cuenta de SAFE está lista. Puedes ingresar y comenzar a configurar tu perfil.\n\nEquipo SAFE"
+    },
+    {
+      "id": "tpl-002",
+      "name": "Obligación próxima",
+      "event": "OBLIGACION_PROXIMA",
+      "subject": "{{empresa}} tiene una obligación próxima",
+      "status": "ACTIVA",
+      "updated": "2026-08-07",
+      "body": "Hola {{nombre}},\n\nLa obligación {{obligacion}} de {{empresa}} vence el {{fecha}}.\n\nIngresa a SAFE para revisar el detalle."
+    },
+    {
+      "id": "tpl-003",
+      "name": "Solicitud profesional aprobada",
+      "event": "POSTULACION_APROBADA",
+      "subject": "Tu postulación a SAFE fue aprobada",
+      "status": "ACTIVA",
+      "updated": "2026-07-22",
+      "body": "Hola {{nombre}},\n\nTu postulación profesional fue aprobada. Ya puedes ingresar a tu perfil Colaborador."
+    },
+    {
+      "id": "tpl-004",
+      "name": "Mantenimiento programado",
+      "event": "MANTENIMIENTO",
+      "subject": "Mantenimiento programado de SAFE",
+      "status": "BORRADOR",
+      "updated": "2026-08-10",
+      "body": "Hola {{nombre}},\n\nSAFE tendrá una ventana de mantenimiento el {{fecha}}."
+    }
+  ],
+  "settings": {
+    "platformName": "SAFE",
+    "language": "Español",
+    "timezone": "America/Guayaquil",
+    "logoMode": "SAFE oficial",
+    "security": {
+      "strongPasswords": true,
+      "twoFactorAdmin": true,
+      "sessionMinutes": 60,
+      "maxFailedAttempts": 5
+    },
+    "notifications": {
+      "smtpServer": "smtp.safe.ec",
+      "sender": "notificaciones@safe.ec",
+      "remindersEnabled": true
+    },
+    "system": {
+      "version": "1.0.0",
+      "license": "SAFE Platform",
+      "api": "Operativo",
+      "database": "Operativa",
+      "mail": "Operativo",
+      "lastUpdate": "2026-08-11 01:50"
+    }
+  },
+  "professionalSpecialties": [
+    {
+      "id": "esp-1",
+      "codigo": "FIN-PLAN",
+      "nombre": "Planificación financiera",
+      "categoria": "Finanzas",
+      "descripcion": "Presupuestos, flujo de caja, proyecciones y estructuración financiera para PYMES.",
+      "activo": true,
+      "created_at": "2026-01-08T10:00:00-05:00",
+      "updated_at": "2026-08-09T09:20:00-05:00",
+      "created_by": "admin-1",
+      "updated_by": "admin-1"
+    },
+    {
+      "id": "esp-2",
+      "codigo": "TRIB-EC",
+      "nombre": "Derecho tributario",
+      "categoria": "Tributario",
+      "descripcion": "Cumplimiento, obligaciones y planificación tributaria en Ecuador.",
+      "activo": true,
+      "created_at": "2026-01-08T10:00:00-05:00",
+      "updated_at": "2026-07-28T15:10:00-05:00",
+      "created_by": "admin-1",
+      "updated_by": "admin-1"
+    },
+    {
+      "id": "esp-3",
+      "codigo": "SOC-CORP",
+      "nombre": "Derecho societario",
+      "categoria": "Legal",
+      "descripcion": "Constitución, gobierno y obligaciones societarias para empresas.",
+      "activo": true,
+      "created_at": "2026-01-08T10:00:00-05:00",
+      "updated_at": "2026-07-18T11:40:00-05:00",
+      "created_by": "admin-1",
+      "updated_by": "admin-1"
+    }
+  ]
+}
