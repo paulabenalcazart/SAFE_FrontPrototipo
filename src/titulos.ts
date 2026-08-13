@@ -40,7 +40,6 @@ const TITULOS_EXACTOS: Record<string, string> = {
   '/app/configuracion/cuenta': 'Editar cuenta SAFE',
   '/app/tutoriales': 'Video tutoriales SAFE',
 }
-
 const TITULOS_DINAMICOS: { patron: RegExp; titulo: string }[] = [
   { patron: /^\/app\/solicitudes\/[^/]+$/, titulo: 'Detalle de solicitud SAFE' },
   { patron: /^\/app\/financiero\/[^/]+\/editar$/, titulo: 'Editar registro financiero SAFE' },
@@ -63,4 +62,3 @@ export function tituloParaRuta(pathname: string): string {
 
   return TITULOS_DINAMICOS.find(({ patron }) => patron.test(path))?.titulo ?? 'SAFE Ecuador'
 }
-

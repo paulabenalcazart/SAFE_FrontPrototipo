@@ -1,6 +1,6 @@
 # SAFE — Paginación, perfil público y títulos por pantalla
 
-**Fecha:** 2026-08-13  
+**Fecha:** 2026-08-13
 **Estado:** Aprobado por autorización del usuario para decidir e implementar sin checkpoints intermedios.
 
 ## Objetivo

@@ -328,4 +328,3 @@ git log --oneline --reverse 06e9ada..HEAD
 ```
 
 Solicitar revisión independiente y corregir solo hallazgos reproducibles dentro del alcance, en commit separado.
-
