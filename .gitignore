@@ -46,3 +46,6 @@ Thumbs.db
 
 # Superpowers subagent-driven-development scratch workspace
 /.superpowers/
+
+# Local Git worktrees used for isolated implementation
+/.worktrees/
