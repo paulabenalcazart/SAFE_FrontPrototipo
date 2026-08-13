@@ -210,8 +210,8 @@ export function PerfilColaboradorScreen() {
 
       <div className="grid min-w-0 gap-5 lg:grid-cols-12 lg:items-start">
         <div className="flex min-w-0 flex-col gap-5 lg:col-span-8">
-          <section className="surface-card p-5 sm:p-6" aria-labelledby="perfil-acerca">
-            <h2 id="perfil-acerca" className="text-[20px] font-semibold text-ink-900">Descripción profesional</h2>
+          <section className="surface-card p-5 sm:p-6" aria-labelledby="perfil-descripcion">
+            <h2 id="perfil-descripcion" className="text-[20px] font-semibold text-ink-900">Descripción profesional</h2>
             <p className="mt-3 max-w-3xl text-[14px] leading-relaxed text-ink-700">
               {colaboradorPerfil.descripcionProfesional}
             </p>
@@ -328,7 +328,7 @@ export function PerfilColaboradorScreen() {
           </section>
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-5 lg:col-span-4">
+        <aside className="flex min-w-0 flex-col gap-5 lg:col-span-4" aria-labelledby="perfil-profesional">
           <section className="surface-card p-5" aria-labelledby="perfil-horario">
             <h2 id="perfil-horario" className="text-[20px] font-semibold text-ink-900">Horario de atención</h2>
             <dl className="mt-4 flex flex-col divide-y divide-line-soft">
@@ -353,12 +353,12 @@ export function PerfilColaboradorScreen() {
             </p>
           </section>
 
-          <section className="surface-card p-5" aria-labelledby="perfil-credenciales">
+          <section className="surface-card p-5" aria-labelledby="perfil-profesional">
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
                 <FileText className="h-5 w-5" />
               </span>
-              <h2 id="perfil-credenciales" className="text-[20px] font-semibold leading-tight text-ink-900">
+              <h2 id="perfil-profesional" className="text-[20px] font-semibold leading-tight text-ink-900">
                 Información profesional
               </h2>
             </div>
