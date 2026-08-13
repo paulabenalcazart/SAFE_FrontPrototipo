@@ -233,7 +233,8 @@ test('ADMIN content supports controlled communications and safe email templates'
   assert.match(screen, /removeEntity\(deleting\.key, deleting\.id\)/)
   assert.match(screen, /Confirmar eliminación/)
   for (const value of ['AVISO', 'CAMBIO_NORMATIVO', 'NOTICIA', 'TUTORIAL', 'BANNER', 'CORREO_MASIVO', 'TODOS', 'EMPRESA', 'COLABORADOR', 'ADMINISTRADOR', 'PORTAL', 'CORREO']) assert.match(communication, new RegExp(value))
-  for (const requirement of ['crypto\.randomUUID\(\)', 'AHORA_ADMIN', 'role="alert"', 'checkValidity\(\)', 'PROGRAMADA', 'PUBLICADA', 'BORRADOR']) assert.match(communication, new RegExp(requirement))
+  for (const requirement of ['crypto\.randomUUID\(\)', 'AHORA_ADMIN', 'role="alert"', 'checkValidity\(\)', 'PROGRAMADA', 'ACTIVA', 'BORRADOR']) assert.match(communication, new RegExp(requirement))
+  assert.doesNotMatch(communication, /status: 'PUBLICADA'/)
   assert.match(communication, /upsertEntity\('communications'/)
   for (const value of ['USUARIO_CREADO', 'OBLIGACION_PROXIMA', 'POSTULACION_APROBADA', 'POSTULACION_RECHAZADA', 'MANTENIMIENTO', 'PAGO_CONFIRMADO', '{{nombre}}', '{{empresa}}', '{{fecha}}', '{{obligacion}}']) assert.match(template, new RegExp(value.replace(/[{}]/g, '\\$&')))
   assert.match(template, /replace\(\/\\{\\{nombre\\}\\}\/g/)
@@ -276,9 +277,15 @@ test('ADMIN content creates independently of edit selection and validates local 
   assert.match(screen, /open=\{templateOpen\}/)
   assert.match(communication, /if \(!form\.title\.trim\(\) \|\| !form\.description\.trim\(\)\).*checkValidity/s)
   assert.match(communication, /titleRef\.current\?\.focus\(\)/)
-  assert.match(communication, /status: 'ACTIVA'.*'PUBLICADA'|PUBLICADA/s)
+  assert.match(communication, /status: 'ACTIVA'.*'Publicada'|ACTIVA/s)
   assert.match(template, /if \(!form\.name\.trim\(\) \|\| !form\.subject\.trim\(\) \|\| !form\.body\.trim\(\)\).*checkValidity/s)
   assert.match(template, /nameRef\.current\?\.focus\(\)/)
+  for (const dialog of [communication, template]) {
+    assert.match(dialog, /const savingRef = useRef\(false\)/)
+    assert.match(dialog, /savingRef\.current \|\| saving\) return/)
+    assert.match(dialog, /savingRef\.current = true/)
+    assert.match(dialog, /savingRef\.current = false/)
+  }
   for (const drawer of [incident, security]) {
     assert.match(drawer, /const resolvingRef = useRef\(false\)/)
     assert.match(drawer, /resolvingRef\.current = true/)
