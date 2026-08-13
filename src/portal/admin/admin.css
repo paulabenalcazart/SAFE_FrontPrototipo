@@ -1,25 +1,25 @@
 .admin-surface {
-  --admin-gray-50: #f8fafc;
-  --admin-gray-100: #f1f5f9;
-  --admin-gray-200: #e2e8f0;
-  --admin-gray-300: #cbd5e1;
-  --admin-gray-500: #64748b;
-  --admin-gray-700: #334155;
-  --admin-gray-900: #0f172a;
-  --admin-safe-50: #eff6ff;
-  --admin-safe-100: #dbeafe;
-  --admin-safe-500: #2563eb;
-  --admin-safe-600: #1d4ed8;
-  --admin-safe-700: #1d4ed8;
-  --admin-safe-900: #172554;
-  --admin-success-bg: #dcfce7;
-  --admin-success-text: #166534;
-  --admin-warning-bg: #fef3c7;
-  --admin-warning-text: #92400e;
-  --admin-danger-bg: #fee2e2;
-  --admin-danger-text: #b91c1c;
-  --admin-radius: 0.75rem;
-  --admin-shadow: 0 1px 3px rgb(15 23 42 / 0.08);
+  --admin-gray-50: var(--gray-100);
+  --admin-gray-100: var(--gray-100);
+  --admin-gray-200: var(--gray-300);
+  --admin-gray-300: var(--gray-300);
+  --admin-gray-500: var(--gray-500);
+  --admin-gray-700: var(--gray-700);
+  --admin-gray-900: var(--gray-900);
+  --admin-safe-50: var(--safe-primary-100);
+  --admin-safe-100: var(--safe-primary-100);
+  --admin-safe-500: var(--safe-primary-500);
+  --admin-safe-600: var(--safe-primary-600);
+  --admin-safe-700: var(--safe-primary-700);
+  --admin-safe-900: var(--safe-primary-900);
+  --admin-success-bg: var(--safe-emerald-100);
+  --admin-success-text: var(--safe-emerald-600);
+  --admin-warning-bg: var(--safe-amber-100);
+  --admin-warning-text: var(--safe-amber-600);
+  --admin-danger-bg: var(--safe-danger-soft);
+  --admin-danger-text: var(--safe-danger);
+  --admin-radius: var(--radius);
+  --admin-shadow: var(--shadow-card);
   color: var(--admin-gray-700);
 }
 
@@ -95,7 +95,15 @@
 .admin-surface .admin-drawer { display: flex; width: min(38.75rem, 100vw); height: 100vh; flex-direction: column; background: var(--card, white); box-shadow: -12px 0 30px rgb(15 23 42 / 0.22); }
 .admin-surface .admin-drawer__body { min-height: 0; flex: 1; overflow: auto; padding: 1.25rem; }
 
-.dark .admin-surface { --admin-gray-50: #0f172a; --admin-gray-100: #172033; --admin-gray-200: #334155; --admin-gray-300: #475569; --admin-gray-500: #94a3b8; --admin-gray-700: #cbd5e1; --admin-gray-900: #f8fafc; --admin-safe-100: #172554; --admin-success-bg: #143821; --admin-success-text: #bbf7d0; --admin-warning-bg: #422d0d; --admin-warning-text: #fde68a; --admin-danger-bg: #491b1b; --admin-danger-text: #fecaca; }
+.dark .admin-surface {
+  --admin-safe-100: var(--safe-primary-900);
+  --admin-success-bg: oklch(0.25 0.05 160);
+  --admin-success-text: var(--safe-emerald-500);
+  --admin-warning-bg: oklch(0.25 0.05 80);
+  --admin-warning-text: var(--safe-amber-500);
+  --admin-danger-bg: oklch(0.25 0.05 20);
+  --admin-danger-text: var(--safe-danger);
+}
 
 @media (max-width: 1024px) {
   .admin-surface .admin-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
