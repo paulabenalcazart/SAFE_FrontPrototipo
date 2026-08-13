@@ -117,10 +117,15 @@ Resultado esperado: FAIL porque el export aún no existe.
 - [ ] **Step 2: Implementar helper mínimo**
 
 ```ts
-export function obtenerProximasCitas(citas: Cita[], ahoraIso: string, limite = 3): Cita[] {
+export function obtenerProximasCitas(citas: Cita[], hoyIso: string, limite = 3): Cita[] {
+  const inicioDelDia = Date.parse(`${hoyIso}T00:00:00-05:00`)
   return citas
-    .filter((cita) => cita.estado === 'CONFIRMADA' && cita.fechaHoraInicio >= ahoraIso)
-    .sort((a, b) => a.fechaHoraInicio.localeCompare(b.fechaHoraInicio))
+    .filter(
+      (cita) =>
+        (cita.estado === 'CONFIRMADA' || cita.estado === 'PROGRAMADA') &&
+        Date.parse(cita.fechaInicio) >= inicioDelDia,
+    )
+    .sort((a, b) => Date.parse(a.fechaInicio) - Date.parse(b.fechaInicio))
     .slice(0, Math.max(0, Math.trunc(limite)))
 }
 ```
@@ -151,7 +156,7 @@ function urlHttpSegura(valor?: string): string | null {
 - [ ] **Step 4: GREEN del helper y build**
 
 ```powershell
-npx tsx -e "import { obtenerProximasCitas } from './src/portal/colaborador/calculo.ts'; const citas=[{id:'2',estado:'CONFIRMADA',fechaHoraInicio:'2026-08-15T10:00:00-05:00'},{id:'1',estado:'CONFIRMADA',fechaHoraInicio:'2026-08-14T10:00:00-05:00'},{id:'x',estado:'CANCELADA',fechaHoraInicio:'2026-08-13T10:00:00-05:00'}] as never[]; const r=obtenerProximasCitas(citas,'2026-08-13T00:00:00-05:00'); if(r.map(x=>x.id).join(',')!=='1,2') throw new Error('agenda'); console.log('agenda: ok')"
+npx tsx -e "import { obtenerProximasCitas } from './src/portal/colaborador/calculo.ts'; const base={solicitudContactoId:'s',colaboradorId:'c',fechaFin:'2026-08-15T11:00:00-05:00',modalidad:'VIRTUAL',enlaceReunion:'',ubicacion:'',createdAt:'2026-08-01T00:00:00-05:00'} as const; const citas=[{...base,id:'2',estado:'CONFIRMADA',fechaInicio:'2026-08-15T10:00:00-05:00'},{...base,id:'1',estado:'PROGRAMADA',fechaInicio:'2026-08-14T10:00:00-05:00'},{...base,id:'x',estado:'CANCELADA',fechaInicio:'2026-08-13T10:00:00-05:00'}] as never[]; const r=obtenerProximasCitas(citas,'2026-08-13'); if(r.map(x=>x.id).join(',')!=='1,2') throw new Error('agenda'); console.log('agenda: ok')"
 npm run build
 ```
 

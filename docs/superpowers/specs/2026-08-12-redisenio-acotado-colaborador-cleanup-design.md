@@ -57,7 +57,7 @@ Carpeta: `src/portal/colaborador/solicitudes/`.
 ### Próximas citas
 
 - Crear `ProximasCitasPanel.tsx`.
-- Mostrar como máximo tres citas `CONFIRMADA`, futuras respecto de `HOY_COLABORADOR_ISO`, ordenadas cronológicamente.
+- Mostrar como máximo tres citas `CONFIRMADA` o `PROGRAMADA`, futuras respecto de `HOY_COLABORADOR_ISO`, ordenadas cronológicamente.
 - Resolver empresa y servicio con los catálogos existentes.
 - Enlace de reunión solo si es una URL absoluta `http:` o `https:` válida; si no, mostrar ubicación/modalidad sin enlace inseguro.
 - Estado vacío claro cuando no existan citas próximas.

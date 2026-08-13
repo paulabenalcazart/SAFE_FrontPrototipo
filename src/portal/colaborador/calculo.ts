@@ -35,6 +35,18 @@ export function contarCitasConfirmadasEsteMes(citas: Cita[], hoyIso: string): nu
   return citas.filter((c) => c.estado === 'CONFIRMADA' && mesDeIso(c.fechaInicio) === mesActual).length
 }
 
+export function obtenerProximasCitas(citas: Cita[], hoyIso: string, limite = 3): Cita[] {
+  const inicioDelDia = Date.parse(hoyIso + 'T00:00:00-05:00')
+  return citas
+    .filter(
+      (cita) =>
+        (cita.estado === 'CONFIRMADA' || cita.estado === 'PROGRAMADA') &&
+        Date.parse(cita.fechaInicio) >= inicioDelDia,
+    )
+    .sort((a, b) => Date.parse(a.fechaInicio) - Date.parse(b.fechaInicio))
+    .slice(0, Math.max(0, limite))
+}
+
 export function calcularCalificacionPromedio(
   resenas: ResenaColaborador[],
 ): { promedio: number | null; cantidad: number } {
