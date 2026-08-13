@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Download, Edit3, Eye, EyeOff, Plus, Trash2, Video } from 'lucide-react'
 import { useAdminData } from '@/portal/admin/data/AdminDataContext'
 import { AdminDataTable, type AdminTableColumn } from '@/portal/admin/components/data/AdminDataTable'
@@ -30,25 +30,42 @@ export function AdminTutorialsScreen() {
   const [busyAction, setBusyAction] = useState<string | null>(null)
   const [deletingBusy, setDeletingBusy] = useState(false)
   const togglingRef = useRef(new Set<string>())
+  const pendingToggleRef = useRef(new Map<string, string>())
   const deletingRef = useRef(false)
+  const pendingDeleteRef = useRef<string | null>(null)
   const rows = useMemo(() => data.tutorials.filter((item) => matchesQuery(item, deferredSearch, ['titulo', 'categoria', 'modulo', 'descripcion']) && (audience === 'Todos' || item.audiencia === audience) && (category === 'Todos' || item.categoria === category) && (status === 'Todos' || item.estado === status)), [audience, category, data.tutorials, deferredSearch, status])
   const open = (tutorial: TutorialRecord | null) => { setEditing(tutorial); setDialogOpen(true) }
+  const releaseSettledMutations = () => {
+    for (const id of Array.from(togglingRef.current)) {
+      const expectedState = pendingToggleRef.current.get(id)
+      if (expectedState && data.tutorials.some((item) => item.id === id && item.estado === expectedState)) {
+        togglingRef.current.delete(id)
+        pendingToggleRef.current.delete(id)
+      }
+    }
+    if (!togglingRef.current.size) setBusyAction(null)
+    const pendingDeleteId = pendingDeleteRef.current
+    if (pendingDeleteId && !data.tutorials.some((item) => item.id === pendingDeleteId)) {
+      pendingDeleteRef.current = null
+      deletingRef.current = false
+      setDeleting(null)
+      setDeletingBusy(false)
+    }
+  }
+  useEffect(() => { releaseSettledMutations() }, [data.tutorials, deleting])
   const toggle = (tutorial: TutorialRecord) => {
     if (!['PUBLICADO', 'OCULTO'].includes(tutorial.estado) || togglingRef.current.has(tutorial.id)) return
     togglingRef.current.add(tutorial.id)
+    pendingToggleRef.current.set(tutorial.id, tutorial.estado === 'OCULTO' ? 'PUBLICADO' : 'OCULTO')
     setBusyAction(tutorial.id)
     patchEntity('tutorials', tutorial.id, { estado: tutorial.estado === 'OCULTO' ? 'PUBLICADO' : 'OCULTO', updated_at: AHORA_ADMIN, published_at: tutorial.estado === 'OCULTO' ? (tutorial.published_at ?? AHORA_ADMIN) : tutorial.published_at })
-    togglingRef.current.delete(tutorial.id)
-    setBusyAction(null)
   }
   const confirmDelete = () => {
     if (!deleting || deletingRef.current) return
     deletingRef.current = true
+    pendingDeleteRef.current = deleting.id
     setDeletingBusy(true)
     removeEntity('tutorials', deleting.id)
-    setDeleting(null)
-    setDeletingBusy(false)
-    deletingRef.current = false
   }
   const columns: AdminTableColumn<TutorialRecord>[] = [
     { id: 'thumbnail', header: 'Miniatura', cell: (row) => <div className="flex items-center gap-2"><span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-xs font-bold text-slate-700"><Video aria-hidden="true" size={15} /></span><span>{row.url_miniatura ? 'URL' : row.modulo.slice(0, 3)}</span></div> },
