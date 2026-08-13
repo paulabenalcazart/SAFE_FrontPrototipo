@@ -1,28 +1,23 @@
 import { NavLink } from 'react-router-dom'
 import safeLogoLight from '@/assets/safe-logo-light.png'
 import { useAuth } from '@/auth/AuthContext'
-import { navItemsColaborador, navItemsEmpresa, suscripcionSemilla } from '@/portal/data/mock-portal-data'
-import { usePortalData } from '@/portal/PortalDataContext'
-import { formatFecha } from '@/portal/obligaciones/formato'
-import { planPorCodigo } from '@/portal/plan/catalogo'
+import { navItemsColaborador, navItemsEmpresa } from '@/portal/data/mock-portal-data'
 
 export function Sidebar() {
   const { user } = useAuth()
-  const { planActivoCodigo, suscripcionCancelada } = usePortalData()
   const esColaborador = user?.role === 'COLABORADOR'
   const navItems = esColaborador ? navItemsColaborador : navItemsEmpresa
-  const plan = planPorCodigo(planActivoCodigo)
 
   return (
     <nav
       aria-label="Navegación principal"
-      className="hidden w-[252px] shrink-0 flex-col gap-0.5 border-r border-white/10 bg-navy-900 p-3 lg:flex"
+      className="sticky top-0 hidden h-screen h-dvh w-[252px] shrink-0 flex-col overflow-hidden border-r border-white/10 bg-navy-900 p-3 lg:flex"
     >
       <div className="flex items-center gap-2.5 px-2.5 pb-4.5 pt-1">
         <img src={safeLogoLight} alt="SAFE" className="block h-7 w-auto" />
       </div>
 
-      <div className="flex flex-col gap-0.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-0.5">
         {navItems.map((item) => (
           <NavLink
             key={item.key}
@@ -39,12 +34,6 @@ export function Sidebar() {
         ))}
       </div>
 
-      {!esColaborador && (
-        <div className="mt-auto border-t border-white/10 px-2.5 pb-1 pt-3.5 text-[11.5px] leading-relaxed text-white/70">
-          <div className="font-semibold text-white">{plan.nombre}</div>
-          <div>{suscripcionCancelada ? 'Suscripción cancelada' : `Se renueva el ${formatFecha(suscripcionSemilla.proximaRenovacion)}`}</div>
-        </div>
-      )}
     </nav>
   )
 }
