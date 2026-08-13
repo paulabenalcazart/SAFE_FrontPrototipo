@@ -62,6 +62,7 @@ import { assertNever } from './portal/navigation'
 
 const AdminDataBoundary = lazy(() => import('./portal/admin/AdminDataBoundary').then((module) => ({ default: module.AdminDataBoundary })))
 const AdminDashboardScreen = lazy(() => import('./portal/admin/dashboard/AdminDashboardScreen').then((module) => ({ default: module.AdminDashboardScreen })))
+const AdminUsersScreen = lazy(() => import('./portal/admin/usuarios/AdminUsersScreen').then((module) => ({ default: module.AdminUsersScreen })))
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -302,6 +303,14 @@ export default function App() {
       >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<DashboardResolver />} />
+        <Route
+          path="admin/usuarios"
+          element={
+            <RoleRoute allow={['ADMIN']}>
+              <AdminUsersScreen />
+            </RoleRoute>
+          }
+        />
         <Route
           path="perfil"
           element={

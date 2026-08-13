@@ -142,3 +142,36 @@ test('ADMIN chart keeps zero-height bars when there is no monthly maximum', asyn
   const chart = await source('src/portal/admin/dashboard/AdminPlatformChart.tsx')
   assert.match(chart, /max === 0 \? 0/)
 })
+
+test('ADMIN user management is integrated through the guarded canonical route', async () => {
+  const [app, titles, catalogo, screen, drawer, review, registration] = await Promise.all([
+    source('src/App.tsx'), source('src/titulos.ts'), source('src/portal/admin/catalogo.ts'),
+    source('src/portal/admin/usuarios/AdminUsersScreen.tsx'),
+    source('src/portal/admin/usuarios/AdminUserDetailDrawer.tsx'),
+    source('src/portal/admin/usuarios/AdminApplicationReviewDialog.tsx'),
+    source('src/portal/admin/usuarios/AdminRegistrationDialog.tsx'),
+  ])
+  assert.match(app, /AdminUsersScreen/)
+  assert.match(app, /path="admin\/usuarios"/)
+  assert.match(app, /<RoleRoute allow=\{\['ADMIN'\]\}>\s*<AdminUsersScreen \/>/s)
+  assert.match(titles, /'\/app\/admin\/usuarios': 'Usuarios SAFE Admin'/)
+  assert.match(catalogo, /label: 'Usuarios', path: '\/app\/admin\/usuarios'/)
+  for (const dependency of ['useAdminData', 'useSearchParams', 'useDeferredValue', 'AdminTabs', 'AdminDataTable', 'downloadExcel', 'deriveUserCounts']) assert.match(screen, new RegExp(dependency))
+  assert.match(screen, /companies.*collaborators.*applications.*tour/s)
+  assert.match(screen, /setSearchParams\(\{ tab \}, \{ replace: true \}\)/)
+  assert.match(screen, /Empresas activas/)
+  assert.match(screen, /Colaboradores activos/)
+  assert.match(screen, /Solicitudes pendientes/)
+  assert.doesNotMatch(screen, /gridTemplateColumns|window\.location|localStorage|sessionStorage/)
+  assert.match(drawer, /setManagedUserState/)
+  assert.match(drawer, /removeManagedCompany/)
+  assert.match(drawer, /removeManagedCollaborator/)
+  assert.match(drawer, /<AdminDialog/)
+  assert.match(review, /reviewApplication\(application\.id, 'APROBADA'\)/)
+  assert.match(review, /reason\.trim\(\)/)
+  assert.match(review, /role="alert"/)
+  assert.match(registration, /crypto\.randomUUID\(\)/)
+  assert.match(registration, /AHORA_ADMIN/)
+  assert.match(registration, /role="alert"/)
+  for (const text of [screen, drawer, review, registration]) assert.doesNotMatch(text, /Date\.now|new Date|#document|javascript:|data:|replaceAll|BrowserRouter|safe\.admin\.react/)
+})
