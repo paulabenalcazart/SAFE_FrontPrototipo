@@ -45,12 +45,18 @@ Esperado: FAIL porque el módulo no existe.
 export type TokenPaginacion = number | 'ellipsis-start' | 'ellipsis-end'
 
 export function crearRangoPaginacion(paginaActual: number, totalPaginas: number): TokenPaginacion[] {
-  const total = Math.max(0, Math.floor(totalPaginas))
+  const total = Number.isFinite(totalPaginas) ? Math.max(0, Math.floor(totalPaginas)) : 0
   if (total === 0) return []
-  const actual = Math.min(Math.max(1, Math.floor(paginaActual)), total)
-  if (total <= 7) return Array.from({ length: total }, (_, indice) => indice + 1)
-  if (actual <= 4) return [1, 2, 3, 4, 5, 'ellipsis-end', total]
-  if (actual >= total - 3) return [1, 'ellipsis-start', total - 4, total - 3, total - 2, total - 1, total]
+
+  const paginaSolicitada = Number.isFinite(paginaActual) ? Math.floor(paginaActual) : 1
+  const actual = Math.min(Math.max(1, paginaSolicitada), total)
+
+  if (total <= 5) return Array.from({ length: total }, (_, indice) => indice + 1)
+  if (actual <= 3) return [1, 2, 3, 4, 'ellipsis-end', total]
+  if (actual >= total - 2) {
+    return [1, 'ellipsis-start', total - 3, total - 2, total - 1, total]
+  }
+
   return [1, 'ellipsis-start', actual - 1, actual, actual + 1, 'ellipsis-end', total]
 }
 ```
@@ -58,7 +64,7 @@ export function crearRangoPaginacion(paginaActual: number, totalPaginas: number)
 - [ ] **Step 3: Ejecutar GREEN de casos límite**
 
 ```powershell
-npx tsx -e "import assert from 'node:assert/strict'; import { crearRangoPaginacion as r } from './src/portal/paginacion.ts'; assert.deepEqual(r(1,0),[]); assert.deepEqual(r(1,4),[1,2,3,4]); assert.deepEqual(r(1,13),[1,2,3,4,5,'ellipsis-end',13]); assert.deepEqual(r(7,13),[1,'ellipsis-start',6,7,8,'ellipsis-end',13]); assert.deepEqual(r(13,13),[1,'ellipsis-start',9,10,11,12,13]); console.log('pagination helper PASS')"
+npx tsx -e "import assert from 'node:assert/strict'; import { crearRangoPaginacion as r } from './src/portal/paginacion.ts'; assert.deepEqual(r(1,0),[]); assert.deepEqual(r(1,4),[1,2,3,4]); assert.deepEqual(r(1,7),[1,2,3,4,'ellipsis-end',7]); assert.deepEqual(r(1,13),[1,2,3,4,'ellipsis-end',13]); assert.deepEqual(r(7,13),[1,'ellipsis-start',6,7,8,'ellipsis-end',13]); assert.deepEqual(r(13,13),[1,'ellipsis-start',10,11,12,13]); console.log('pagination helper PASS')"
 ```
 
 - [ ] **Step 4: Implementar `Pagination`**

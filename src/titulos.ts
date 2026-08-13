@@ -11,7 +11,7 @@ const TITULOS_EXACTOS: Record<string, string> = {
   '/login': 'Iniciar sesión SAFE',
   '/recuperar': 'Recuperar contraseña SAFE',
   '/signup': 'Crear cuenta SAFE',
-  '/app': 'Dashboard SAFE',
+  '/app': 'Portal SAFE',
   '/app/dashboard': 'Dashboard SAFE',
   '/app/perfil': 'Mi perfil profesional SAFE',
   '/app/perfil/editar': 'Editar perfil profesional SAFE',

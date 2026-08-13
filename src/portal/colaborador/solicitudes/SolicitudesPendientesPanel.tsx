@@ -55,7 +55,7 @@ export function SolicitudesPendientesPanel({
           Solicitudes pendientes
         </h2>
         <span
-          aria-label={`${filtradas.length} solicitudes pendientes mostradas`}
+          aria-label={`${filtradas.length} solicitudes pendientes en total`}
           className="num rounded-full bg-navy-100 px-2.5 py-1 text-[12px] font-bold text-navy-700"
         >
           {filtradas.length}
