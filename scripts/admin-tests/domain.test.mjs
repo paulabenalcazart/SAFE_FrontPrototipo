@@ -38,5 +38,5 @@ test('createExcelHtml escapes text content before producing a table', async () =
 test('esUrlAdminPermitida accepts relative and explicitly safe document URLs only', async () => {
   const { esUrlAdminPermitida } = await importTs('src/portal/admin/lib/documentos.ts')
   for (const url of ['media/cv.pdf', '/assets/certificado.pdf', 'https://safe.ec/doc.pdf', 'http://localhost/file.pdf', 'blob:https://safe.ec/uuid']) assert.equal(esUrlAdminPermitida(url), true)
-  for (const url of ['javascript:alert(1)', 'data:text/html,boom', '//externo.example/file.pdf', 'C:\\documento.pdf', '']) assert.equal(esUrlAdminPermitida(url), false)
+  for (const url of ['javascript:alert(1)', 'data:text/html,boom', '//externo.example/file.pdf', '\\\\externo.example\\archivo.pdf', '/\\\\externo.example/archivo.pdf', 'C:\\documento.pdf', '']) assert.equal(esUrlAdminPermitida(url), false)
 })
