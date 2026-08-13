@@ -4,6 +4,7 @@ import { usePortalData } from '@/portal/PortalDataContext'
 import type { SolicitudContacto } from '@/portal/types'
 import { SolicitudesKpis } from './SolicitudesKpis'
 import { SolicitudesPendientesPanel } from './SolicitudesPendientesPanel'
+import { ProximasCitasPanel } from './ProximasCitasPanel'
 import { HistorialSolicitudes } from './HistorialSolicitudes'
 import { DetalleSolicitudPanel } from './DetalleSolicitudPanel'
 import { AceptarSolicitudDialog } from './AceptarSolicitudDialog'
@@ -29,7 +30,7 @@ export function SolicitudesScreen() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
-        <div className="order-2 xl:order-1 xl:col-span-8">
+        <div className="xl:col-span-7">
           <SolicitudesPendientesPanel
             solicitudes={solicitudesColaborador}
             onVerDetalle={abrirDetalle}
@@ -37,12 +38,13 @@ export function SolicitudesScreen() {
             onRechazar={(solicitud) => setAccion({ tipo: 'rechazar', solicitudId: solicitud.id })}
           />
         </div>
-        <div className="order-1 xl:order-2 xl:col-span-4">
+        <aside aria-label="Agenda y resumen de solicitudes" className="flex min-w-0 flex-col gap-4 xl:col-span-5">
+          <ProximasCitasPanel citas={citasColaborador} solicitudes={solicitudesColaborador} />
           <SolicitudesKpis solicitudes={solicitudesColaborador} citas={citasColaborador} />
-        </div>
+        </aside>
       </div>
 
-      <div className="order-3">
+      <div>
         <HistorialSolicitudes solicitudes={solicitudesColaborador} onVerDetalle={abrirDetalle} />
       </div>
 

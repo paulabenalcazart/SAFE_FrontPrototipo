@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { buscarSolicitudesPorEmpresa } from '@/portal/colaborador/calculo'
 import { empresaSolicitantePorId } from '@/portal/colaborador/semilla'
@@ -44,30 +45,61 @@ export function SolicitudesPendientesPanel({
   const visibles = filtradas.slice((paginaActual - 1) * POR_PAGINA, paginaActual * POR_PAGINA)
 
   return (
-    <section aria-labelledby="solicitudes-pendientes-titulo" className="flex flex-col gap-3.5">
+    <section
+      aria-labelledby="solicitudes-pendientes-titulo"
+      className="surface-card flex min-w-0 flex-col gap-4 p-4 sm:p-5"
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="solicitudes-pendientes-titulo" className="text-[18px] font-semibold text-ink-900">
           Solicitudes pendientes
         </h2>
+        <span
+          aria-label={`${filtradas.length} solicitudes pendientes mostradas`}
+          className="num rounded-full bg-navy-100 px-2.5 py-1 text-[12px] font-bold text-navy-700"
+        >
+          {filtradas.length}
+        </span>
+      </div>
+
+      <div>
+        <label htmlFor="buscar-solicitudes-pendientes" className="mb-1.5 block text-[12px] font-semibold text-ink-700">
+          Buscar por empresa
+        </label>
         <Input
+          id="buscar-solicitudes-pendientes"
           type="search"
           value={busqueda}
           onChange={(e) => {
             setBusqueda(e.target.value)
             setPagina(1)
           }}
-          placeholder="Buscar por empresa"
-          className="max-w-[280px]"
-          aria-label="Buscar solicitudes pendientes por empresa"
+          placeholder="Nombre de la empresa"
+          className="h-11"
         />
       </div>
 
       {filtradas.length === 0 ? (
-        <p className="rounded-xl border border-line bg-card p-6 text-center text-sm text-ink-500">
-          {pendientes.length === 0
-            ? 'No tienes solicitudes pendientes.'
-            : 'Ninguna solicitud coincide con tu búsqueda.'}
-        </p>
+        <div className="rounded-xl border border-line bg-surface p-6 text-center">
+          <p className="text-sm text-ink-500">
+            {pendientes.length === 0
+              ? 'No tienes solicitudes pendientes.'
+              : 'No encontramos solicitudes pendientes para esa búsqueda.'}
+          </p>
+          {pendientes.length > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="mt-4 h-11"
+              onClick={() => {
+                setBusqueda('')
+                setPagina(1)
+              }}
+            >
+              Limpiar búsqueda
+            </Button>
+          )}
+        </div>
       ) : (
         <div className="flex flex-col gap-3">
           {visibles.map((solicitud) => (
@@ -94,7 +126,7 @@ export function SolicitudesPendientesPanel({
               onClick={() => setPagina(n)}
               aria-current={n === paginaActual ? 'page' : undefined}
               aria-label={`Ir a la página ${n}`}
-              className={`num grid h-9.5 min-w-9.5 place-items-center rounded-lg text-[12.5px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 ${
+              className={`num grid h-11 min-w-11 place-items-center rounded-lg text-[12.5px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 ${
                 n === paginaActual
                   ? 'bg-navy-600 text-white'
                   : 'border border-line bg-card text-ink-700 hover:bg-surface'

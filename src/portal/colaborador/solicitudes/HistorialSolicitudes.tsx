@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { buscarSolicitudesPorEmpresa } from '@/portal/colaborador/calculo'
@@ -53,23 +54,38 @@ export function HistorialSolicitudes({
   const visibles = filtradas.slice((paginaActual - 1) * POR_PAGINA, paginaActual * POR_PAGINA)
 
   return (
-    <section aria-labelledby="historial-solicitudes-titulo" className="flex flex-col gap-3.5">
+    <section
+      aria-labelledby="historial-solicitudes-titulo"
+      className="surface-card flex min-w-0 flex-col gap-4 p-4 sm:p-5"
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="historial-solicitudes-titulo" className="text-[18px] font-semibold text-ink-900">
           Historial de solicitudes
         </h2>
-        <div className="flex flex-wrap items-center gap-2.5">
+        <span className="text-[12px] font-medium text-ink-500">{filtradas.length} resultados</span>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
+        <div className="min-w-0">
+          <label htmlFor="buscar-historial-solicitudes" className="mb-1.5 block text-[12px] font-semibold text-ink-700">
+            Buscar por empresa
+          </label>
           <Input
+            id="buscar-historial-solicitudes"
             type="search"
             value={busqueda}
             onChange={(e) => {
               setBusqueda(e.target.value)
               setPagina(1)
             }}
-            placeholder="Buscar por empresa"
-            className="max-w-[240px]"
-            aria-label="Buscar solicitudes por empresa"
+            placeholder="Nombre de la empresa"
+            className="h-11"
           />
+        </div>
+        <div className="min-w-0">
+          <label id="filtro-estado-solicitudes-label" className="mb-1.5 block text-[12px] font-semibold text-ink-700">
+            Estado
+          </label>
           <Select
             value={filtro}
             onValueChange={(v) => {
@@ -77,7 +93,7 @@ export function HistorialSolicitudes({
               setPagina(1)
             }}
           >
-            <SelectTrigger className="w-[160px]" aria-label="Filtrar solicitudes por estado">
+            <SelectTrigger className="h-11 w-full" aria-labelledby="filtro-estado-solicitudes-label">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -92,46 +108,63 @@ export function HistorialSolicitudes({
       </div>
 
       {filtradas.length === 0 ? (
-        <p className="rounded-xl border border-line bg-card p-6 text-center text-sm text-ink-500">
-          {solicitudes.length === 0
-            ? 'No tienes solicitudes en tu historial.'
-            : 'Ninguna solicitud coincide con tu búsqueda.'}
-        </p>
+        <div className="rounded-xl border border-line bg-card p-6 text-center">
+          <p className="text-sm text-ink-500">
+            {solicitudes.length === 0
+              ? 'No tienes solicitudes en tu historial.'
+              : 'Ninguna solicitud coincide con los filtros aplicados.'}
+          </p>
+          {solicitudes.length > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="mt-4 h-11"
+              onClick={() => {
+                setBusqueda('')
+                setFiltro('Todas')
+                setPagina(1)
+              }}
+            >
+              Limpiar filtros
+            </Button>
+          )}
+        </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-line bg-card">
           <table className="w-full min-w-[560px] border-collapse text-[13px]">
-            <thead>
+            <thead className="bg-surface">
               <tr className="text-left text-ink-500">
-                <th scope="col" className="px-4.5 py-2.5 text-[11.5px] font-semibold uppercase tracking-wide">
+                <th scope="col" className="px-4.5 py-2.5 text-[12px] font-semibold uppercase tracking-wide">
                   Empresa
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-2 py-2.5 text-[11.5px] font-semibold uppercase tracking-wide sm:table-cell"
+                  className="hidden px-2 py-2.5 text-[12px] font-semibold uppercase tracking-wide sm:table-cell"
                 >
                   Responsable
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-2 py-2.5 text-[11.5px] font-semibold uppercase tracking-wide sm:table-cell"
+                  className="hidden px-2 py-2.5 text-[12px] font-semibold uppercase tracking-wide sm:table-cell"
                 >
                   Fecha de solicitud
                 </th>
-                <th scope="col" className="px-2 py-2.5 text-[11.5px] font-semibold uppercase tracking-wide">
+                <th scope="col" className="px-2 py-2.5 text-[12px] font-semibold uppercase tracking-wide">
                   Fecha solicitada
                 </th>
-                <th scope="col" className="px-2 py-2.5 text-[11.5px] font-semibold uppercase tracking-wide">
+                <th scope="col" className="px-2 py-2.5 text-[12px] font-semibold uppercase tracking-wide">
                   Estado
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-2 py-2.5 text-[11.5px] font-semibold uppercase tracking-wide sm:table-cell"
+                  className="hidden px-2 py-2.5 text-[12px] font-semibold uppercase tracking-wide sm:table-cell"
                 >
                   Fecha de acción
                 </th>
                 <th
                   scope="col"
-                  className="px-4.5 py-2.5 text-right text-[11.5px] font-semibold uppercase tracking-wide"
+                  className="px-4.5 py-2.5 text-right text-[12px] font-semibold uppercase tracking-wide"
                 >
                   Detalle
                 </th>
@@ -141,7 +174,7 @@ export function HistorialSolicitudes({
               {visibles.map((solicitud) => {
                 const empresa = empresaSolicitantePorId(solicitud.empresaId)
                 return (
-                  <tr key={solicitud.id} className="border-t border-line/70">
+                  <tr key={solicitud.id} className="border-t border-line/70 hover:bg-surface focus-within:bg-surface">
                     <td className="px-4.5 py-2.5 font-medium leading-snug text-ink-900">
                       {empresa?.nombre ?? 'Empresa no encontrada'}
                     </td>
@@ -154,7 +187,7 @@ export function HistorialSolicitudes({
                     <td className="num whitespace-nowrap px-2 py-2.5">{formatFecha(solicitud.fechaPreferida)}</td>
                     <td className="px-2 py-2.5">
                       <span
-                        className={`inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${TONE_BADGE_CLASSES[ESTADO_TONO[solicitud.estado]]}`}
+                        className={`inline-block rounded-full px-2.5 py-0.5 text-[12px] font-semibold ${TONE_BADGE_CLASSES[ESTADO_TONO[solicitud.estado]]}`}
                       >
                         {ESTADO_LABEL[solicitud.estado]}
                       </span>
@@ -166,7 +199,7 @@ export function HistorialSolicitudes({
                       <button
                         type="button"
                         onClick={() => onVerDetalle(solicitud)}
-                        className="text-[12.5px] font-semibold text-navy-500 hover:text-navy-700"
+                        className="inline-flex min-h-11 items-center rounded-lg px-2 text-[12.5px] font-semibold text-navy-600 hover:bg-navy-100 hover:text-navy-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40"
                       >
                         Ver detalle
                       </button>
@@ -191,7 +224,7 @@ export function HistorialSolicitudes({
               onClick={() => setPagina(n)}
               aria-current={n === paginaActual ? 'page' : undefined}
               aria-label={`Ir a la página ${n}`}
-              className={`num grid h-9.5 min-w-9.5 place-items-center rounded-lg text-[12.5px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 ${
+              className={`num grid h-11 min-w-11 place-items-center rounded-lg text-[12.5px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-500/40 ${
                 n === paginaActual
                   ? 'bg-navy-600 text-white'
                   : 'border border-line bg-card text-ink-700 hover:bg-surface'
