@@ -65,3 +65,12 @@ test('user registration helpers normalize and exclude duplicate identity fields'
   assert.equal(hasDuplicateRuc(companies, '0999999999001'), false)
   assert.equal(hasDuplicateRuc(companies, '  '), false)
 })
+
+test('isValidAdminEmail rejects malformed addresses before registration', async () => {
+  const { isValidAdminEmail } = await importTs('src/portal/admin/usuarios/userLogic.ts')
+  assert.equal(isValidAdminEmail('ana@safe.ec'), true)
+  assert.equal(isValidAdminEmail('  ANA@SAFE.EC '), true)
+  assert.equal(isValidAdminEmail('ana@safe'), false)
+  assert.equal(isValidAdminEmail('ana safe.ec'), false)
+  assert.equal(isValidAdminEmail(''), false)
+})

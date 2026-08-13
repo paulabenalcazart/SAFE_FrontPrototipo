@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Building2, Download, Eye, Plus, RefreshCcw, UserCheck, UsersRound } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import { useAdminData } from '@/portal/admin/data/AdminDataContext'
@@ -27,8 +27,8 @@ const tabIsValid = (value: string | null): value is UserTab => value !== null &&
 export function AdminUsersScreen() {
   const { data } = useAdminData()
   const [searchParams, setSearchParams] = useSearchParams()
-  const initialTab = searchParams.get('tab')
-  const [tab, setTab] = useState<UserTab>(tabIsValid(initialTab) ? initialTab : 'companies')
+  const requestedTab = searchParams.get('tab')
+  const [tab, setTab] = useState<UserTab>(tabIsValid(requestedTab) ? requestedTab : 'companies')
   const [search, setSearch] = useState('')
   const deferredSearch = useDeferredValue(search)
   const [status, setStatus] = useState('Todos')
@@ -38,6 +38,12 @@ export function AdminUsersScreen() {
   const [registration, setRegistration] = useState<AdminRegistrationKind | null>(null)
   const counts = deriveUserCounts(data.users)
   const resetFilters = () => { setSearch(''); setStatus('Todos'); setSecondary('Todos') }
+  useEffect(() => {
+    const nextTab = tabIsValid(requestedTab) ? requestedTab : 'companies'
+    setTab(nextTab)
+    if (requestedTab !== nextTab) setSearchParams({ tab: nextTab }, { replace: true })
+    resetFilters()
+  }, [requestedTab, setSearchParams])
   const selectTab = (tab: UserTab) => { setTab(tab); setSearchParams({ tab }, { replace: true }); resetFilters() }
   const companyRows = useMemo(() => data.companies.filter((row) => matchesQuery(row, deferredSearch, ['nombre_comercial', 'razon_social', 'ruc', 'correo_empresarial']) && (status === 'Todos' || row.estado === status) && (secondary === 'Todos' || row.plan === secondary)), [data.companies, deferredSearch, secondary, status])
   const collaboratorRows = useMemo(() => data.collaborators.filter((row) => {
@@ -45,7 +51,8 @@ export function AdminUsersScreen() {
     return matchesQuery({ searchText: `${user?.nombres ?? ''} ${user?.apellidos ?? ''} ${user?.correo ?? ''} ${row.profesion} ${row.area_especializacion}` }, deferredSearch, ['searchText']) && (status === 'Todos' || row.estado === status) && (secondary === 'Todos' || row.specialties.includes(secondary))
   }), [data.collaborators, data.users, deferredSearch, secondary, status])
   const applicationRows = useMemo(() => data.applications.filter((row) => matchesQuery(row, deferredSearch, ['nombres', 'apellidos', 'correo', 'area_especializacion']) && (status === 'Todos' || row.estado === status) && (secondary === 'Todos' || row.especialidad_principal === secondary)), [data.applications, deferredSearch, secondary, status])
-  const tourRows = useMemo(() => data.users.filter((row) => row.noCompany).filter((row) => matchesQuery(row, deferredSearch, ['nombres', 'apellidos', 'correo', 'ciudad']) && (status === 'Todos' || row.estado === status) && (secondary === 'Todos' || row.ciudad === secondary)), [data.users, deferredSearch, secondary, status])
+  const allTourRows = useMemo(() => data.users.filter((row) => row.noCompany), [data.users])
+  const tourRows = useMemo(() => allTourRows.filter((row) => matchesQuery(row, deferredSearch, ['nombres', 'apellidos', 'correo', 'ciudad']) && (status === 'Todos' || row.estado === status) && (secondary === 'Todos' || row.ciudad === secondary)), [allTourRows, deferredSearch, secondary, status])
   const companyColumns: AdminTableColumn<CompanyRecord>[] = [
     { id: 'company', header: 'Empresa', cell: (row) => <div><strong>{row.nombre_comercial}</strong><small>{row.ruc}</small></div> },
     { id: 'owner', header: 'Responsable', cell: (row) => { const user = data.users.find((item) => item.id === row.usuario_id); return <div><span>{user ? `${user.nombres} ${user.apellidos}` : '—'}</span><small>{user?.correo ?? row.correo_empresarial}</small></div> } },
@@ -67,6 +74,6 @@ export function AdminUsersScreen() {
     <div className="p-4">{tab === 'companies' ? <><div className="flex flex-wrap items-center justify-between gap-3"><div><h2>Empresas</h2><p>{counts.company} usuarios con empresa</p></div><AdminButton variant="primary" onClick={() => setRegistration('company')}><Plus aria-hidden="true" size={16} />Registrar empresa</AdminButton></div>{filterBar('Plan', ['Todos', ...uniqueValues(data.companies, 'estado')], ['Todos', ...uniqueValues(data.companies, 'plan')], 'Empresas', ['Empresa', 'RUC', 'Ciudad', 'Plan', 'Suscripción', 'Registro'], companyRows.map((row) => [row.nombre_comercial, row.ruc, row.ciudad, row.plan, row.subscriptionState, row.created_at]))}<AdminDataTable rows={companyRows} columns={companyColumns} rowKey={(row) => row.id} caption="Empresas administradas" renderActions={(row) => <AdminButton size="icon" variant="ghost" aria-label="Ver empresa" onClick={() => setDetail({ kind: 'company', record: row })}><Eye aria-hidden="true" size={16} /></AdminButton>} /></> : null}
     {tab === 'collaborators' ? <><div className="flex flex-wrap items-center justify-between gap-3"><div><h2>Colaboradores</h2><p>{counts.collaborators} cuentas profesionales</p></div><AdminButton variant="primary" onClick={() => setRegistration('collaborator')}><Plus aria-hidden="true" size={16} />Registrar colaborador</AdminButton></div>{filterBar('Especialidad', ['Todos', ...uniqueValues(data.collaborators, 'estado')], ['Todos', ...Array.from(new Set(data.collaborators.flatMap((item) => item.specialties))).sort((a, b) => a.localeCompare(b, 'es'))], 'Colaboradores', ['Profesión', 'Área', 'Modalidad', 'Tarifa', 'Disponibilidad', 'Estado'], collaboratorRows.map((row) => [row.profesion, row.area_especializacion, row.modalidad_atencion, row.tarifa_referencial, row.estado_disponibilidad, row.estado]))}<AdminDataTable rows={collaboratorRows} columns={collaboratorColumns} rowKey={(row) => row.id} caption="Colaboradores administrados" renderActions={(row) => <AdminButton size="icon" variant="ghost" aria-label="Ver colaborador" onClick={() => setDetail({ kind: 'collaborator', record: row })}><Eye aria-hidden="true" size={16} /></AdminButton>} /></> : null}
     {tab === 'applications' ? <><div><h2>Solicitudes profesionales</h2><p>{data.applications.length} postulaciones registradas</p></div>{filterBar('Especialidad', ['Todos', ...uniqueValues(data.applications, 'estado')], ['Todos', ...uniqueValues(data.applications, 'especialidad_principal')], 'Solicitudes', ['Profesional', 'Correo', 'Área', 'Modalidad', 'Estado', 'Solicitud'], applicationRows.map((row) => [`${row.nombres} ${row.apellidos}`, row.correo, row.area_especializacion, row.modalidad_atencion, row.estado, row.created_at]))}<AdminDataTable rows={applicationRows} columns={applicationColumns} rowKey={(row) => row.id} caption="Solicitudes profesionales" renderActions={(row) => <AdminButton size="icon" variant="ghost" aria-label="Revisar solicitud" onClick={() => setApplication(row)}><Eye aria-hidden="true" size={16} /></AdminButton>} /></> : null}
-    {tab === 'tour' ? <><div><h2>Usuarios sin empresa</h2><p>{counts.noCompany} cuentas aún sin empresa</p></div>{filterBar('Ciudad', ['Todos', ...uniqueValues(tourRows, 'estado')], ['Todos', ...uniqueValues(tourRows, 'ciudad')], 'Usuarios sin empresa', ['Usuario', 'Correo', 'Ciudad', 'Correo verificado', 'Estado'], tourRows.map((row) => [`${row.nombres} ${row.apellidos}`, row.correo, row.ciudad, row.correo_verificado ? 'Verificado' : 'Pendiente', row.estado]))}<AdminDataTable rows={tourRows} columns={tourColumns} rowKey={(row) => row.id} caption="Usuarios sin empresa" renderActions={(row) => <AdminButton size="icon" variant="ghost" aria-label="Ver usuario" onClick={() => setDetail({ kind: 'user', record: row })}><Eye aria-hidden="true" size={16} /></AdminButton>} /></> : null}</div>
+    {tab === 'tour' ? <><div><h2>Usuarios sin empresa</h2><p>{counts.noCompany} cuentas aún sin empresa</p></div>{filterBar('Ciudad', ['Todos', ...uniqueValues(allTourRows, 'estado')], ['Todos', ...uniqueValues(allTourRows, 'ciudad')], 'Usuarios sin empresa', ['Usuario', 'Correo', 'Ciudad', 'Correo verificado', 'Estado'], tourRows.map((row) => [`${row.nombres} ${row.apellidos}`, row.correo, row.ciudad, row.correo_verificado ? 'Verificado' : 'Pendiente', row.estado]))}<AdminDataTable rows={tourRows} columns={tourColumns} rowKey={(row) => row.id} caption="Usuarios sin empresa" renderActions={(row) => <AdminButton size="icon" variant="ghost" aria-label="Ver usuario" onClick={() => setDetail({ kind: 'user', record: row })}><Eye aria-hidden="true" size={16} /></AdminButton>} /></> : null}</div>
   </AdminTabs></AdminCard><AdminUserDetailDrawer target={detail} onClose={() => setDetail(null)} /><AdminApplicationReviewDialog application={application} onClose={() => setApplication(null)} /><AdminRegistrationDialog kind={registration} open={Boolean(registration)} onClose={() => setRegistration(null)} /></>
 }

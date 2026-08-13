@@ -175,3 +175,30 @@ test('ADMIN user management is integrated through the guarded canonical route', 
   assert.match(registration, /role="alert"/)
   for (const text of [screen, drawer, review, registration]) assert.doesNotMatch(text, /Date\.now|new Date|#document|javascript:|data:|replaceAll|BrowserRouter|safe\.admin\.react/)
 })
+
+test('ADMIN users stay synchronized with valid URL tabs and source registration defaults', async () => {
+  const [screen, registration, drawer, review] = await Promise.all([
+    source('src/portal/admin/usuarios/AdminUsersScreen.tsx'),
+    source('src/portal/admin/usuarios/AdminRegistrationDialog.tsx'),
+    source('src/portal/admin/usuarios/AdminUserDetailDrawer.tsx'),
+    source('src/portal/admin/usuarios/AdminApplicationReviewDialog.tsx'),
+  ])
+  assert.match(screen, /import \{ useDeferredValue, useEffect, useMemo, useState \}/)
+  assert.match(screen, /const requestedTab = searchParams\.get\('tab'\)/)
+  assert.match(screen, /useEffect\(\(\) => \{\s*const nextTab = tabIsValid\(requestedTab\) \? requestedTab : 'companies'/s)
+  assert.match(screen, /setTab\(nextTab\)/)
+  assert.match(screen, /setSearchParams\(\{ tab: nextTab \}, \{ replace: true \}\)/)
+  assert.doesNotMatch(screen, /uniqueValues\(tourRows, '(estado|ciudad)'\)/)
+
+  for (const relation of ['act-001', 'clu-serv', 'str-sas', 'tax-001']) assert.match(registration, new RegExp(`${relation}`))
+  for (const label of ['Actividad económica', 'Cluster', 'Estructura societaria', 'Tipo de contribuyente', 'Sí', 'No']) assert.match(registration, new RegExp(label))
+  assert.match(registration, /String\(item\.nombre\)/)
+  assert.match(registration, /requiredCompanyRelations/)
+  assert.match(registration, /isValidAdminEmail/)
+  assert.match(registration, /<form[^>]*onSubmit=\{save\}>/)
+  assert.match(registration, /checkValidity\(\)/)
+
+  assert.match(drawer, /min-h-11 inline-flex items-center/)
+  assert.match(review, /min-h-11 inline-flex items-center/)
+  assert.match(review, /reasonRef\.current\?\.focus\(\)/)
+})

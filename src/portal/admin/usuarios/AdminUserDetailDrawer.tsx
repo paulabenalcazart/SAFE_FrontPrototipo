@@ -16,7 +16,7 @@ function Row({ label, value }: { label: string; value: ReactNode }) { return <di
 function Bool({ value }: { value: boolean }) { return <span>{value ? 'Sí' : 'No'}</span> }
 function SafeLink({ value, label }: { value: string | null | undefined; label?: string }) {
   if (!value || !esUrlAdminPermitida(value)) return <span>—</span>
-  return <a className="text-link" href={value} target="_blank" rel="noreferrer">{label ?? value}<ExternalLink aria-hidden="true" size={13} /></a>
+  return <a className="text-link min-h-11 inline-flex items-center gap-1" href={value} target="_blank" rel="noreferrer">{label ?? value}<ExternalLink aria-hidden="true" size={13} /></a>
 }
 
 export function AdminUserDetailDrawer({ target, onClose }: { target: AdminUserDetailTarget; onClose: () => void }) {

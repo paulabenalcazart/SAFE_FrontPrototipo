@@ -12,6 +12,10 @@ export function normalizeAdminEmail(value: string): string {
   return value.trim().toLowerCase()
 }
 
+export function isValidAdminEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeAdminEmail(value))
+}
+
 export function hasDuplicateEmail(rows: Array<{ id: string; correo: string }>, correo: string, excludeId?: string): boolean {
   const normalized = normalizeAdminEmail(correo)
   return Boolean(normalized) && rows.some((row) => row.id !== excludeId && normalizeAdminEmail(row.correo) === normalized)
