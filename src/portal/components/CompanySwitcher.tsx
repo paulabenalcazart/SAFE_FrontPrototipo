@@ -15,7 +15,7 @@ export function CompanySwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="true"
         aria-expanded={open}
-        className="flex min-h-11 w-full max-w-[260px] items-center gap-2.5 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-left sm:w-auto"
+        className="flex min-h-11 w-full max-w-[260px] items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-surface sm:w-auto"
       >
         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-navy-100 text-[11px] font-bold text-navy-700">
           {empresaActiva.iniciales}
