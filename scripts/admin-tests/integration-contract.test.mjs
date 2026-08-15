@@ -80,7 +80,7 @@ test('ADMIN boundary and topbar are eagerly loaded (no loading screen) and isola
   assert.doesNotMatch(adminCase.slice(0, adminCase.indexOf('case undefined')), /PortalDataProvider/)
   assert.match(topbar, /AdminTopbar/)
   assert.match(adminTopbar, /Administración SAFE/)
-  assert.match(adminTopbar, /securityAlerts\.filter\(\(item\) => item\.estado === 'ABIERTA'\)/)
+  assert.match(adminTopbar, /securityAlerts\s*\.filter\(\(item\)\s*=>\s*item\.estado === 'ABIERTA'\)/)
   assert.match(adminTopbar, /\/app\/admin\/alertas-seguridad/)
   assert.doesNotMatch(adminTopbar, /usePortalData|CompanySwitcher|obligaciones|notificacionesColaborador/)
 })
