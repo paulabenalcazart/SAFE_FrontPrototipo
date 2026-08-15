@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react'
 import { Play } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import type { VideoTutorial } from '@/portal/types'
+import { Pagination } from '@/portal/components/Pagination'
 import { VideoModal } from './VideoModal'
 
-const INCREMENTO = 3
-const INICIAL = 9
+const TAMANO_PAGINA = 6
 
 export function TutorialesGrid({
   titulo,
@@ -21,7 +20,7 @@ export function TutorialesGrid({
 }) {
   const [categoria, setCategoria] = useState<string>('Todos')
   const [busqueda, setBusqueda] = useState('')
-  const [cantidad, setCantidad] = useState(INICIAL)
+  const [pagina, setPagina] = useState(1)
   const [videoAbierto, setVideoAbierto] = useState<string | null>(null)
 
   const filtrados = useMemo(() => {
@@ -33,8 +32,9 @@ export function TutorialesGrid({
     )
   }, [categoria, busqueda, tutoriales])
 
-  const visibles = filtrados.slice(0, cantidad)
-  const hayMas = cantidad < tutoriales.length && categoria === 'Todos' && !busqueda.trim()
+  const totalPaginas = Math.max(1, Math.ceil(filtrados.length / TAMANO_PAGINA))
+  const paginaActual = Math.min(pagina, totalPaginas)
+  const visibles = filtrados.slice((paginaActual - 1) * TAMANO_PAGINA, paginaActual * TAMANO_PAGINA)
 
   return (
     <section className="flex flex-col gap-4.5 pb-4">
@@ -48,7 +48,7 @@ export function TutorialesGrid({
         value={busqueda}
         onChange={(e) => {
           setBusqueda(e.target.value)
-          setCantidad(INICIAL)
+          setPagina(1)
         }}
         placeholder="Buscar por título o descripción"
         className="max-w-[520px]"
@@ -62,7 +62,7 @@ export function TutorialesGrid({
             type="button"
             onClick={() => {
               setCategoria(c)
-              setCantidad(INICIAL)
+              setPagina(1)
             }}
             aria-pressed={categoria === c}
             className={`min-h-[38px] rounded-full border px-3.5 text-[12.5px] font-semibold transition-colors ${
@@ -108,13 +108,7 @@ export function TutorialesGrid({
         </div>
       )}
 
-      {hayMas && (
-        <div className="flex justify-center">
-          <Button variant="outline" onClick={() => setCantidad((c) => c + INCREMENTO)}>
-            Cargar más tutoriales
-          </Button>
-        </div>
-      )}
+      <Pagination paginaActual={paginaActual} totalPaginas={totalPaginas} onChange={setPagina} ariaLabel="Paginación de tutoriales" />
 
       <VideoModal titulo={videoAbierto} onCerrar={() => setVideoAbierto(null)} />
     </section>
