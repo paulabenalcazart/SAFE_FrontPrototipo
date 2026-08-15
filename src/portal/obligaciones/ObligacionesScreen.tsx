@@ -85,22 +85,24 @@ export function ObligacionesScreen() {
   const listaFiltrada = filtroLista === 'todas' ? items : items.filter((i) => i.estado === filtroLista)
   const prioridad = [...vencidas, ...proximas].slice(0, 3)
 
-  const alertas = [
-    ...vencidas.map((i) => ({
+  const alertasVencidas = vencidas
+    .map((i) => ({
       id: i.obligacion.id,
       etiqueta: 'Vencida',
       texto: `${i.titulo} venció hace ${formatDias(diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES))}.`,
       estado: i.estado,
-    })),
-    ...proximas
-      .filter((i) => diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES) <= 5)
-      .map((i) => ({
-        id: i.obligacion.id,
-        etiqueta: 'Próxima',
-        texto: `${i.titulo} vence en ${formatDias(diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES))}.`,
-        estado: i.estado,
-      })),
-  ].slice(0, 4)
+    }))
+    .slice(0, 4)
+
+  const recomendacionesProximas = proximas
+    .filter((i) => diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES) <= 5)
+    .map((i) => ({
+      id: i.obligacion.id,
+      etiqueta: 'Próxima',
+      texto: `${i.titulo} vence en ${formatDias(diasHasta(i.obligacion.fechaLimite, HOY_OBLIGACIONES))}.`,
+      estado: i.estado,
+    }))
+    .slice(0, 4)
 
   const celdas = construirCeldasMes(mesMostrado.anio, mesMostrado.mes)
   const celdasConItems = celdas.map((c) => ({
@@ -311,24 +313,55 @@ export function ObligacionesScreen() {
         </div>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
-        <h2 className="text-[16px] font-semibold">Alertas y recomendaciones</h2>
-        <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-          {alertas.length === 0 ? (
-            <p className="text-[13px] text-ink-500 sm:col-span-2">Estás al día con tus obligaciones tributarias.</p>
-          ) : (
-            alertas.map((a) => {
-              const [bg, fg] = ESTADO_OBLIGACION_BADGE[a.estado].split(' ')
-              return (
-                <div key={a.id} className={`flex flex-wrap items-center gap-2.5 rounded-lg p-3 ${bg}`}>
-                  <span className={`rounded-full bg-card px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${fg}`}>{a.etiqueta}</span>
-                  <p className="min-w-0 flex-1 text-[13px] leading-snug">{a.texto}</p>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <section className="rounded-xl border border-line bg-card p-4.5">
+          <h2 className="text-[16px] font-semibold">Alertas</h2>
+          <div className="mt-3 flex flex-col gap-2.5">
+            {alertasVencidas.length === 0 ? (
+              <p className="text-[13px] text-ink-500">Sin alertas: no tienes obligaciones vencidas.</p>
+            ) : (
+              alertasVencidas.map((a) => {
+                const [bg, fg] = ESTADO_OBLIGACION_BADGE[a.estado].split(' ')
+                return (
+                  <div key={a.id} className={`flex flex-wrap items-center gap-2.5 rounded-lg p-3 ${bg}`}>
+                    <span className={`rounded-full bg-card px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${fg}`}>
+                      {a.etiqueta}
+                    </span>
+                    <p className="min-w-0 flex-1 text-[13px] leading-snug">{a.texto}</p>
+                    <button
+                      type="button"
+                      onClick={() => irADetalle(a.id)}
+                      className="text-[12.5px] font-semibold text-navy-600"
+                    >
+                      Ver detalle
+                    </button>
+                  </div>
+                )
+              })
+            )}
+          </div>
+        </section>
+        <section className="rounded-xl border border-line bg-card p-4.5">
+          <h2 className="text-[16px] font-semibold">Recomendaciones</h2>
+          <div className="mt-3 flex flex-col gap-2.5">
+            {recomendacionesProximas.length === 0 ? (
+              <p className="text-[13px] text-ink-500">Sin recomendaciones por ahora.</p>
+            ) : (
+              recomendacionesProximas.map((r) => (
+                <div key={r.id} className="rounded-lg border border-line/70 bg-surface p-3">
+                  <p className="text-[13px] leading-snug">{r.texto}</p>
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <span className="text-[11.5px] text-ink-500">Prioridad media</span>
+                    <button type="button" onClick={() => irADetalle(r.id)} className="text-[12.5px] font-semibold text-navy-600">
+                      Ver detalle
+                    </button>
+                  </div>
                 </div>
-              )
-            })
-          )}
-        </div>
-      </section>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
     </section>
   )
 }

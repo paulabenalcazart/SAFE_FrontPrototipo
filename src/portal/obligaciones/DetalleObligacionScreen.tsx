@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatPeriodo, formatUSD } from '@/portal/financiero/formato'
@@ -5,11 +6,21 @@ import { obligacionPorCodigo } from './catalogo'
 import { diasHasta, estadoObligacion, HOY_OBLIGACIONES, novenoDigito } from './calculo'
 import { ESTADO_OBLIGACION_BADGE, ESTADO_OBLIGACION_LABEL } from './estado-estilo'
 import { capitalizar, formatDias, formatFecha } from './formato'
+import { ConfigurarRecordatorioDialog } from './ConfigurarRecordatorioDialog'
+import { DesactivarRecordatorioDialog } from './DesactivarRecordatorioDialog'
 
 export function DetalleObligacionScreen() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
-  const { empresaActiva, obligacionesEmpresa, marcarObligacionCumplida, toggleRecordatorioObligacion } = usePortalData()
+  const {
+    empresaActiva,
+    obligacionesEmpresa,
+    marcarObligacionCumplida,
+    activarRecordatorioObligacion,
+    desactivarRecordatorioObligacion,
+  } = usePortalData()
+  const [configurarAbierto, setConfigurarAbierto] = useState(false)
+  const [desactivarAbierto, setDesactivarAbierto] = useState(false)
 
   const obligaciones = obligacionesEmpresa[empresaActiva.id] ?? []
   const obligacion = obligaciones.find((o) => o.id === id)
@@ -77,7 +88,12 @@ export function DetalleObligacionScreen() {
       items: [
         { label: 'Estado', valor: ESTADO_OBLIGACION_LABEL[estado] },
         { label: 'Fecha de cumplimiento', valor: obligacion.fechaCumplimiento ? formatFecha(obligacion.fechaCumplimiento) : '—' },
-        { label: 'Recordatorio activo', valor: obligacion.recordatorioActivo ? 'Sí' : 'No' },
+        {
+          label: 'Recordatorio activo',
+          valor: obligacion.recordatorioActivo
+            ? `Sí · ${obligacion.diasAnticipacion ?? 7} días antes`
+            : 'No',
+        },
         { label: 'Notas', valor: obligacion.notas ?? '—' },
       ],
     },
@@ -112,14 +128,22 @@ export function DetalleObligacionScreen() {
               Marcar como cumplida
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => toggleRecordatorioObligacion(empresaActiva.id, obligacion.id)}
-            aria-pressed={obligacion.recordatorioActivo}
-            className="min-h-11 rounded-lg border border-line bg-card px-4 text-[13.5px] font-semibold text-ink-700"
-          >
-            {obligacion.recordatorioActivo ? 'Recordatorio activado ✓' : 'Configurar recordatorio'}
-          </button>
+          {puedeCumplir && (
+            <button
+              type="button"
+              onClick={() => (obligacion.recordatorioActivo ? setDesactivarAbierto(true) : setConfigurarAbierto(true))}
+              aria-pressed={obligacion.recordatorioActivo}
+              className={`min-h-11 rounded-lg border px-4 text-[13.5px] font-semibold ${
+                obligacion.recordatorioActivo
+                  ? 'border-navy-500/30 bg-navy-100 text-navy-700'
+                  : 'border-line bg-card text-ink-700'
+              }`}
+            >
+              {obligacion.recordatorioActivo
+                ? `Recordatorio activado · ${obligacion.diasAnticipacion ?? 7}d antes`
+                : 'Configurar recordatorio'}
+            </button>
+          )}
         </div>
       </div>
 
@@ -136,6 +160,18 @@ export function DetalleObligacionScreen() {
           </dl>
         </section>
       ))}
+
+      <ConfigurarRecordatorioDialog
+        abierto={configurarAbierto}
+        valorInicial={obligacion.diasAnticipacion}
+        onCerrar={() => setConfigurarAbierto(false)}
+        onGuardar={(dias) => activarRecordatorioObligacion(empresaActiva.id, obligacion.id, dias)}
+      />
+      <DesactivarRecordatorioDialog
+        abierto={desactivarAbierto}
+        onCerrar={() => setDesactivarAbierto(false)}
+        onConfirmar={() => desactivarRecordatorioObligacion(empresaActiva.id, obligacion.id)}
+      />
     </section>
   )
 }

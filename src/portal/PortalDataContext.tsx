@@ -76,7 +76,8 @@ type PortalDataContextValue = {
   setIndicadoresPrincipales: (empresaId: string, codigos: string[]) => void
   obligacionesEmpresa: Record<string, ObligacionEmpresa[]>
   marcarObligacionCumplida: (empresaId: string, id: string) => void
-  toggleRecordatorioObligacion: (empresaId: string, id: string) => void
+  activarRecordatorioObligacion: (empresaId: string, id: string, diasAnticipacion: number) => void
+  desactivarRecordatorioObligacion: (empresaId: string, id: string) => void
   simulaciones: Record<string, Simulacion[]>
   guardarSimulacion: (empresaId: string, sim: Simulacion) => void
   solicitudesContacto: Record<string, SolicitudContacto[]>
@@ -305,11 +306,20 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
     }))
   }
 
-  const toggleRecordatorioObligacion = (empresaId: string, id: string) => {
+  const activarRecordatorioObligacion = (empresaId: string, id: string, diasAnticipacion: number) => {
     setObligacionesEmpresa((current) => ({
       ...current,
       [empresaId]: (current[empresaId] ?? []).map((o) =>
-        o.id === id ? { ...o, recordatorioActivo: !o.recordatorioActivo } : o,
+        o.id === id ? { ...o, recordatorioActivo: true, diasAnticipacion } : o,
+      ),
+    }))
+  }
+
+  const desactivarRecordatorioObligacion = (empresaId: string, id: string) => {
+    setObligacionesEmpresa((current) => ({
+      ...current,
+      [empresaId]: (current[empresaId] ?? []).map((o) =>
+        o.id === id ? { ...o, recordatorioActivo: false, diasAnticipacion: undefined } : o,
       ),
     }))
   }
@@ -554,7 +564,8 @@ export function PortalDataProvider({ children }: { children: ReactNode }) {
         setIndicadoresPrincipales,
         obligacionesEmpresa,
         marcarObligacionCumplida,
-        toggleRecordatorioObligacion,
+        activarRecordatorioObligacion,
+        desactivarRecordatorioObligacion,
         simulaciones,
         guardarSimulacion,
         solicitudesContacto,

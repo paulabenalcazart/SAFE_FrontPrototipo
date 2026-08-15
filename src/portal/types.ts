@@ -186,6 +186,7 @@ export type ObligacionEmpresa = {
   montoEstimado?: number
   fechaCumplimiento?: string // ISO 'YYYY-MM-DD'; presencia = fue marcada cumplida
   recordatorioActivo: boolean
+  diasAnticipacion?: number
   notas?: string
 }
 
