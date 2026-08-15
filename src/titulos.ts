@@ -24,6 +24,8 @@ const TITULOS_EXACTOS: Record<string, string> = {
   '/app/perfil/vista-previa': 'Vista pública del perfil SAFE',
   '/app/perfil/resenas': 'Reseñas profesionales SAFE',
   '/app/solicitudes': 'Solicitudes y citas SAFE',
+  '/app/notificaciones': 'Notificaciones SAFE',
+  '/app/alertas': 'Alertas prioritarias SAFE',
   '/app/empresa': 'Mi empresa SAFE',
   '/app/empresa/registrar': 'Registrar empresa SAFE',
   '/app/empresa/editar': 'Editar empresa SAFE',

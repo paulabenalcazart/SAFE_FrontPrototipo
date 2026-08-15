@@ -14,11 +14,13 @@ export function NotificationsPanel({
   items,
   emptyMessage,
   onClose,
+  onNavigate,
 }: {
   title: string
   items: PanelItem[]
   emptyMessage: string
   onClose: () => void
+  onNavigate: () => void
 }) {
   return (
     <div
@@ -40,16 +42,30 @@ export function NotificationsPanel({
           <p className="px-3.5 py-5 text-center text-[13px] leading-relaxed text-ink-500">{emptyMessage}</p>
         )}
         {items.map((item) => (
-          <div key={item.id} className="border-b border-line/70 px-3.5 py-2.5 last:border-b-0">
+          <button
+            type="button"
+            key={item.id}
+            onClick={onNavigate}
+            className="block w-full border-b border-line/70 px-3.5 py-2.5 text-left last:border-b-0 hover:bg-surface"
+          >
             <div className="flex items-center gap-2">
               <span className={`h-[7px] w-[7px] shrink-0 rounded-full ${TONE_DOT_CLASSES[item.tono]}`} aria-hidden="true" />
               <span className="text-[13px] font-semibold text-ink-900">{item.titulo}</span>
               <span className="ml-auto whitespace-nowrap text-[11px] text-ink-500">{item.fecha}</span>
             </div>
             <p className="mt-1 pl-[15px] text-[12.5px] leading-relaxed text-ink-700">{item.mensaje}</p>
-          </div>
+          </button>
         ))}
       </div>
+      {items.length > 0 && (
+        <button
+          type="button"
+          onClick={onNavigate}
+          className="block min-h-11 w-full rounded-b-xl border-t border-line/70 px-3.5 text-center text-[12.5px] font-semibold text-navy-600 hover:bg-surface"
+        >
+          Ver todas
+        </button>
+      )}
     </div>
   )
 }

@@ -59,7 +59,7 @@ test('role resolvers and navigation are explicit for all three roles', async () 
   assert.match(navigation, /navItemsParaRol/)
 })
 
-test('ADMIN boundary and topbar are lazy and isolated from PortalData', async () => {
+test('ADMIN boundary and topbar are eagerly loaded (no loading screen) and isolated from PortalData', async () => {
   const [app, boundary, topbar, adminTopbar] = await Promise.all([
     source('src/App.tsx'),
     source('src/portal/admin/AdminDataBoundary.tsx'),
@@ -68,8 +68,9 @@ test('ADMIN boundary and topbar are lazy and isolated from PortalData', async ()
   ])
   const roleBoundary = blockAfter(app, 'function PortalProviderByRole')
   assert.match(roleBoundary, /AdminDataBoundary/)
-  assert.match(roleBoundary, /role="status"/)
-  assert.match(app.slice(0, app.indexOf('export const NAV_KEY_TO_PATH')), /lazy\(\(\)\s*=>\s*import\(['"]\.\/portal\/admin\/AdminDataBoundary['"]\)/)
+  assert.doesNotMatch(roleBoundary, /role="status"/)
+  assert.doesNotMatch(app, /lazy\(\(\)\s*=>\s*import\(['"]\.\/portal\/admin\/AdminDataBoundary['"]\)/)
+  assert.match(app, /import \{ AdminDataBoundary \} from '\.\/portal\/admin\/AdminDataBoundary'/)
   assert.match(boundary, /import '\.\/admin\.css'/)
   assert.match(boundary, /<AdminDataProvider>/)
   assert.match(boundary, /className="admin-surface"/)

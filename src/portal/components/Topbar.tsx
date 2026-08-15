@@ -1,53 +1,42 @@
-import { lazy, Suspense, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Bell, ChevronDown, TriangleAlert } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
-import { notificaciones, obligaciones } from '@/portal/data/mock-portal-data'
-import { usePortalData } from '@/portal/PortalDataContext'
-import { formatFecha } from '@/portal/obligaciones/formato'
+import { AdminTopbar } from '@/portal/admin/components/AdminTopbar'
 import { AccountMenu } from './AccountMenu'
 import { CompanySwitcher } from './CompanySwitcher'
-import { NotificationsPanel, type PanelItem } from './NotificationsPanel'
+import { NotificationsPanel } from './NotificationsPanel'
 import { MobileMenuButton } from './MobileNavigationDrawer'
-
-const AdminTopbar = lazy(() => import('@/portal/admin/components/AdminTopbar').then((module) => ({ default: module.AdminTopbar })))
+import { useAlertItems, useNotificationItems } from './useTopbarItems'
 
 type OpenPanel = 'alerts' | 'notifications' | 'account' | null
 
 export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
   const { user } = useAuth()
   if (user?.role === 'ADMIN') {
-    return <Suspense fallback={<header className="sticky top-0 z-20 flex min-h-[60px] items-center border-b border-line bg-card px-2 sm:px-4"><MobileMenuButton onOpen={onOpenMenu} /><span role="status" className="ml-2 text-sm text-ink-700">Cargando administración…</span></header>}><AdminTopbar onOpenMenu={onOpenMenu} /></Suspense>
+    return <AdminTopbar onOpenMenu={onOpenMenu} />
   }
   return <PortalTopbar onOpenMenu={onOpenMenu} />
 }
 
 function PortalTopbar({ onOpenMenu }: { onOpenMenu: () => void }) {
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null)
+  const navigate = useNavigate()
   const { user } = useAuth()
   const esColaborador = user?.role === 'COLABORADOR'
-  const { notificacionesColaborador } = usePortalData()
-
-  const alertItems: PanelItem[] = obligaciones
-    .filter((o) => o.tono !== 'positivo')
-    .map((o) => ({ id: o.id, titulo: o.nombre, mensaje: `Vence ${o.vence} · ${o.monto}`, fecha: o.estado, tono: o.tono }))
-
-  const notificationItems: PanelItem[] = esColaborador
-    ? notificacionesColaborador.map((n) => ({
-        id: n.id,
-        titulo: n.titulo,
-        mensaje: n.mensaje,
-        fecha: formatFecha(n.createdAt.slice(0, 10)),
-        tono: n.leida ? 'neutro' : 'atencion',
-      }))
-    : notificaciones.map((n) => ({
-        id: n.id,
-        titulo: n.titulo,
-        mensaje: n.mensaje,
-        fecha: n.fecha,
-        tono: n.leida ? 'neutro' : 'atencion',
-      }))
+  const alertItems = useAlertItems()
+  const notificationItems = useNotificationItems()
 
   const togglePanel = (panel: OpenPanel) => setOpenPanel((current) => (current === panel ? null : panel))
+
+  const irAAlertas = () => {
+    setOpenPanel(null)
+    navigate('/app/alertas')
+  }
+  const irANotificaciones = () => {
+    setOpenPanel(null)
+    navigate('/app/notificaciones')
+  }
 
   return (
     <header className="sticky top-0 z-20 flex min-h-[60px] items-center gap-1 border-b border-line bg-card px-2 sm:gap-3 sm:px-4">
@@ -82,6 +71,7 @@ function PortalTopbar({ onOpenMenu }: { onOpenMenu: () => void }) {
                 items={alertItems}
                 emptyMessage="No tienes alertas pendientes."
                 onClose={() => setOpenPanel(null)}
+                onNavigate={irAAlertas}
               />
             )}
           </div>
@@ -107,6 +97,7 @@ function PortalTopbar({ onOpenMenu }: { onOpenMenu: () => void }) {
               items={notificationItems}
               emptyMessage="Aún no hay notificaciones."
               onClose={() => setOpenPanel(null)}
+              onNavigate={irANotificaciones}
             />
           )}
         </div>

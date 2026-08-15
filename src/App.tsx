@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
@@ -56,20 +56,22 @@ import { EditarPerfilScreen } from './portal/colaborador/perfil/EditarPerfilScre
 import { VistaPreviaPerfilScreen } from './portal/colaborador/perfil/VistaPreviaPerfilScreen'
 import { TodasLasResenasScreen } from './portal/colaborador/perfil/TodasLasResenasScreen'
 import { SolicitudesScreen } from './portal/colaborador/solicitudes/SolicitudesScreen'
+import { NotificacionesScreen } from './portal/components/NotificacionesScreen'
+import { AlertasScreen } from './portal/components/AlertasScreen'
 import { tituloParaRuta } from './titulos'
 import { ADMIN_DEMO_EMAIL, ADMIN_DEMO_USER } from './portal/admin/catalogo'
 import { assertNever } from './portal/navigation'
 
-const AdminDataBoundary = lazy(() => import('./portal/admin/AdminDataBoundary').then((module) => ({ default: module.AdminDataBoundary })))
-const AdminDashboardScreen = lazy(() => import('./portal/admin/dashboard/AdminDashboardScreen').then((module) => ({ default: module.AdminDashboardScreen })))
-const AdminUsersScreen = lazy(() => import('./portal/admin/usuarios/AdminUsersScreen').then((module) => ({ default: module.AdminUsersScreen })))
-const AdminParametersScreen = lazy(() => import('./portal/admin/parametros/AdminParametersScreen').then((module) => ({ default: module.AdminParametersScreen })))
-const AdminPlansScreen = lazy(() => import('./portal/admin/planes/AdminPlansScreen').then((module) => ({ default: module.AdminPlansScreen })))
-const AdminContentScreen = lazy(() => import('./portal/admin/contenido/AdminContentScreen').then((module) => ({ default: module.AdminContentScreen })))
-const AdminAuditScreen = lazy(() => import('./portal/admin/auditoria/AdminAuditScreen').then((module) => ({ default: module.AdminAuditScreen })))
-const AdminSecurityAlertsScreen = lazy(() => import('./portal/admin/auditoria/AdminSecurityAlertsScreen').then((module) => ({ default: module.AdminSecurityAlertsScreen })))
-const AdminTutorialsScreen = lazy(() => import('./portal/admin/tutoriales/AdminTutorialsScreen').then((module) => ({ default: module.AdminTutorialsScreen })))
-const AdminSettingsScreen = lazy(() => import('./portal/admin/configuracion/AdminSettingsScreen').then((module) => ({ default: module.AdminSettingsScreen })))
+import { AdminDataBoundary } from './portal/admin/AdminDataBoundary'
+import { AdminDashboardScreen } from './portal/admin/dashboard/AdminDashboardScreen'
+import { AdminUsersScreen } from './portal/admin/usuarios/AdminUsersScreen'
+import { AdminParametersScreen } from './portal/admin/parametros/AdminParametersScreen'
+import { AdminPlansScreen } from './portal/admin/planes/AdminPlansScreen'
+import { AdminContentScreen } from './portal/admin/contenido/AdminContentScreen'
+import { AdminAuditScreen } from './portal/admin/auditoria/AdminAuditScreen'
+import { AdminSecurityAlertsScreen } from './portal/admin/auditoria/AdminSecurityAlertsScreen'
+import { AdminTutorialsScreen } from './portal/admin/tutoriales/AdminTutorialsScreen'
+import { AdminSettingsScreen } from './portal/admin/configuracion/AdminSettingsScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -177,7 +179,7 @@ function PortalProviderByRole({ children }: { children: ReactNode }) {
     case 'COLABORADOR':
       return <PortalDataProvider>{children}</PortalDataProvider>
     case 'ADMIN':
-      return <Suspense fallback={<div role="status" className="grid min-h-screen place-items-center text-sm text-ink-700">Cargando administración…</div>}><AdminDataBoundary>{children}</AdminDataBoundary></Suspense>
+      return <AdminDataBoundary>{children}</AdminDataBoundary>
     case undefined:
       return null
     default:
@@ -368,6 +370,22 @@ export default function App() {
           element={
             <RoleRoute allow={['COLABORADOR']}>
               <SolicitudesScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="notificaciones"
+          element={
+            <RoleRoute allow={['EMPRESA', 'COLABORADOR']}>
+              <NotificacionesScreen />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="alertas"
+          element={
+            <RoleRoute allow={['EMPRESA']}>
+              <AlertasScreen />
             </RoleRoute>
           }
         />
