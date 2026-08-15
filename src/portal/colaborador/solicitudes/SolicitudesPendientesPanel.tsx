@@ -7,7 +7,7 @@ import { empresaSolicitantePorId } from '@/portal/colaborador/semilla'
 import type { SolicitudContacto } from '@/portal/types'
 import { SolicitudPendienteCard } from './SolicitudPendienteCard'
 
-const POR_PAGINA = 2
+const POR_PAGINA = 3
 
 export function SolicitudesPendientesPanel({
   solicitudes,
