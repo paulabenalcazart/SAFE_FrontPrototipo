@@ -309,7 +309,10 @@ test('ADMIN resolves tutorials and settings without changing shared role routes 
   assert.match(settings, /case 'ADMIN': return <AdminSettingsScreen \/>/)
   assert.match(app, /AdminTutorialsScreen/)
   assert.match(app, /AdminSettingsScreen/)
-  assert.match(app, /path="configuracion\/cuenta" element=\{<EditarCuentaScreen \/>\}/)
+  assert.match(app, /path="configuracion\/cuenta" element=\{<EditarCuentaResolver \/>\}/)
+  const editarCuenta = blockAfter(app, 'function EditarCuentaResolver')
+  assert.match(editarCuenta, /AdminEditAccountScreen/)
+  assert.match(editarCuenta, /EditarCuentaScreen/)
   assert.match(titles, /'\/app\/tutoriales': 'Video tutoriales SAFE'/)
   assert.match(titles, /'\/app\/configuracion': 'Configuración SAFE'/)
   assert.match(titles, /'\/app\/configuracion\/cuenta': 'Editar cuenta SAFE'/)
@@ -330,16 +333,22 @@ test('ADMIN tutorial library preserves guarded CRUD, validation and accessible d
   for (const item of [screen, dialog]) assert.doesNotMatch(item, /Date\.now|new Date|localStorage|sessionStorage|fetch\(|dangerouslySetInnerHTML|replaceAll|style=|BrowserRouter/)
 })
 
-test('ADMIN settings keeps identity, security, SMTP and system fields in auditable accessible form', async () => {
-  const settings = await source('src/portal/admin/configuracion/AdminSettingsScreen.tsx')
-  for (const token of ['Identidad y localización', 'Seguridad', 'Notificaciones', 'Plantillas de correo', 'Información del sistema', 'platformName', 'Español', 'English', 'America/Guayaquil', 'America/Bogota', 'America/Lima', 'strongPasswords', 'twoFactorAdmin', 'sessionMinutes', 'maxFailedAttempts', 'smtpServer', 'sender', 'remindersEnabled', 'emailTemplates', 'pageSize={5}', '/app/admin/alertas-contenido?tab=templates', 'updateSettings', 'role="status"', 'aria-live="polite"', 'URL.createObjectURL', 'URL.revokeObjectURL', 'OPERATIVO']) assert.match(settings, new RegExp(token.replace(/[?{}()]/g, '\\$&')))
+test('ADMIN settings keeps account, security, SMTP and legal sections in an auditable accessible form', async () => {
+  const [settings, account] = await Promise.all([
+    source('src/portal/admin/configuracion/AdminSettingsScreen.tsx'),
+    source('src/portal/admin/configuracion/AdminEditAccountScreen.tsx'),
+  ])
+  for (const token of ['Cuenta', 'Editar cuenta', '/app/configuracion/cuenta', 'Seguridad', 'Notificaciones', 'Privacidad y legal', 'DOCUMENTOS_LEGALES', 'Accordion', 'strongPasswords', 'twoFactorAdmin', 'sessionMinutes', 'maxFailedAttempts', 'smtpServer', 'sender', 'remindersEnabled', 'updateSettings', 'role="status"', 'aria-live="polite"']) assert.match(settings, new RegExp(token.replace(/[?{}()/.]/g, '\\$&')))
+  assert.doesNotMatch(settings, /Identidad y localización|platformName|Plantillas de correo|Información del sistema|emailTemplates|URL\.createObjectURL|URL\.revokeObjectURL|OPERATIVO/)
   assert.match(settings, /min="5"/)
   assert.match(settings, /min="1"/)
   assert.match(settings, /aria-pressed/)
   assert.match(settings, /min-h-11/)
   assert.match(settings, /role="alert"/)
-  assert.match(settings, /replace\(\/_\/g, ' '\)/)
   assert.doesNotMatch(settings, /Date\.now|new Date|localStorage|sessionStorage|fetch\(|FileReader|base64|dangerouslySetInnerHTML|replaceAll|style=|BrowserRouter/)
+  assert.match(account, /updateAdminProfile/)
+  assert.match(account, /role="alert"/)
+  assert.doesNotMatch(account, /Date\.now|localStorage|sessionStorage|fetch\(|dangerouslySetInnerHTML|BrowserRouter/)
 })
 
 test('ADMIN tutorial mutations are single-flight and never hide a draft', async () => {

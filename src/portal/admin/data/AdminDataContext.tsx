@@ -5,6 +5,7 @@ import type {
   AdminCollectionKey,
   AdminData,
   AdminSettings,
+  AdminUser,
   ApplicationRecord,
   AuditRecord,
   CollaboratorRecord,
@@ -21,6 +22,7 @@ export type AdminDataContextValue = {
   removeEntity: (key: AdminCollectionKey, id: string) => void
   patchEntity: (key: AdminCollectionKey, id: string, patch: Record<string, unknown>) => void
   updateSettings: (settings: AdminSettings) => void
+  updateAdminProfile: (profile: Pick<AdminUser, 'nombres' | 'apellidos' | 'correo'>) => void
   reviewApplication: (id: string, status: 'APROBADA' | 'RECHAZADA', reason?: string) => void
   setManagedUserState: (userId: string, state: 'ACTIVO' | 'SUSPENDIDO') => void
   removeManagedCompany: (companyId: string) => void
@@ -185,6 +187,20 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
         current.settings as unknown as Record<string, unknown>,
         settings as unknown as Record<string, unknown>,
       ))
+    },
+    updateAdminProfile(profile) {
+      commit((current) => {
+        const iniciales = `${profile.nombres[0] ?? ''}${profile.apellidos[0] ?? ''}`.toLocaleUpperCase('es') || current.admin.iniciales
+        const admin: AdminUser = { ...current.admin, ...profile, iniciales }
+        return appendAudit(
+          { ...current, admin },
+          'users',
+          admin.id,
+          'UPDATE',
+          current.admin as unknown as Record<string, unknown>,
+          admin as unknown as Record<string, unknown>,
+        )
+      })
     },
     reviewApplication(id, status, reason) {
       commit((current) => {

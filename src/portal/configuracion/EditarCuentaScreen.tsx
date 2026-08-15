@@ -77,6 +77,7 @@ export function EditarCuentaScreen() {
         </div>
       </section>
 
+      {user.role === 'EMPRESA' && (
       <section className="rounded-xl border border-line bg-card p-5">
         <h2 className="text-[16px] font-semibold">Tus empresas</h2>
         <p className="mt-1 text-[13px] text-ink-700">Empresas asociadas a tu cuenta.</p>
@@ -119,6 +120,7 @@ export function EditarCuentaScreen() {
           Registrar otra empresa
         </button>
       </section>
+      )}
     </section>
   )
 }

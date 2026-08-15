@@ -72,6 +72,7 @@ import { AdminAuditScreen } from './portal/admin/auditoria/AdminAuditScreen'
 import { AdminSecurityAlertsScreen } from './portal/admin/auditoria/AdminSecurityAlertsScreen'
 import { AdminTutorialsScreen } from './portal/admin/tutoriales/AdminTutorialsScreen'
 import { AdminSettingsScreen } from './portal/admin/configuracion/AdminSettingsScreen'
+import { AdminEditAccountScreen } from './portal/admin/configuracion/AdminEditAccountScreen'
 
 export const NAV_KEY_TO_PATH: Record<string, string> = {
   inicio: '/',
@@ -169,6 +170,11 @@ function ConfiguracionResolver() {
     case undefined: return null
     default: return assertNever(role)
   }
+}
+
+function EditarCuentaResolver() {
+  const { user } = useAuth()
+  return user?.role === 'ADMIN' ? <AdminEditAccountScreen /> : <EditarCuentaScreen />
 }
 
 function PortalProviderByRole({ children }: { children: ReactNode }) {
@@ -574,7 +580,7 @@ export default function App() {
           }
         />
         <Route path="configuracion" element={<ConfiguracionResolver />} />
-        <Route path="configuracion/cuenta" element={<EditarCuentaScreen />} />
+        <Route path="configuracion/cuenta" element={<EditarCuentaResolver />} />
         <Route path="tutoriales" element={<TutorialesResolver />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
