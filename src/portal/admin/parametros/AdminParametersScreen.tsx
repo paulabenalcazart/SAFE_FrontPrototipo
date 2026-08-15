@@ -1,6 +1,6 @@
 import { useDeferredValue, useMemo, useState } from 'react'
 import { Download, Edit3, History, Plus, RefreshCcw } from 'lucide-react'
-import { useAdminData } from '@/portal/admin/data/AdminDataContext'
+import { COLLECTION_TABLE_NAME, useAdminData } from '@/portal/admin/data/AdminDataContext'
 import { AdminDataTable, type AdminTableColumn } from '@/portal/admin/components/data/AdminDataTable'
 import { AdminFilterBar } from '@/portal/admin/components/data/AdminFilterBar'
 import { AdminSelectFilter } from '@/portal/admin/components/data/AdminSelectFilter'
@@ -80,7 +80,16 @@ export function AdminParametersScreen() {
     return query ? source.filter((row) => schema.searchKeys.some((key) => normalizeText(row[key]).includes(query))) : source
   }, [data, deferredSearch, schema])
   const columns: AdminTableColumn<EntityRecord>[] = schema.columns.map((column) => ({ id: column.key, header: column.label, cell: (row) => displayCell(row, column, data) }))
-  const relevantTables = useMemo(() => new Set(schemas.map((item) => getCollectionKey(item.id) ?? 'scenarios')), [])
+  const relevantTables = useMemo(
+    () =>
+      new Set(
+        schemas.map((item) => {
+          const key = getCollectionKey(item.id) ?? 'scenarios'
+          return COLLECTION_TABLE_NAME[key] ?? key
+        }),
+      ),
+    [],
+  )
   const auditRows = useMemo(() => data.audits.filter((audit) => {
     if (!relevantTables.has(audit.tabla_afectada as never)) return false
     const matchesSearch = !deferredAuditSearch || normalizeText(`${audit.tabla_afectada} ${audit.accion} ${audit.registro_id}`).includes(normalizeText(deferredAuditSearch))

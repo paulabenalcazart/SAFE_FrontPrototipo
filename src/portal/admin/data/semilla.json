@@ -2260,6 +2260,74 @@
       "created_at": "2026-08-11T08:55:41-05:00"
     },
     {
+      "id": "aud-004",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "obligacion",
+      "registro_id": "obl-002",
+      "accion": "UPDATE",
+      "valores_anteriores": {
+        "institucion": "SRI"
+      },
+      "valores_nuevos": {
+        "institucion": "SRI Zonal 8"
+      },
+      "created_at": "2026-08-12T09:40:03-05:00"
+    },
+    {
+      "id": "aud-005",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "norma_legal",
+      "registro_id": "norm-002",
+      "accion": "CREATE",
+      "valores_anteriores": null,
+      "valores_nuevos": {
+        "estado": "VIGENTE"
+      },
+      "created_at": "2026-08-11T16:05:27-05:00"
+    },
+    {
+      "id": "aud-006",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "indicador",
+      "registro_id": "ind-003",
+      "accion": "UPDATE",
+      "valores_anteriores": {
+        "peso_salud_financiera": 0.8
+      },
+      "valores_nuevos": {
+        "peso_salud_financiera": 1.0
+      },
+      "created_at": "2026-08-11T11:22:15-05:00"
+    },
+    {
+      "id": "aud-007",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "escenario_simulacion",
+      "registro_id": "esc-003",
+      "accion": "UPDATE",
+      "valores_anteriores": {
+        "activo": false
+      },
+      "valores_nuevos": {
+        "activo": true
+      },
+      "created_at": "2026-08-09T14:47:52-05:00"
+    },
+    {
+      "id": "aud-008",
+      "usuario_id": "usr-admin-001",
+      "tabla_afectada": "cluster_industria",
+      "registro_id": "clu-serv",
+      "accion": "UPDATE",
+      "valores_anteriores": {
+        "descripcion": "Empresas de servicios"
+      },
+      "valores_nuevos": {
+        "descripcion": "Empresas de servicios profesionales y consultoría"
+      },
+      "created_at": "2026-08-08T10:30:00-05:00"
+    },
+    {
       "id": "aud-002",
       "usuario_id": "usr-admin-001",
       "tabla_afectada": "plan",

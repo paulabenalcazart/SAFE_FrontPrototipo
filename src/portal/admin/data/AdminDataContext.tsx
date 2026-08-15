@@ -38,11 +38,40 @@ function rowsFor(data: AdminData, key: AdminCollectionKey): EntityRecord[] {
   return data[key] as unknown as EntityRecord[]
 }
 
+// Traduce las claves de colección (camelCase, usadas en el estado de React) a los
+// nombres reales de tabla del dump SQL de SAFE, para que auditoria_cambio.tabla_afectada
+// quede alineado con el modelo de datos en vez de exponer nombres de variables internas.
+export const COLLECTION_TABLE_NAME: Partial<Record<AdminCollectionKey | 'settings' | 'applications', string>> = {
+  users: 'usuario',
+  companies: 'empresa',
+  collaborators: 'colaborador',
+  applications: 'postulacion_profesional',
+  plans: 'plan',
+  industryClusters: 'cluster_industria',
+  economicActivities: 'actividad_economica',
+  corporateStructures: 'estructura_societaria',
+  taxpayerTypes: 'tipo_contribuyente',
+  professionalSpecialties: 'especialidad_profesional',
+  obligations: 'obligacion',
+  obligationRules: 'regla_obligacion',
+  norms: 'norma_legal',
+  normativeParams: 'parametro_normativo',
+  financialConcepts: 'concepto_financiero',
+  clusterConcepts: 'cluster_concepto_financiero',
+  derivedMagnitudes: 'magnitud_derivada',
+  indicators: 'indicador',
+  clusterIndicators: 'cluster_indicador',
+  benchmarks: 'benchmark_indicador',
+  scenarios: 'escenario_simulacion',
+  incidents: 'incidencia',
+  tutorials: 'video_tutorial',
+}
+
 function createAudit(key: string, id: string, action: string, previous: Record<string, unknown> | null, next: Record<string, unknown> | null): AuditRecord {
   return {
     id: `aud-${crypto.randomUUID()}`,
     usuario_id: seed.admin.id,
-    tabla_afectada: key,
+    tabla_afectada: COLLECTION_TABLE_NAME[key as AdminCollectionKey | 'settings' | 'applications'] ?? key,
     registro_id: id,
     accion: action,
     valores_anteriores: previous,
