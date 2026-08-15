@@ -68,7 +68,18 @@ export function AdminTutorialsScreen() {
     removeEntity('tutorials', deleting.id)
   }
   const columns: AdminTableColumn<TutorialRecord>[] = [
-    { id: 'thumbnail', header: 'Miniatura', cell: (row) => <div className="flex items-center gap-2"><span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-xs font-bold text-slate-700"><Video aria-hidden="true" size={15} /></span><span>{row.url_miniatura ? 'URL' : row.modulo.slice(0, 3)}</span></div> },
+    {
+      id: 'thumbnail',
+      header: 'Miniatura',
+      cell: (row) =>
+        row.url_miniatura ? (
+          <img src={row.url_miniatura} alt="" className="h-10 w-16 rounded-md object-cover" />
+        ) : (
+          <span className="grid h-10 w-16 place-items-center rounded-md bg-surface text-ink-500">
+            <Video aria-hidden="true" size={17} />
+          </span>
+        ),
+    },
     { id: 'title', header: 'Título', cell: (row) => <div><strong>{row.titulo}</strong><small>{row.descripcion}</small></div> },
     { id: 'category', header: 'Categoría', cell: (row) => <div>{row.categoria}<small>{row.audiencia}</small></div> },
     { id: 'duration', header: 'Duración', cell: (row) => formatDuration(row.duracion_segundos) },
