@@ -146,22 +146,27 @@ export function NuevaCargaScreen() {
 
   return (
     <section className="flex flex-col gap-4.5">
-      <div>
-        <h1 className="text-[28px] font-bold leading-tight">Nueva carga financiera</h1>
-        <p className="mt-1.5 text-[14.5px] text-ink-700">{empresaActiva.nombre} · diez pasos · moneda USD</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-[28px] font-bold leading-tight">Nueva carga financiera</h1>
+          <p className="mt-1.5 text-[14.5px] text-ink-700">{empresaActiva.nombre} · diez pasos · moneda USD</p>
+        </div>
+        <span className="rounded-full bg-navy-100 px-3 py-1 text-[12.5px] font-bold text-navy-700">
+          Paso {step} de 10
+        </span>
       </div>
 
-      <ol className="flex flex-wrap gap-2">
-        {PASOS.map((p) => (
-          <li key={p.n}>
+      <ol className="flex items-center">
+        {PASOS.map((p, i) => (
+          <li key={p.n} className={`flex items-center ${i < PASOS.length - 1 ? 'flex-1' : ''}`}>
             <button
               type="button"
               onClick={() => irAPaso(p.n)}
               disabled={p.n > maxStepReached}
               aria-current={p.n === step}
-              className={`grid h-8.5 w-8.5 place-items-center rounded-full border text-[13px] font-bold disabled:cursor-not-allowed ${
+              className={`grid h-8.5 w-8.5 shrink-0 place-items-center rounded-full border text-[13px] font-bold disabled:cursor-not-allowed ${
                 p.n === step
-                  ? 'border-navy-600 bg-navy-600 text-white'
+                  ? 'border-navy-600 bg-navy-600 text-white ring-4 ring-navy-100'
                   : p.n < step
                     ? 'border-emerald-brand bg-emerald-soft text-emerald-deep'
                     : 'border-line bg-card text-ink-500'
@@ -170,12 +175,21 @@ export function NuevaCargaScreen() {
             >
               {p.n}
             </button>
+            {i < PASOS.length - 1 && (
+              <span
+                aria-hidden="true"
+                className={`mx-1 h-0.5 flex-1 rounded-full ${p.n < step ? 'bg-emerald-brand' : 'bg-line'}`}
+              />
+            )}
           </li>
         ))}
       </ol>
 
+      <div className="grid grid-cols-1 gap-4.5 lg:grid-cols-[1fr_280px] lg:items-start">
       <section className="rounded-xl border border-line bg-card p-5">
-        <h2 className="text-lg font-semibold">{pasoActual.label}</h2>
+        <h2 className="text-lg font-semibold">
+          {pasoActual.label} <span className="font-normal text-ink-500">· {step} / 10</span>
+        </h2>
 
         {step === 1 && (
           <div className="mt-4 grid grid-cols-1 gap-4.5 sm:grid-cols-2">
@@ -287,6 +301,32 @@ export function NuevaCargaScreen() {
           )}
         </div>
       </section>
+
+      <aside className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4.5 lg:sticky lg:top-4.5">
+        <h3 className="text-[13px] font-semibold text-ink-700">Resumen en vivo</h3>
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-center justify-between gap-2 rounded-lg bg-card p-3">
+            <span className="text-[12px] text-ink-500">Activo total</span>
+            <span className="num text-[13.5px] font-semibold">{formatUSD(activoTotal(draft))}</span>
+          </div>
+          <div className="flex items-center justify-between gap-2 rounded-lg bg-card p-3">
+            <span className="text-[12px] text-ink-500">Pasivo + patrimonio</span>
+            <span className="num text-[13.5px] font-semibold">{formatUSD(pasivoTotal(draft) + patrimonio(draft))}</span>
+          </div>
+          <div className="flex items-center justify-between gap-2 rounded-lg bg-card p-3">
+            <span className="text-[12px] text-ink-500">Utilidad neta</span>
+            <span className="num text-[13.5px] font-semibold">{formatUSD(utilidadNeta(draft))}</span>
+          </div>
+        </div>
+        <p
+          className={`rounded-lg p-3 text-[12px] font-semibold leading-relaxed ${
+            cuadrado ? 'bg-emerald-soft text-emerald-deep' : 'bg-danger-soft text-destructive'
+          }`}
+        >
+          {cuadrado ? 'El balance cuadra hasta este punto.' : `Diferencia actual: ${formatUSD(Math.abs(descuadre))}`}
+        </p>
+      </aside>
+      </div>
     </section>
   )
 }

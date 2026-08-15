@@ -20,16 +20,6 @@ const SEMAFORO_BADGE: Record<SemaforoIndicador, string> = {
   ROJO: 'bg-danger-soft text-destructive',
 }
 
-const INDICADORES_FASE2 = [
-  { codigo: 'SOL_08', nombre: 'Apalancamiento financiero', formula: '(UAI / Patrimonio) / (UAII / Activo total)' },
-  { codigo: 'SOL_09', nombre: 'Fortaleza patrimonial', formula: 'Capital social / Patrimonio' },
-  { codigo: 'SOL_10', nombre: 'Endeudamiento patrimonial corriente', formula: 'Pasivo corriente / Patrimonio' },
-  { codigo: 'SOL_11', nombre: 'Endeudamiento patrimonial no corriente', formula: 'Pasivo no corriente / Patrimonio' },
-  { codigo: 'SOL_12', nombre: 'Apalancamiento a corto y largo plazo', formula: '(Pasivo corriente + Pasivo no corriente) / Patrimonio' },
-  { codigo: 'GES_05', nombre: 'Periodo medio de pago', formula: 'Cuentas por pagar × 365 / Compras del periodo' },
-  { codigo: 'REN_06', nombre: 'Rentabilidad financiera', formula: '(Ingresos/Activo) × (UAII/Ingresos) × (Activo/Patrimonio) × (UAI/UAII) × (Utilidad neta/UAI)' },
-]
-
 function formatBenchmark(codigo: string, unidad: 'RATIO' | 'PORCENTAJE' | 'VECES' | 'DIAS'): string {
   const valor = BENCHMARKS_SECTORIALES[codigo]
   if (valor === undefined) return '—'
@@ -45,7 +35,6 @@ export function TodosIndicadoresScreen() {
   const [busqueda, setBusqueda] = useState('')
   const [factorFiltro, setFactorFiltro] = useState<'todos' | FactorIndicador>('todos')
   const [semaforoFiltro, setSemaforoFiltro] = useState<'todos' | SemaforoIndicador>('todos')
-  const [fase2Abierta, setFase2Abierta] = useState(false)
 
   const registros = registrosFinancieros[empresaActiva.id] ?? []
   const registro = [...registros].filter((r) => r.estado === 'VIGENTE').sort((a, b) => b.periodo.localeCompare(a.periodo))[0]
@@ -199,29 +188,6 @@ export function TodosIndicadoresScreen() {
           </section>
         ))
       )}
-
-      <section className="overflow-hidden rounded-xl border border-line bg-card">
-        <button
-          type="button"
-          onClick={() => setFase2Abierta((v) => !v)}
-          aria-expanded={fase2Abierta}
-          className="flex w-full items-center justify-between gap-2.5 bg-surface px-4.5 py-3.5 text-left"
-        >
-          <span className="font-display text-[16px] font-semibold">Próximamente</span>
-          <span className="text-[12.5px] text-ink-500">Indicadores de fase 2 · sin valor y no seleccionables</span>
-        </button>
-        {fase2Abierta && (
-          <div className="grid grid-cols-1 gap-3 p-4.5 sm:grid-cols-2">
-            {INDICADORES_FASE2.map((f) => (
-              <div key={f.codigo} className="rounded-lg border border-dashed border-line bg-surface p-3.5">
-                <span className="font-mono text-[10.5px] text-ink-500">{f.codigo}</span>
-                <p className="mt-1.5 text-[13.5px] font-semibold leading-tight">{f.nombre}</p>
-                <p className="mt-1.5 break-words text-[11.5px] text-ink-500">{f.formula}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
     </section>
   )
 }

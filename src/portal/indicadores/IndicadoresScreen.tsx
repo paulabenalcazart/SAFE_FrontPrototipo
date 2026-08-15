@@ -128,17 +128,10 @@ export function IndicadoresScreen() {
           </select>
           <button
             type="button"
-            onClick={() => navigate('/app/financiero/comparar')}
-            className="min-h-11 rounded-lg border border-line bg-card px-3.5 text-[13.5px] font-semibold text-ink-700"
-          >
-            Comparar periodos
-          </button>
-          <button
-            type="button"
             onClick={() => navigate('/app/indicadores/comparar')}
             className="min-h-11 rounded-lg border border-line bg-card px-3.5 text-[13.5px] font-semibold text-ink-700"
           >
-            Comparar indicadores
+            Comparar periodos
           </button>
           <button
             type="button"
