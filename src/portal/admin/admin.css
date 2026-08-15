@@ -83,6 +83,53 @@
 .admin-surface .admin-empty-state { display: grid; min-height: 11.875rem; place-items: center; align-content: center; gap: 0.5rem; color: var(--admin-gray-500); font-size: 0.8125rem; text-align: center; }
 .admin-surface .admin-empty-state strong { color: var(--admin-gray-700); font-size: 0.875rem; }
 
+.admin-surface .form-field { display: flex; flex-direction: column; gap: 0.375rem; padding: 1.125rem; border-bottom: 1px solid var(--admin-gray-200); }
+.admin-surface .grid > .form-field,
+.admin-surface .grid > div > .form-field { border-bottom: 0; padding: 0; }
+.admin-surface fieldset.form-field { min-width: 0; border: 0; margin: 0; }
+.admin-surface .form-field label,
+.admin-surface .form-field legend { color: var(--admin-gray-700); font-size: 0.8125rem; font-weight: 650; padding: 0; }
+.admin-surface .form-field input[type='text'],
+.admin-surface .form-field input[type='email'],
+.admin-surface .form-field input[type='number'],
+.admin-surface .form-field input[type='date'],
+.admin-surface .form-field input:not([type]),
+.admin-surface .form-field textarea,
+.admin-surface .form-field select:not([multiple]) { min-height: 44px; border: 1px solid var(--admin-gray-300); border-radius: 0.4375rem; background: var(--card, white); padding: 0 0.6875rem; color: var(--admin-gray-900); font-size: 0.8125rem; }
+.admin-surface .form-field textarea { min-height: 5.5rem; padding-top: 0.5rem; resize: vertical; }
+.admin-surface .form-field select[multiple] { min-height: 6rem; border: 1px solid var(--admin-gray-300); border-radius: 0.4375rem; background: var(--card, white); padding: 0.375rem; color: var(--admin-gray-900); font-size: 0.8125rem; }
+.admin-surface .form-field input[type='checkbox'],
+.admin-surface .form-field input[type='radio'] { accent-color: var(--admin-safe-600); }
+.admin-surface .form-field [role='alert'] { color: var(--admin-danger-text); font-size: 0.75rem; font-weight: 650; }
+
+.admin-surface .drawer-section,
+.admin-surface .review-section { padding: 1.125rem; border-bottom: 1px solid var(--admin-gray-200); }
+.admin-surface .drawer-section:last-child,
+.admin-surface .review-section:last-child { border-bottom: 0; }
+.admin-surface .drawer-section h3,
+.admin-surface .review-section h3 { color: var(--admin-gray-900); font-size: 0.9375rem; font-weight: 650; margin-bottom: 0.75rem; }
+.admin-surface .drawer-section > p,
+.admin-surface .review-section > p { color: var(--admin-gray-700); font-size: 0.8125rem; line-height: 1.55; }
+
+.admin-surface .detail-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 1.25rem; }
+.admin-surface .detail-row dt { color: var(--admin-gray-500); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.admin-surface .detail-row dd { margin-top: 0.25rem; color: var(--admin-gray-900); font-size: 0.8125rem; line-height: 1.5; word-break: break-word; }
+
+.admin-surface .compact-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.admin-surface .compact-list__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.625rem; border: 1px solid var(--admin-gray-200); border-radius: 0.5rem; padding: 0.625rem 0.75rem; font-size: 0.8125rem; color: var(--admin-gray-700); }
+.admin-surface .compact-list__row strong { color: var(--admin-gray-900); }
+
+.admin-surface .text-link,
+.admin-surface .document-link { color: var(--admin-safe-600); font-size: 0.8125rem; font-weight: 650; text-decoration: none; }
+.admin-surface .text-link:hover,
+.admin-surface .document-link:hover { text-decoration: underline; }
+
+.admin-surface .application-review__summary { display: flex; flex-wrap: wrap; gap: 1.25rem; padding: 1rem 1.125rem; border-bottom: 1px solid var(--admin-gray-200); background: var(--admin-gray-100); }
+.admin-surface .application-review__summary > div { display: flex; flex-direction: column; gap: 0.3125rem; }
+.admin-surface .application-review__summary span { color: var(--admin-gray-500); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.admin-surface .application-review__summary strong { color: var(--admin-gray-900); font-size: 0.8125rem; }
+.admin-surface .review-section .detail-list + p { margin-top: 0.75rem; color: var(--admin-gray-700); font-size: 0.8125rem; line-height: 1.55; }
+
 .admin-surface .admin-overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 1.25rem; background: rgb(8 31 53 / 0.5); }
 .admin-surface .admin-dialog { display: flex; width: min(36.25rem, 100%); max-height: min(50rem, calc(100vh - 2.5rem)); flex-direction: column; overflow: hidden; border: 1px solid var(--admin-gray-300); border-radius: 0.875rem; background: var(--card, white); box-shadow: 0 20px 45px rgb(15 23 42 / 0.24); }
 .admin-surface .admin-dialog--wide { width: min(56.25rem, 100%); }
