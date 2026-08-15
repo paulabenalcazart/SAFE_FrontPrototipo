@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ChevronDown } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
@@ -16,6 +16,13 @@ export function HistorialPagosScreen() {
     pagos: historialPagos,
     paginaSolicitada: pagina,
   })
+
+  // El primer pago de cada página aparece desplegado por defecto, para que el
+  // usuario intuya que las filas son interactivas.
+  useEffect(() => {
+    setAbierto(items[0]?.id ?? null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginaActual])
 
   return (
     <div className="space-y-5">
