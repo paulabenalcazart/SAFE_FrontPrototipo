@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Check } from 'lucide-react'
+import { CalendarDays, Check, Crown, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Accordion,
@@ -47,26 +47,6 @@ export function PlanScreen() {
     obligacionesCumplidas: cumplidas,
   })
 
-  const campos: { label: string; valor: string }[] = [
-    { label: 'Plan activo', valor: plan.nombre },
-    { label: 'Estado', valor: suscripcionCancelada ? 'CANCELADA' : 'ACTIVA' },
-    {
-      label: 'Método de pago',
-      valor: metodoPredeterminado ? metodoPredeterminado.tipo : 'Sin método registrado',
-    },
-    { label: 'Marca', valor: metodoPredeterminado ? metodoPredeterminado.marca : '--' },
-    { label: 'Últimos cuatro', valor: metodoPredeterminado ? metodoPredeterminado.ultimosCuatro : '--' },
-    {
-      label: 'Expiración',
-      valor: metodoPredeterminado
-        ? formatExpiracion(metodoPredeterminado.mesExpiracion, metodoPredeterminado.anioExpiracion)
-        : '--',
-    },
-    { label: 'Próxima renovación', valor: formatFecha(suscripcionSemilla.proximaRenovacion) },
-    { label: 'Precio', valor: formatUSD(plan.precio) },
-    { label: 'Moneda', valor: 'USD' },
-  ]
-
   return (
     <div className="space-y-6">
       <div>
@@ -76,9 +56,12 @@ export function PlanScreen() {
         </p>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-5">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
+      <section className="flex flex-col gap-4 rounded-xl border border-line bg-card p-5 sm:flex-row sm:items-stretch">
+        <div className="flex flex-1 items-start gap-3.5">
+          <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-navy-100 text-navy-700">
+            <Crown className="h-6.5 w-6.5" aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
             <span
               className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${
                 suscripcionCancelada ? 'bg-surface text-ink-500' : 'bg-emerald-soft text-emerald-deep'
@@ -86,27 +69,40 @@ export function PlanScreen() {
             >
               {suscripcionCancelada ? 'Cancelada' : 'Activa'}
             </span>
-            <h2 className="mt-2 text-xl font-bold text-ink-900">{plan.nombre}</h2>
-            <p className="mt-1 text-sm font-semibold text-navy-600">{formatUSD(plan.precio)} / mes</p>
-          </div>
-          <div className="flex flex-wrap gap-2.5">
-            <Button onClick={() => navigate('/app/plan/suscripcion')}>Administrar suscripción</Button>
-            <Button variant="outline" onClick={() => navigate('/app/plan/metodos-pago')}>
-              Actualizar tarjeta
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/app/plan/historial-pagos')}>
-              Historial de pagos
-            </Button>
+            <h2 className="mt-1.5 text-xl font-bold text-ink-900">{plan.nombre}</h2>
+            <p className="mt-1 text-[13px] text-ink-700">
+              {metodoPredeterminado
+                ? `${metodoPredeterminado.marca} ***${metodoPredeterminado.ultimosCuatro} | ${formatExpiracion(
+                    metodoPredeterminado.mesExpiracion,
+                    metodoPredeterminado.anioExpiracion,
+                  )}`
+                : 'Sin método de pago registrado'}
+            </p>
           </div>
         </div>
-        <dl className="mt-4.5 grid grid-cols-1 gap-3.5 border-t border-line-soft pt-4 sm:grid-cols-3">
-          {campos.map((c) => (
-            <div key={c.label}>
-              <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">{c.label}</dt>
-              <dd className="mt-1 text-[13.5px] font-medium text-ink-900">{c.valor}</dd>
+
+        <div className="hidden w-px self-stretch bg-line-soft/70 sm:block" aria-hidden="true" />
+        <div className="h-px bg-line-soft/70 sm:hidden" aria-hidden="true" />
+
+        <div className="flex flex-1 flex-col justify-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <CalendarDays className="h-4 w-4 shrink-0 text-ink-500" aria-hidden="true" />
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">Próxima renovación</p>
+              <p className="text-[13.5px] font-semibold text-ink-900">{formatFecha(suscripcionSemilla.proximaRenovacion)}</p>
             </div>
-          ))}
-        </dl>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <Tag className="h-4 w-4 shrink-0 text-ink-500" aria-hidden="true" />
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">Precio</p>
+              <p className="text-[13.5px] font-semibold text-ink-900">{formatUSD(plan.precio)} / mes</p>
+            </div>
+          </div>
+          <Button onClick={() => navigate('/app/plan/suscripcion')} className="w-fit">
+            Administrar suscripción
+          </Button>
+        </div>
       </section>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
