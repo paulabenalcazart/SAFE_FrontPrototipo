@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Lock } from 'lucide-react'
+import { Landmark, Lock, TrendingUp, Wallet } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { RegistroFinanciero } from '@/portal/types'
 import { activoCorriente, balanceCuadrado, gastosTotales, pasivoCorriente, utilidadNeta } from './calculo'
@@ -72,19 +72,34 @@ export function FinancieroScreen() {
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
         <div className="rounded-xl border border-line bg-card p-4">
-          <p className="text-[12.5px] font-semibold text-ink-500">Ingresos del último periodo</p>
+          <div className="flex items-center gap-2.5 text-ink-500">
+            <span className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
+              <TrendingUp className="h-[17px] w-[17px]" strokeWidth={1.7} aria-hidden="true" />
+            </span>
+            <p className="text-[12.5px] font-semibold text-ink-700">Ingresos del último periodo</p>
+          </div>
           <p className="num mt-2 font-display text-2xl font-bold">
             {ultimoVigente ? formatUSD(ultimoVigente.ingresosOperacionales) : '—'}
           </p>
         </div>
         <div className="rounded-xl border border-line bg-card p-4">
-          <p className="text-[12.5px] font-semibold text-ink-500">Utilidad neta del último periodo</p>
+          <div className="flex items-center gap-2.5 text-ink-500">
+            <span className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
+              <Wallet className="h-[17px] w-[17px]" strokeWidth={1.7} aria-hidden="true" />
+            </span>
+            <p className="text-[12.5px] font-semibold text-ink-700">Utilidad neta del último periodo</p>
+          </div>
           <p className="num mt-2 font-display text-2xl font-bold">
             {ultimoVigente ? formatUSD(utilidadNeta(ultimoVigente)) : '—'}
           </p>
         </div>
         <div className="rounded-xl border border-line bg-card p-4">
-          <p className="text-[12.5px] font-semibold text-ink-500">Capital de trabajo</p>
+          <div className="flex items-center gap-2.5 text-ink-500">
+            <span className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
+              <Landmark className="h-[17px] w-[17px]" strokeWidth={1.7} aria-hidden="true" />
+            </span>
+            <p className="text-[12.5px] font-semibold text-ink-700">Capital de trabajo</p>
+          </div>
           <p className="num mt-2 font-display text-2xl font-bold">
             {ultimoVigente ? formatUSD(activoCorriente(ultimoVigente) - pasivoCorriente(ultimoVigente)) : '—'}
           </p>
