@@ -26,10 +26,10 @@ export function estadisticasDeUso(params: {
   obligacionesCumplidas: number
 }): EstadisticaUso[] {
   return [
-    { titulo: 'Periodos financieros registrados', valor: String(params.registrosFinancieros) },
-    { titulo: 'Indicadores calculados', valor: String(params.indicadoresCalculados) },
-    { titulo: 'Simulaciones realizadas', valor: String(params.simulacionesRealizadas) },
-    { titulo: 'Obligaciones cumplidas a tiempo', valor: String(params.obligacionesCumplidas) },
+    { titulo: 'Periodos financieros procesados', valor: String(params.registrosFinancieros) },
+    { titulo: 'Indicadores calculados por SAFE', valor: String(params.indicadoresCalculados) },
+    { titulo: 'Simulaciones ejecutadas', valor: String(params.simulacionesRealizadas) },
+    { titulo: 'Cumplimientos registrados', valor: String(params.obligacionesCumplidas) },
   ]
 }
 

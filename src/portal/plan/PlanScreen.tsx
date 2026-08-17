@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { CalendarDays, Check, CreditCard, Crown, Receipt, Tag, Trophy } from 'lucide-react'
+import { Calculator, CalendarDays, Check, CreditCard, Crown, FlaskConical, Receipt, ShieldCheck, Tag, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Accordion,
@@ -46,6 +46,13 @@ export function PlanScreen() {
     simulacionesRealizadas: sims.length,
     obligacionesCumplidas: cumplidas,
   })
+
+  const STAT_ICON: Record<string, typeof Calculator> = {
+    'Periodos financieros procesados': Receipt,
+    'Indicadores calculados por SAFE': Calculator,
+    'Simulaciones ejecutadas': FlaskConical,
+    'Cumplimientos registrados': ShieldCheck,
+  }
 
   return (
     <div className="space-y-6">
@@ -168,15 +175,21 @@ export function PlanScreen() {
       <section>
         <h2 className="text-lg font-semibold text-ink-900">Estadísticas de uso</h2>
         <div className="mt-3 grid grid-cols-2 gap-3.5 lg:grid-cols-4">
-          {stats.map((s) => (
-            <div
-              key={s.titulo}
-              className="flex min-h-[110px] flex-col gap-2 rounded-xl border border-line bg-card p-4"
-            >
-              <p className="text-[12.5px] font-semibold leading-tight text-ink-500">{s.titulo}</p>
-              <p className="num mt-auto font-display text-3xl font-bold text-ink-900">{s.valor}</p>
-            </div>
-          ))}
+          {stats.map((s) => {
+            const StatIcon = STAT_ICON[s.titulo] ?? Calculator
+            return (
+              <div
+                key={s.titulo}
+                className="flex min-h-[110px] flex-col justify-center gap-2 rounded-xl border border-line bg-card p-4"
+              >
+                <div className="flex items-center gap-2.5">
+                  <StatIcon className="h-6 w-6 shrink-0 text-navy-600" aria-hidden="true" />
+                  <span className="num font-display text-3xl font-bold text-ink-900">{s.valor}</span>
+                </div>
+                <p className="text-[12.5px] font-semibold leading-tight text-ink-500">{s.titulo}</p>
+              </div>
+            )
+          })}
         </div>
       </section>
 
