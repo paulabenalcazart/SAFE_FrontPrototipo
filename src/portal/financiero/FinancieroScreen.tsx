@@ -43,11 +43,31 @@ export function FinancieroScreen() {
 
   return (
     <section className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-[28px] font-bold leading-tight">Estados financieros</h1>
-        <p className="mt-1.5 text-[14.5px] text-ink-700">
-          Carga tus periodos mensuales, corrige versiones y compara la evolución del negocio.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3.5">
+        <div>
+          <h1 className="text-[28px] font-bold leading-tight">Estados financieros</h1>
+          <p className="mt-1.5 text-[14.5px] text-ink-700">
+            Carga tus periodos mensuales, corrige versiones y compara la evolución del negocio.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2.5">
+          <button
+            type="button"
+            disabled={elegiblesComparar.length < 2}
+            onClick={() => navigate('/app/financiero/comparar')}
+            className="flex min-h-11 items-center gap-2 rounded-lg border border-line bg-card px-4 text-sm font-semibold text-ink-700 disabled:opacity-50"
+          >
+            {elegiblesComparar.length < 2 && <Lock className="h-3.5 w-3.5" aria-hidden="true" />}
+            Comparar periodos
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/app/financiero/nuevo')}
+            className="min-h-11 rounded-lg bg-navy-600 px-4.5 text-sm font-semibold text-white"
+          >
+            Nueva carga financiera
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
@@ -69,25 +89,6 @@ export function FinancieroScreen() {
             {ultimoVigente ? formatUSD(activoCorriente(ultimoVigente) - pasivoCorriente(ultimoVigente)) : '—'}
           </p>
         </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2.5">
-        <button
-          type="button"
-          onClick={() => navigate('/app/financiero/nuevo')}
-          className="min-h-11 rounded-lg bg-navy-600 px-4.5 text-sm font-semibold text-white"
-        >
-          Nueva carga financiera
-        </button>
-        <button
-          type="button"
-          disabled={elegiblesComparar.length < 2}
-          onClick={() => navigate('/app/financiero/comparar')}
-          className="flex min-h-11 items-center gap-2 rounded-lg border border-line bg-card px-4 text-sm font-semibold text-ink-700 disabled:opacity-50"
-        >
-          {elegiblesComparar.length < 2 && <Lock className="h-3.5 w-3.5" aria-hidden="true" />}
-          Comparar periodos
-        </button>
       </div>
 
       <section className="overflow-hidden rounded-xl border border-line bg-card">
