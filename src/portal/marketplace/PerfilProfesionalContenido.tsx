@@ -198,8 +198,8 @@ export function PerfilProfesionalContenido({
         </p>
       </section>
 
-      <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-12 lg:items-start">
-        <section className="rounded-xl border border-line bg-card p-4 sm:p-5 lg:col-span-7" aria-labelledby="servicios-publicos-titulo">
+      <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-12">
+        <section className="flex flex-col rounded-xl border border-line bg-card p-4 sm:p-5 lg:col-span-7" aria-labelledby="servicios-publicos-titulo">
           <h2 id="servicios-publicos-titulo" className="text-[18px] font-semibold text-ink-900">
             Servicios
           </h2>
@@ -208,7 +208,7 @@ export function PerfilProfesionalContenido({
               Este profesional no tiene servicios activos por ahora.
             </p>
           ) : (
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid flex-1 auto-rows-min gap-3 sm:grid-cols-2">
               {servicios.map((servicio) => (
                 <article key={servicio.id} className="min-w-0 rounded-xl border border-line/70 bg-surface p-4">
                   <h3 className="break-words text-[14px] font-semibold text-ink-900">{servicio.nombre}</h3>
