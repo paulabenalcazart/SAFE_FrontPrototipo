@@ -7,7 +7,8 @@ import { formatPeriodo } from '@/portal/financiero/formato'
 import { DESCRIPCION_INDICADOR } from './descripciones'
 import { RentabilidadHistoricaChart } from './RentabilidadHistoricaChart'
 import { LiquidezHistoricaChart } from './LiquidezHistoricaChart'
-import { Droplet, Gauge, HelpCircle, ShieldCheck, TrendingUp } from 'lucide-react'
+import { Droplet, Gauge, HelpCircle, ShieldCheck, TrendingUp, TriangleAlert } from 'lucide-react'
+import { AlertBox } from '@/portal/components/AlertBox'
 
 const FACTOR_LABEL: Record<FactorIndicador, string> = {
   LIQUIDEZ: 'Liquidez',
@@ -223,17 +224,14 @@ export function IndicadoresScreen() {
               <p className="text-[13px] text-ink-500">Sin alertas para este periodo.</p>
             ) : (
               rojos.map((i) => (
-                <div key={i.codigo} className="rounded-lg bg-danger-soft p-3">
-                  <span className="rounded-full bg-card px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-destructive">
-                    Riesgo
-                  </span>
-                  <p className="mt-2 text-[13px] leading-snug">
+                <AlertBox key={i.codigo} icon={TriangleAlert} tono="critico" cornerLabel="Riesgo">
+                  <p className="text-[13px] leading-snug">
                     {i.nombre} está en {i.valorFormateado}, fuera del rango saludable.
                   </p>
                   <button type="button" onClick={irAMarketplace} className="mt-1.5 text-[12.5px] font-semibold text-navy-600">
                     Buscar {ESPECIALIDAD_POR_FACTOR[i.factor]}
                   </button>
-                </div>
+                </AlertBox>
               ))
             )}
           </div>
