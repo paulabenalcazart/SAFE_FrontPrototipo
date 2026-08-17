@@ -129,8 +129,8 @@ export function ObligacionesScreen() {
         {kpis.map((k) => (
           <div key={k.titulo} className="flex min-h-[122px] flex-col gap-2 rounded-xl border border-line bg-card p-4">
             <p className="text-[12.5px] font-semibold text-ink-500">{k.titulo}</p>
-            <p className="mt-auto text-[16px] font-bold leading-tight">{k.valor}</p>
-            <p className="text-[12.5px] leading-snug text-ink-500">{k.sub}</p>
+            <p className="num mt-auto text-[26px] font-bold leading-none">{k.valor}</p>
+            <p className="text-[12px] leading-snug text-ink-500">{k.sub}</p>
           </div>
         ))}
       </div>
