@@ -1,3 +1,4 @@
+import { Landmark, Receipt, TrendingUp, Wallet } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
@@ -77,10 +78,10 @@ export function CompararPeriodosScreen() {
   const mismoRegistro = idA === idB
 
   const kpisResumen = [
-    { titulo: 'Ingresos', a: registroA.ingresosOperacionales, b: registroB.ingresosOperacionales, mejorSiMayor: true },
-    { titulo: 'Gastos totales', a: gastosTotales(registroA), b: gastosTotales(registroB), mejorSiMayor: false },
-    { titulo: 'Utilidad neta', a: utilidadNeta(registroA), b: utilidadNeta(registroB), mejorSiMayor: true },
-    { titulo: 'Activo total', a: activoTotal(registroA), b: activoTotal(registroB), mejorSiMayor: true },
+    { titulo: 'Ingresos', icon: TrendingUp, a: registroA.ingresosOperacionales, b: registroB.ingresosOperacionales, mejorSiMayor: true },
+    { titulo: 'Gastos totales', icon: Receipt, a: gastosTotales(registroA), b: gastosTotales(registroB), mejorSiMayor: false },
+    { titulo: 'Utilidad neta', icon: Wallet, a: utilidadNeta(registroA), b: utilidadNeta(registroB), mejorSiMayor: true },
+    { titulo: 'Activo total', icon: Landmark, a: activoTotal(registroA), b: activoTotal(registroB), mejorSiMayor: true },
   ]
 
   const indicadoresA = calcularIndicadores(registroA)
@@ -151,7 +152,10 @@ export function CompararPeriodosScreen() {
           const { dif, fg } = variacion(k.a, k.b, k.mejorSiMayor)
           return (
             <div key={k.titulo} className="rounded-xl border border-line bg-card p-4">
-              <p className="text-[12.5px] font-semibold text-ink-500">{k.titulo}</p>
+              <div className="flex items-center gap-1.5 text-ink-500">
+                <k.icon className="h-3.5 w-3.5" aria-hidden="true" />
+                <p className="text-[12.5px] font-semibold text-ink-700">{k.titulo}</p>
+              </div>
               <div className="mt-2.5 flex items-baseline gap-2">
                 <span className="num text-[13px] text-ink-500">{formatUSD(k.a)}</span>
                 <span aria-hidden="true" className="text-ink-500">→</span>
