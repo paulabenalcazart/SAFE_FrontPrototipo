@@ -9,6 +9,7 @@ import { RentabilidadHistoricaChart } from './RentabilidadHistoricaChart'
 import { LiquidezHistoricaChart } from './LiquidezHistoricaChart'
 import { Droplet, Gauge, HelpCircle, ShieldCheck, TrendingUp, TriangleAlert } from 'lucide-react'
 import { AlertBox } from '@/portal/components/AlertBox'
+import { SeverityIcon } from '@/portal/components/SeverityIcon'
 
 const FACTOR_LABEL: Record<FactorIndicador, string> = {
   LIQUIDEZ: 'Liquidez',
@@ -243,15 +244,21 @@ export function IndicadoresScreen() {
               <p className="text-[13px] text-ink-500">Sin recomendaciones para este periodo.</p>
             ) : (
               amarillos.map((i) => (
-                <div key={i.codigo} className="rounded-lg border border-line/70 bg-surface p-3">
-                  <p className="text-[13px] leading-snug">
-                    {i.nombre} está en {i.valorFormateado} — cerca del límite saludable.
-                  </p>
-                  <div className="mt-2 flex items-center justify-between gap-2">
-                    <span className="text-[11.5px] text-ink-500">Prioridad media</span>
-                    <button type="button" onClick={irAMarketplace} className="text-[12.5px] font-semibold text-navy-600">
-                      Buscar profesional
-                    </button>
+                <div key={i.codigo} className="flex items-start gap-3 rounded-lg border border-line/70 bg-surface p-3">
+                  <SeverityIcon nivel="media" className="mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] leading-snug">
+                      {i.nombre} está en {i.valorFormateado} — cerca del límite saludable.
+                    </p>
+                    <div className="mt-2 flex items-center justify-end">
+                      <button
+                        type="button"
+                        onClick={irAMarketplace}
+                        className="min-h-8.5 rounded-lg bg-navy-600 px-3 text-[12px] font-semibold text-white"
+                      >
+                        Buscar profesional
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))
