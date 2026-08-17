@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { CalendarDays, Check, Crown, Tag } from 'lucide-react'
+import { CalendarDays, Check, CreditCard, Crown, Receipt, Tag, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Accordion,
@@ -105,8 +105,8 @@ export function PlanScreen() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-xl border border-line bg-card p-4.5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        <section className="relative flex-1 overflow-hidden rounded-xl border border-line bg-card p-4.5">
           <h2 className="text-base font-semibold text-ink-900">Beneficios de tu plan</h2>
           <ul className="mt-3 space-y-2">
             {plan.beneficios.map((b) => (
@@ -116,39 +116,54 @@ export function PlanScreen() {
               </li>
             ))}
           </ul>
+          <Trophy
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-3 -right-3 h-20 w-20 text-ink-300 opacity-15"
+          />
         </section>
-        <section className="rounded-xl border border-line bg-card p-4.5">
-          <h2 className="text-base font-semibold text-ink-900">Módulos y límites</h2>
-          <div className="mt-3 space-y-2">
-            {modulos.map((m) => (
-              <div key={m.nombre} className="flex items-center justify-between gap-2.5">
-                <span className="text-[13px] text-ink-700">{m.nombre}</span>
-                <span
-                  className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
-                    m.incluido ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'
-                  }`}
-                >
-                  {m.incluido ? 'Incluido' : 'No incluido'}
-                </span>
-              </div>
-            ))}
-          </div>
-          <dl className="mt-3.5 space-y-2 border-t border-line-soft pt-3.5">
-            <div className="flex justify-between gap-3 text-[13px]">
-              <dt className="text-ink-500">Empresas</dt>
-              <dd className="text-right font-semibold text-ink-900">{plan.empresas}</dd>
-            </div>
-            <div className="flex justify-between gap-3 text-[13px]">
-              <dt className="text-ink-500">Simulaciones</dt>
-              <dd className="text-right font-semibold text-ink-900">{plan.simulaciones}</dd>
-            </div>
-            <div className="flex justify-between gap-3 text-[13px]">
-              <dt className="text-ink-500">Soporte</dt>
-              <dd className="text-right font-semibold text-ink-900">{plan.soporte}</dd>
-            </div>
-          </dl>
-        </section>
+        <div className="flex flex-row gap-2.5 lg:w-56 lg:flex-col">
+          <Button variant="outline" onClick={() => navigate('/app/plan/metodos-pago')} className="flex-1 justify-start gap-2 lg:flex-none">
+            <CreditCard className="h-4 w-4" aria-hidden="true" />
+            Actualizar tarjeta
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/app/plan/historial-pagos')} className="flex-1 justify-start gap-2 lg:flex-none">
+            <Receipt className="h-4 w-4" aria-hidden="true" />
+            Historial de pagos
+          </Button>
+        </div>
       </div>
+
+      <section className="rounded-xl border border-line bg-card p-4.5">
+        <h2 className="text-base font-semibold text-ink-900">Módulos y límites</h2>
+        <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
+          {modulos.map((m) => (
+            <div key={m.nombre} className="flex items-center justify-between gap-2.5">
+              <span className="text-[13px] text-ink-700">{m.nombre}</span>
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                  m.incluido ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'
+                }`}
+              >
+                {m.incluido ? 'Incluido' : 'No incluido'}
+              </span>
+            </div>
+          ))}
+        </div>
+        <dl className="mt-3.5 grid grid-cols-1 gap-x-6 gap-y-2 border-t border-line-soft pt-3.5 sm:grid-cols-3">
+          <div className="flex justify-between gap-3 text-[13px]">
+            <dt className="text-ink-500">Empresas</dt>
+            <dd className="text-right font-semibold text-ink-900">{plan.empresas}</dd>
+          </div>
+          <div className="flex justify-between gap-3 text-[13px]">
+            <dt className="text-ink-500">Simulaciones</dt>
+            <dd className="text-right font-semibold text-ink-900">{plan.simulaciones}</dd>
+          </div>
+          <div className="flex justify-between gap-3 text-[13px]">
+            <dt className="text-ink-500">Soporte</dt>
+            <dd className="text-right font-semibold text-ink-900">{plan.soporte}</dd>
+          </div>
+        </dl>
+      </section>
 
       <section>
         <h2 className="text-lg font-semibold text-ink-900">Estadísticas de uso</h2>
