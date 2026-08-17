@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Landmark, Lock, Search, TrendingUp, Wallet } from 'lucide-react'
+import { ArrowRight, Eye, Landmark, Lock, Search, TrendingUp, Wallet } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { RegistroFinanciero } from '@/portal/types'
 import { activoCorriente, balanceCuadrado, gastosTotales, pasivoCorriente, utilidadNeta } from './calculo'
 import { EvolucionFinancieraChart } from './EvolucionFinancieraChart'
 import { formatPeriodo, formatUSD } from './formato'
+import { Pagination } from '@/portal/components/Pagination'
 
 const ESTADO_BADGE: Record<RegistroFinanciero['estado'], string> = {
   BORRADOR: 'bg-amber-soft text-amber-deep',
@@ -31,6 +32,16 @@ export function FinancieroScreen() {
       .filter((r) => formatPeriodo(r.periodo).toLowerCase().includes(busqueda.toLowerCase()))
       .sort((a, b) => b.periodo.localeCompare(a.periodo) || b.version - a.version)
   }, [registros, filtroEstado, busqueda])
+
+  const [pagina, setPagina] = useState(1)
+  const porPagina = 8
+  const totalPaginas = Math.max(1, Math.ceil(filtrados.length / porPagina))
+  const paginaActual = Math.min(pagina, totalPaginas)
+  const filtradosPagina = filtrados.slice((paginaActual - 1) * porPagina, paginaActual * porPagina)
+
+  useEffect(() => {
+    setPagina(1)
+  }, [filtroEstado, busqueda])
 
   const alertas: string[] = []
   const borradores = registros.filter((r) => r.estado === 'BORRADOR')
@@ -142,52 +153,56 @@ export function FinancieroScreen() {
           <table className="w-full min-w-[860px] border-collapse text-[13px]">
             <thead>
               <tr className="text-left text-ink-500">
-                <th scope="col" className="px-4.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Periodo</th>
-                <th scope="col" className="px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Versión</th>
-                <th scope="col" className="px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Estado</th>
-                <th scope="col" className="px-2 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide">Ingresos</th>
-                <th scope="col" className="px-2 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide">Gastos</th>
-                <th scope="col" className="px-2 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide">Utilidad</th>
-                <th scope="col" className="px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Balance</th>
-                <th scope="col" className="px-4.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Acciones</th>
+                <th scope="col" className="px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Periodo</th>
+                <th scope="col" className="px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Versión</th>
+                <th scope="col" className="px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Estado</th>
+                <th scope="col" className="px-3.5 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide">Ingresos</th>
+                <th scope="col" className="px-3.5 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide">Gastos</th>
+                <th scope="col" className="px-3.5 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide">Utilidad</th>
+                <th scope="col" className="px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Balance</th>
+                <th scope="col" className="px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {filtrados.map((r) => (
+              {filtradosPagina.map((r) => (
                 <tr key={r.id} className="border-t border-line/70">
-                  <td className="px-4.5 py-2.5 font-semibold whitespace-nowrap">{formatPeriodo(r.periodo)}</td>
-                  <td className="num px-2 py-2.5 text-ink-700">v{r.version}</td>
-                  <td className="px-2 py-2.5">
+                  <td className="px-3.5 py-2.5 font-semibold whitespace-nowrap">{formatPeriodo(r.periodo)}</td>
+                  <td className="num px-3.5 py-2.5 text-ink-700">v{r.version}</td>
+                  <td className="px-3.5 py-2.5">
                     <span className={`inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${ESTADO_BADGE[r.estado]}`}>
                       {r.estado}
                     </span>
                   </td>
-                  <td className="num px-2 py-2.5 text-right">{formatUSD(r.ingresosOperacionales)}</td>
-                  <td className="num px-2 py-2.5 text-right">{formatUSD(gastosTotales(r))}</td>
-                  <td className="num px-2 py-2.5 text-right font-semibold">{formatUSD(utilidadNeta(r))}</td>
-                  <td className="px-2 py-2.5 text-[12.5px] font-semibold">
+                  <td className="num px-3.5 py-2.5 text-right">{formatUSD(r.ingresosOperacionales)}</td>
+                  <td className="num px-3.5 py-2.5 text-right">{formatUSD(gastosTotales(r))}</td>
+                  <td className="num px-3.5 py-2.5 text-right font-semibold">{formatUSD(utilidadNeta(r))}</td>
+                  <td className="px-3.5 py-2.5 text-[12.5px] font-semibold">
                     {balanceCuadrado(r) ? (
                       <span className="text-emerald-deep">✓ Cuadrado</span>
                     ) : (
                       <span className="text-destructive">⚠ Descuadrado</span>
                     )}
                   </td>
-                  <td className="px-4.5 py-2.5">
+                  <td className="px-3.5 py-2.5">
                     <div className="flex flex-wrap gap-1.5">
                       <button
                         type="button"
                         onClick={() => navigate(`/app/financiero/${r.id}`)}
-                        className="min-h-8.5 rounded-md border border-line bg-card px-2.5 text-[12px] font-semibold text-ink-700"
+                        aria-label={`Ver periodo ${formatPeriodo(r.periodo)}`}
+                        title="Ver"
+                        className="grid h-8.5 w-8.5 place-items-center rounded-md border border-line bg-card text-ink-700"
                       >
-                        Ver
+                        <Eye className="h-4 w-4" aria-hidden="true" />
                       </button>
                       {r.estado === 'BORRADOR' && (
                         <button
                           type="button"
                           onClick={() => navigate(`/app/financiero/${r.id}/editar`)}
-                          className="min-h-8.5 rounded-md border border-navy-600 bg-navy-600 px-2.5 text-[12px] font-semibold text-white"
+                          aria-label={`Continuar carga del periodo ${formatPeriodo(r.periodo)}`}
+                          title="Continuar"
+                          className="grid h-8.5 w-8.5 place-items-center rounded-md border border-navy-600 bg-navy-600 text-white"
                         >
-                          Continuar
+                          <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </button>
                       )}
                     </div>
@@ -196,12 +211,22 @@ export function FinancieroScreen() {
               ))}
             </tbody>
           </table>
-          {filtrados.length === 0 && (
+          {filtradosPagina.length === 0 && (
             <p className="px-4.5 py-8 text-center text-[13.5px] text-ink-500">
               {registros.length === 0
                 ? 'Aún no hay periodos cargados para esta empresa.'
                 : 'Ningún periodo coincide con los filtros.'}
             </p>
+          )}
+          {filtrados.length > 0 && (
+            <div className="border-t border-line/70 p-3.5">
+              <Pagination
+                paginaActual={paginaActual}
+                totalPaginas={totalPaginas}
+                onChange={setPagina}
+                ariaLabel="Páginas de periodos financieros"
+              />
+            </div>
           )}
         </div>
       </section>
