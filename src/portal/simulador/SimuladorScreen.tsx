@@ -16,6 +16,7 @@ import {
 } from './calculo'
 import { NIVEL_RIESGO_BADGE, NIVEL_RIESGO_LABEL } from './estilo'
 import { SimulacionChart } from './SimulacionChart'
+import { SeverityIcon } from '@/portal/components/SeverityIcon'
 import { Building2, Landmark, TrendingUp, UserPlus } from 'lucide-react'
 
 const ESCENARIO_ICON: Record<string, typeof TrendingUp> = {
@@ -23,6 +24,13 @@ const ESCENARIO_ICON: Record<string, typeof TrendingUp> = {
   AUMENTO_VENTAS: TrendingUp,
   CAMBIO_REGIMEN_TRIBUTARIO: Landmark,
   AUMENTO_CAPITAL: Building2,
+}
+
+const RIESGO_A_SEVERIDAD: Record<Simulacion['resultado']['nivelRiesgo'], 'baja' | 'media' | 'alta' | 'critica'> = {
+  BAJO: 'baja',
+  MEDIO: 'media',
+  ALTO: 'alta',
+  CRITICO: 'critica',
 }
 
 type Paso = 1 | 2 | 3
@@ -235,7 +243,8 @@ export function SimuladorScreen() {
                         {formatFecha(s.fecha)} · {empresaActiva.nombre}
                       </p>
                     </div>
-                    <span className={`rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${NIVEL_RIESGO_BADGE[s.resultado.nivelRiesgo]}`}>
+                    <span className="flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-700">
+                      <SeverityIcon nivel={RIESGO_A_SEVERIDAD[s.resultado.nivelRiesgo]} />
                       Riesgo {NIVEL_RIESGO_LABEL[s.resultado.nivelRiesgo]}
                     </span>
                     <button
@@ -248,7 +257,7 @@ export function SimuladorScreen() {
                     <button
                       type="button"
                       onClick={() => window.print()}
-                      className="min-h-9.5 rounded-lg border border-line bg-card px-3 text-[12.5px] font-semibold text-ink-700"
+                      className="min-h-9.5 rounded-lg bg-navy-600 px-3 text-[12.5px] font-semibold text-white"
                     >
                       Exportar PDF
                     </button>
