@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CalendarDays, List } from 'lucide-react'
+import { CalendarDays, List, TriangleAlert } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { EstadoObligacion, ObligacionEmpresa } from '@/portal/types'
 import { formatPeriodo, formatUSD } from '@/portal/financiero/formato'
@@ -9,6 +9,8 @@ import { diasHasta, estadoObligacion, HOY_OBLIGACIONES } from './calculo'
 import { ESTADO_OBLIGACION_BADGE, ESTADO_OBLIGACION_LABEL, ESTADO_OBLIGACION_SWATCH } from './estado-estilo'
 import { construirCeldasMes, diasSemanaLabels } from './calendario'
 import { formatDias, formatFecha } from './formato'
+import { AlertBox } from '@/portal/components/AlertBox'
+import { SeverityIcon } from '@/portal/components/SeverityIcon'
 
 type ObligacionVista = {
   obligacion: ObligacionEmpresa
@@ -331,24 +333,18 @@ export function ObligacionesScreen() {
             {alertasVencidas.length === 0 ? (
               <p className="text-[13px] text-ink-500">Sin alertas: no tienes obligaciones vencidas.</p>
             ) : (
-              alertasVencidas.map((a) => {
-                const [bg, fg] = ESTADO_OBLIGACION_BADGE[a.estado].split(' ')
-                return (
-                  <div key={a.id} className={`flex flex-wrap items-center gap-2.5 rounded-lg p-3 ${bg}`}>
-                    <span className={`rounded-full bg-card px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${fg}`}>
-                      {a.etiqueta}
-                    </span>
-                    <p className="min-w-0 flex-1 text-[13px] leading-snug">{a.texto}</p>
-                    <button
-                      type="button"
-                      onClick={() => irADetalle(a.id)}
-                      className="text-[12.5px] font-semibold text-navy-600"
-                    >
-                      Ver detalle
-                    </button>
-                  </div>
-                )
-              })
+              alertasVencidas.map((a) => (
+                <AlertBox key={a.id} icon={TriangleAlert} tono="critico" cornerLabel={a.etiqueta}>
+                  <p className="text-[13px] leading-snug">{a.texto}</p>
+                  <button
+                    type="button"
+                    onClick={() => irADetalle(a.id)}
+                    className="mt-1.5 text-[12.5px] font-semibold text-navy-600"
+                  >
+                    Ver detalle
+                  </button>
+                </AlertBox>
+              ))
             )}
           </div>
         </section>
@@ -359,13 +355,19 @@ export function ObligacionesScreen() {
               <p className="text-[13px] text-ink-500">Sin recomendaciones por ahora.</p>
             ) : (
               recomendacionesProximas.map((r) => (
-                <div key={r.id} className="rounded-lg border border-line/70 bg-surface p-3">
-                  <p className="text-[13px] leading-snug">{r.texto}</p>
-                  <div className="mt-2 flex items-center justify-between gap-2">
-                    <span className="text-[11.5px] text-ink-500">Prioridad media</span>
-                    <button type="button" onClick={() => irADetalle(r.id)} className="text-[12.5px] font-semibold text-navy-600">
-                      Ver detalle
-                    </button>
+                <div key={r.id} className="flex items-start gap-3 rounded-lg border border-line/70 bg-surface p-3">
+                  <SeverityIcon nivel="media" className="mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] leading-snug">{r.texto}</p>
+                    <div className="mt-2 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => irADetalle(r.id)}
+                        className="min-h-8.5 rounded-lg bg-navy-600 px-3 text-[12px] font-semibold text-white"
+                      >
+                        Ver detalle
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))
