@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { TriangleAlert, type LucideIcon } from 'lucide-react'
+import { type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type Tono = 'critico' | 'atencion' | 'neutro'
@@ -30,11 +30,10 @@ export function AlertBox({
       {cornerLabel && (
         <span
           className={cn(
-            'absolute right-3.5 top-3.5 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide',
+            'absolute right-3.5 top-3.5 text-[10px] font-bold uppercase tracking-wide',
             TONO_COLOR[tono],
           )}
         >
-          <TriangleAlert aria-hidden="true" className="h-3 w-3" />
           {cornerLabel}
         </span>
       )}
