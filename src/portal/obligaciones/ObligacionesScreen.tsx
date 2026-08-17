@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { CalendarDays, List } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { EstadoObligacion, ObligacionEmpresa } from '@/portal/types'
 import { formatPeriodo, formatUSD } from '@/portal/financiero/formato'
@@ -144,9 +145,11 @@ export function ObligacionesScreen() {
                 type="button"
                 onClick={() => setVista('calendario')}
                 aria-pressed={vista === 'calendario'}
-                className={`min-h-9.5 rounded-lg px-3.5 text-[12.5px] font-semibold ${vista === 'calendario' ? 'border border-navy-600 bg-navy-100 text-navy-700' : 'border border-line bg-card text-ink-700'}`}
+                aria-label="Vista de calendario"
+                title="Calendario"
+                className={`grid h-9.5 w-9.5 place-items-center rounded-lg ${vista === 'calendario' ? 'border border-navy-600 bg-navy-100 text-navy-700' : 'border border-line bg-card text-ink-700'}`}
               >
-                Calendario
+                <CalendarDays className="h-4.5 w-4.5" aria-hidden="true" />
               </button>
               <button
                 type="button"
@@ -155,9 +158,11 @@ export function ObligacionesScreen() {
                   setFiltroLista('todas')
                 }}
                 aria-pressed={vista === 'lista'}
-                className={`min-h-9.5 rounded-lg px-3.5 text-[12.5px] font-semibold ${vista === 'lista' ? 'border border-navy-600 bg-navy-100 text-navy-700' : 'border border-line bg-card text-ink-700'}`}
+                aria-label="Vista de lista"
+                title="Lista"
+                className={`grid h-9.5 w-9.5 place-items-center rounded-lg ${vista === 'lista' ? 'border border-navy-600 bg-navy-100 text-navy-700' : 'border border-line bg-card text-ink-700'}`}
               >
-                Lista
+                <List className="h-4.5 w-4.5" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -180,25 +185,31 @@ export function ObligacionesScreen() {
                       {d}
                     </span>
                   ))}
-                  {celdasConItems.map((c) => (
-                    <div
-                      key={c.fecha}
-                      className={`flex min-h-16 flex-col gap-0.5 rounded-lg border border-line/70 p-1 ${c.delMes ? 'bg-card' : 'bg-surface/60'}`}
-                    >
-                      <span className="text-[11px] text-ink-500">{c.numero}</span>
-                      {c.items.map((i) => (
-                        <button
-                          key={i.obligacion.id}
-                          type="button"
-                          onClick={() => irADetalle(i.obligacion.id)}
-                          aria-label={`${i.titulo}, vence ${formatFecha(i.obligacion.fechaLimite)}, ${ESTADO_OBLIGACION_LABEL[i.estado]}`}
-                          className={`truncate rounded px-1 py-0.5 text-left text-[10px] font-semibold ${ESTADO_OBLIGACION_BADGE[i.estado]}`}
-                        >
-                          {i.titulo}
-                        </button>
-                      ))}
-                    </div>
-                  ))}
+                  {celdasConItems.map((c) => {
+                    const esHoy = c.fecha === HOY_OBLIGACIONES
+                    return (
+                      <div
+                        key={c.fecha}
+                        className={`flex min-h-16 flex-col gap-0.5 rounded-lg border p-1 ${
+                          esHoy ? 'border-navy-600 bg-navy-100' : 'border-line/70'
+                        } ${!esHoy && c.delMes ? 'bg-card' : ''} ${!esHoy && !c.delMes ? 'bg-surface/60' : ''}`}
+                      >
+                        <span className={`text-[11px] ${esHoy ? 'font-bold text-navy-700' : 'text-ink-500'}`}>{c.numero}</span>
+                        {c.items.map((i) => (
+                          <button
+                            key={i.obligacion.id}
+                            type="button"
+                            onClick={() => irADetalle(i.obligacion.id)}
+                            title={`${i.titulo} · vence ${formatFecha(i.obligacion.fechaLimite)} · ${ESTADO_OBLIGACION_LABEL[i.estado]}`}
+                            aria-label={`${i.titulo}, vence ${formatFecha(i.obligacion.fechaLimite)}, ${ESTADO_OBLIGACION_LABEL[i.estado]}`}
+                            className={`truncate rounded px-1 py-0.5 text-left text-[10px] font-semibold ${ESTADO_OBLIGACION_BADGE[i.estado]}`}
+                          >
+                            {i.titulo}
+                          </button>
+                        ))}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-3 text-[11.5px] text-ink-700">
