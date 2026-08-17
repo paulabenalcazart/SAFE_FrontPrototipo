@@ -280,10 +280,10 @@ export function ObligacionesScreen() {
           )}
         </section>
 
-        <div className="flex flex-col gap-4">
-          <section className="rounded-xl border border-line bg-card p-4.5">
+        <div className="flex flex-1 flex-col gap-4">
+          <section className="flex flex-1 flex-col rounded-xl border border-line bg-card p-4.5">
             <h2 className="text-[16px] font-semibold">Atención prioritaria</h2>
-            <div className="mt-3 flex flex-col gap-2.5">
+            <div className="mt-3 flex flex-1 flex-col justify-center gap-2.5">
               {prioridad.length === 0 ? (
                 <p className="text-[13px] text-ink-500">Sin obligaciones urgentes por ahora.</p>
               ) : (
@@ -297,7 +297,7 @@ export function ObligacionesScreen() {
                           {i.estado === 'VENCIDA' ? 'Venció' : 'Vence'} {formatFecha(i.obligacion.fechaLimite)}
                         </p>
                       </div>
-                      <button type="button" onClick={() => irADetalle(i.obligacion.id)} className="min-h-9.5 rounded-lg bg-card px-3 text-[12.5px] font-semibold text-navy-700">
+                      <button type="button" onClick={() => irADetalle(i.obligacion.id)} className="min-h-9.5 rounded-lg bg-navy-600 px-3 text-[12.5px] font-semibold text-white">
                         Ver detalle
                       </button>
                     </div>
@@ -307,7 +307,7 @@ export function ObligacionesScreen() {
             </div>
           </section>
 
-          <section className="rounded-xl border border-line bg-card p-4.5">
+          <section className="flex flex-1 flex-col rounded-xl border border-line bg-card p-4.5">
             <h2 className="text-[16px] font-semibold">Acciones rápidas</h2>
             <div className="mt-3 flex flex-col gap-2">
               <button type="button" onClick={() => cambiarAListaFiltrada('CUMPLIDA')} className="min-h-11 rounded-lg border border-line bg-card px-3.5 text-left text-[13.5px] font-semibold text-ink-900">
