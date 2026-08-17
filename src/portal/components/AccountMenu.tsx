@@ -62,6 +62,17 @@ export function AccountMenu({ onClose }: { onClose: () => void }) {
         role="menuitem"
         onClick={() => {
           onClose()
+          navigate('/')
+        }}
+        className="block min-h-11 w-full rounded-lg px-2.5 text-left text-[13.5px] font-medium text-ink-900 hover:bg-surface"
+      >
+        Volver a inicio
+      </button>
+      <button
+        type="button"
+        role="menuitem"
+        onClick={() => {
+          onClose()
           logout()
           navigate('/')
         }}
