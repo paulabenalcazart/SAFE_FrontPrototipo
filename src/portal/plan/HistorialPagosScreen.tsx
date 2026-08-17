@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, ChevronDown } from 'lucide-react'
+import { ArrowLeft, ChevronDown, CreditCard } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatUSD } from '@/portal/financiero/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
+import { suscripcionSemilla } from '@/portal/data/mock-portal-data'
+import { planPorCodigo } from './catalogo'
 import { paginarPagos } from './calculo'
+import { formatExpiracion } from './formato'
 
 export function HistorialPagosScreen() {
   const navigate = useNavigate()
-  const { historialPagos } = usePortalData()
+  const { historialPagos, metodosPago, planActivoCodigo } = usePortalData()
+  const metodoPredeterminado = metodosPago.find((m) => m.predeterminado)
+  const plan = planPorCodigo(planActivoCodigo)
   const [pagina, setPagina] = useState(1)
   const [abierto, setAbierto] = useState<string | null>(null)
 
@@ -37,6 +42,30 @@ export function HistorialPagosScreen() {
         </button>
         <h1 className="mt-1.5 text-2xl font-bold text-ink-900">Historial de pagos</h1>
       </div>
+
+      <section className="rounded-xl border border-line bg-card p-4.5">
+        <p className="text-[12.5px] font-semibold text-ink-500">Tu próximo pago</p>
+        <p className="mt-1.5 text-[15px] font-semibold text-ink-900">
+          <span className="num text-xl font-bold text-navy-600">{formatUSD(plan.precio)}</span>
+          {' '}el {formatFecha(suscripcionSemilla.proximaRenovacion)}
+        </p>
+        {metodoPredeterminado && (
+          <div className="mt-3 flex items-center gap-2.5 text-[13px] text-ink-700">
+            <CreditCard className="h-4.5 w-4.5 shrink-0 text-ink-500" aria-hidden="true" />
+            {metodoPredeterminado.marca} ***{metodoPredeterminado.ultimosCuatro} ·{' '}
+            {formatExpiracion(metodoPredeterminado.mesExpiracion, metodoPredeterminado.anioExpiracion)}
+          </div>
+        )}
+        <div className="mt-3.5 border-t border-line-soft pt-3.5">
+          <button
+            type="button"
+            onClick={() => navigate('/app/plan/metodos-pago')}
+            className="text-[13px] font-semibold text-navy-600"
+          >
+            Cambiar método de pago
+          </button>
+        </div>
+      </section>
 
       {items.length === 0 ? (
         <p className="text-sm text-ink-700">Sin pagos registrados.</p>
