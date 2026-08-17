@@ -7,6 +7,7 @@ import { formatPeriodo } from '@/portal/financiero/formato'
 import { DESCRIPCION_INDICADOR } from './descripciones'
 import { RentabilidadHistoricaChart } from './RentabilidadHistoricaChart'
 import { LiquidezHistoricaChart } from './LiquidezHistoricaChart'
+import { Droplet, Gauge, HelpCircle, ShieldCheck, TrendingUp } from 'lucide-react'
 
 const FACTOR_LABEL: Record<FactorIndicador, string> = {
   LIQUIDEZ: 'Liquidez',
@@ -15,13 +16,14 @@ const FACTOR_LABEL: Record<FactorIndicador, string> = {
   RENTABILIDAD: 'Rentabilidad',
 }
 
-const DEFAULT_INDICADORES_PRINCIPALES = ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08']
-
-const SEMAFORO_BADGE: Record<'VERDE' | 'AMARILLO' | 'ROJO', string> = {
-  VERDE: 'bg-emerald-soft text-emerald-deep',
-  AMARILLO: 'bg-amber-soft text-amber-deep',
-  ROJO: 'bg-danger-soft text-destructive',
+const FACTOR_ICON: Record<FactorIndicador, typeof TrendingUp> = {
+  LIQUIDEZ: Droplet,
+  SOLVENCIA: ShieldCheck,
+  GESTION: Gauge,
+  RENTABILIDAD: TrendingUp,
 }
+
+const DEFAULT_INDICADORES_PRINCIPALES = ['LIQ_01', 'SOL_01', 'REN_04', 'REN_08']
 
 const ESPECIALIDAD_POR_FACTOR: Record<FactorIndicador, string> = {
   LIQUIDEZ: 'Contador',
@@ -153,27 +155,35 @@ export function IndicadoresScreen() {
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
         {principales.map((i) => {
           const variacion = variacionTexto(i.codigo, i.valor, i.mejorSiMayor, i.unidad)
+          const FactorIcon = FACTOR_ICON[i.factor]
+          const numeroColor =
+            i.semaforo === 'VERDE' ? 'text-emerald-deep' : i.semaforo === 'AMARILLO' ? 'text-amber-deep' : 'text-destructive'
           return (
             <div key={i.codigo} className="flex min-h-[216px] flex-col gap-2 rounded-xl border border-line bg-card p-4.5">
               <div className="flex items-center justify-between gap-2">
-                <span className="rounded-full bg-navy-100 px-2.5 py-0.5 text-[11px] font-semibold text-navy-700">
-                  {FACTOR_LABEL[i.factor]}
-                </span>
-                <span className="font-mono text-[10.5px] text-ink-500">{i.codigo}</span>
+                <div className="flex min-w-0 items-center gap-2">
+                  <FactorIcon className="h-4.5 w-4.5 shrink-0 text-navy-600" aria-hidden="true" />
+                  <h3 className="truncate text-[14.5px] font-semibold leading-tight">{i.nombre}</h3>
+                </div>
+                <button
+                  type="button"
+                  title={DESCRIPCION_INDICADOR[i.codigo]}
+                  aria-label={`Qué es ${i.nombre}`}
+                  className="shrink-0 text-ink-500"
+                >
+                  <HelpCircle className="h-4 w-4" aria-hidden="true" />
+                </button>
               </div>
-              <h3 className="text-[14.5px] font-semibold leading-tight">{i.nombre}</h3>
-              <span className="num font-display text-[28px] font-bold leading-none">{i.valorFormateado}</span>
-              <span className={`inline-block w-fit rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${SEMAFORO_BADGE[i.semaforo]}`}>
-                {i.semaforo}
+              <span className={`num font-display text-[28px] font-bold leading-none ${numeroColor}`}>
+                {i.valorFormateado}
               </span>
-              <span className={`text-[12px] font-semibold ${variacion.fg}`}>{variacion.texto}</span>
-              <p className="line-clamp-3 text-[12.5px] leading-snug text-ink-700">{DESCRIPCION_INDICADOR[i.codigo]}</p>
+              <span className={`text-[12px] font-semibold text-ink-700`}>{variacion.texto}</span>
               <button
                 type="button"
                 onClick={() => navigate('/app/indicadores/todos')}
-                className="mt-auto min-h-8.5 w-fit rounded-lg border border-line bg-card px-3 text-[12px] font-semibold text-navy-700"
+                className="mt-auto w-fit text-[12.5px] font-semibold text-navy-700 underline"
               >
-                Ver detalle
+                Ver más
               </button>
             </div>
           )
