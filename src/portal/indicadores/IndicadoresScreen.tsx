@@ -136,7 +136,7 @@ export function IndicadoresScreen() {
           <button
             type="button"
             onClick={() => navigate('/app/indicadores/principales')}
-            className="min-h-11 rounded-lg border border-line bg-card px-3.5 text-[13.5px] font-semibold text-ink-700"
+            className="min-h-11 rounded-lg bg-navy-600 px-3.5 text-[13.5px] font-semibold text-white"
           >
             Cambiar indicadores principales
           </button>
