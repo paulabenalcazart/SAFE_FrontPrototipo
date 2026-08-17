@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { Switch } from '@/components/ui/switch'
 import type { EscenarioSimulacion, RegistroFinanciero, Simulacion } from '@/portal/types'
 import { formatUSD } from '@/portal/financiero/formato'
 import { utilidadNeta } from '@/portal/financiero/calculo'
@@ -273,17 +274,16 @@ export function SimuladorScreen() {
                     {v.label}
                   </label>
                   {v.tipoDato === 'BOOLEANO' ? (
-                    <label className="flex min-h-11 items-center gap-2.5 rounded-lg border border-line bg-card px-3 text-[13.5px]">
-                      <input
-                        id={`sim-${v.codigo}`}
-                        type="checkbox"
+                    <div id={`sim-${v.codigo}`} className="flex min-h-11 w-full items-center justify-between gap-2.5 rounded-lg border border-line bg-card px-3 text-[13.5px]">
+                      <span>{entradas[v.codigo] ? 'Sí' : 'No'}</span>
+                      <Switch
                         checked={Boolean(entradas[v.codigo])}
-                        onChange={(e) => actualizarVariable(v.codigo, e.target.checked)}
+                        onCheckedChange={() => actualizarVariable(v.codigo, !entradas[v.codigo])}
+                        label={v.label}
                       />
-                      {entradas[v.codigo] ? 'Sí' : 'No'}
-                    </label>
+                    </div>
                   ) : (
-                    <span className="flex items-center gap-2">
+                    <div className="flex min-h-11 w-full items-center gap-2 rounded-lg border border-line bg-card px-3">
                       <input
                         id={`sim-${v.codigo}`}
                         type="number"
@@ -294,10 +294,10 @@ export function SimuladorScreen() {
                           const parsed = Number(e.target.value)
                           actualizarVariable(v.codigo, Number.isFinite(parsed) ? parsed : 0)
                         }}
-                        className="min-h-11 w-full rounded-lg border border-line bg-card px-3 text-[14px]"
+                        className="min-w-0 flex-1 bg-transparent text-[14px] focus:outline-none"
                       />
-                      {v.unidad && <span className="min-w-7 shrink-0 text-[12px] text-ink-500">{v.unidad}</span>}
-                    </span>
+                      {v.unidad && <span className="shrink-0 text-[12px] text-ink-500">{v.unidad}</span>}
+                    </div>
                   )}
                   {v.hint && <p className="mt-1.5 text-[11.5px] text-ink-500">{v.hint}</p>}
                 </div>
