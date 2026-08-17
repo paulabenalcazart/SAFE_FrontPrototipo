@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Landmark, Lock, TrendingUp, Wallet } from 'lucide-react'
+import { Landmark, Lock, Search, TrendingUp, Wallet } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { RegistroFinanciero } from '@/portal/types'
 import { activoCorriente, balanceCuadrado, gastosTotales, pasivoCorriente, utilidadNeta } from './calculo'
@@ -107,30 +107,35 @@ export function FinancieroScreen() {
       </div>
 
       <section className="overflow-hidden rounded-xl border border-line bg-card">
-        <div className="flex flex-wrap items-end gap-3 border-b border-line/70 bg-surface p-3.5">
-          <div>
-            <label className="mb-1.5 block text-[11.5px] font-semibold text-ink-500">Estado</label>
-            <select
-              value={filtroEstado}
-              onChange={(e) => setFiltroEstado(e.target.value as typeof filtroEstado)}
-              className="min-h-10 rounded-md border border-line bg-card px-2.5 text-[13px]"
-            >
-              <option value="todos">Todos</option>
-              <option value="VIGENTE">Vigente</option>
-              <option value="BORRADOR">Borrador</option>
-              <option value="REEMPLAZADO">Reemplazado</option>
-            </select>
-          </div>
-          <div className="min-w-0 flex-1">
-            <label className="mb-1.5 block text-[11.5px] font-semibold text-ink-500">Buscar periodo</label>
+        <div className="flex flex-wrap items-center gap-3 border-b border-line/70 bg-surface p-3.5">
+          <div className="relative min-w-0 flex-1">
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500"
+            />
+            <label htmlFor="financiero-buscar" className="sr-only">
+              Buscar periodo
+            </label>
             <input
+              id="financiero-buscar"
               type="search"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              placeholder="Ej. Julio 2026"
-              className="min-h-10 w-full rounded-md border border-line bg-card px-2.5 text-[13px]"
+              placeholder="Buscar periodo…"
+              className="min-h-10 w-full rounded-md border border-line bg-card py-2 pl-9 pr-2.5 text-[13px]"
             />
           </div>
+          <select
+            aria-label="Estado"
+            value={filtroEstado}
+            onChange={(e) => setFiltroEstado(e.target.value as typeof filtroEstado)}
+            className="min-h-10 rounded-md border border-line bg-card px-2.5 text-[13px]"
+          >
+            <option value="todos">Todos los estados</option>
+            <option value="VIGENTE">Vigente</option>
+            <option value="BORRADOR">Borrador</option>
+            <option value="REEMPLAZADO">Reemplazado</option>
+          </select>
         </div>
 
         <div className="overflow-x-auto">
