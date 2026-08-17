@@ -15,6 +15,14 @@ import {
 } from './calculo'
 import { NIVEL_RIESGO_BADGE, NIVEL_RIESGO_LABEL } from './estilo'
 import { SimulacionChart } from './SimulacionChart'
+import { Building2, Landmark, TrendingUp, UserPlus } from 'lucide-react'
+
+const ESCENARIO_ICON: Record<string, typeof TrendingUp> = {
+  CONTRATACION_PERSONAL: UserPlus,
+  AUMENTO_VENTAS: TrendingUp,
+  CAMBIO_REGIMEN_TRIBUTARIO: Landmark,
+  AUMENTO_CAPITAL: Building2,
+}
 
 type Paso = 1 | 2 | 3
 
@@ -183,31 +191,26 @@ export function SimuladorScreen() {
           <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             {ESCENARIOS_SIMULACION.map((e) => {
               const { disponible, motivo } = disponibilidadEscenario(e, registroBase)
+              const EscenarioIcon = ESCENARIO_ICON[e.codigo] ?? TrendingUp
               return (
-                <div
+                <button
                   key={e.codigo}
-                  className={`flex flex-col gap-2 rounded-xl border border-line bg-card p-4 ${disponible ? '' : 'opacity-60'}`}
+                  type="button"
+                  disabled={!disponible}
+                  onClick={() => seleccionarEscenario(e.codigo)}
+                  className={`flex flex-col items-center gap-3 rounded-xl border border-line bg-card p-5 text-center disabled:cursor-not-allowed ${
+                    disponible ? 'hover:border-navy-600' : 'opacity-60'
+                  }`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="rounded-full bg-navy-100 px-2.5 py-0.5 text-[10.5px] font-bold tracking-wide text-navy-700">
-                      {e.categoria}
-                    </span>
-                    {!disponible && (
-                      <span className="rounded-full bg-surface px-2.5 py-0.5 text-[11px] font-semibold text-ink-500">{motivo}</span>
-                    )}
-                  </div>
+                  <span className="self-end text-[10.5px] font-bold uppercase tracking-wide text-ink-500">
+                    {disponible ? e.categoria : `${e.categoria} · ${motivo}`}
+                  </span>
+                  <span className="grid h-14 w-14 place-items-center rounded-full bg-navy-100 text-navy-700">
+                    <EscenarioIcon className="h-7 w-7" aria-hidden="true" />
+                  </span>
                   <h3 className="text-[16px] font-semibold">{e.nombre}</h3>
                   <p className="text-[13px] leading-relaxed text-ink-700">{e.descripcion}</p>
-                  <span className="font-mono text-[10.5px] text-ink-500">{e.codigo}</span>
-                  <button
-                    type="button"
-                    disabled={!disponible}
-                    onClick={() => seleccionarEscenario(e.codigo)}
-                    className="mt-auto w-fit min-h-9.5 rounded-lg border border-line bg-card px-3.5 text-[12.5px] font-semibold text-navy-700 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    Simular este escenario
-                  </button>
-                </div>
+                </button>
               )
             })}
           </div>
