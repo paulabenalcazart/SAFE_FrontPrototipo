@@ -125,7 +125,7 @@ export function EmpresaScreen() {
               type="button"
               onClick={() => setTab(t.key)}
               aria-pressed={tab === t.key}
-              className={`min-h-9.5 rounded-full border px-3.5 text-[13px] font-semibold ${
+              className={`min-h-9.5 rounded-md border px-3.5 text-[13px] font-semibold ${
                 tab === t.key ? 'border-navy-600 bg-navy-600 text-white' : 'border-line bg-card text-ink-700'
               }`}
             >
