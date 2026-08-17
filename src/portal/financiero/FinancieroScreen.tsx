@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Eye, Landmark, Lock, Search, TrendingUp, Wallet } from 'lucide-react'
+import { ArrowRight, Eye, Landmark, Lock, Search, TrendingUp, TriangleAlert, Wallet } from 'lucide-react'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { RegistroFinanciero } from '@/portal/types'
 import { activoCorriente, balanceCuadrado, gastosTotales, pasivoCorriente, utilidadNeta } from './calculo'
 import { EvolucionFinancieraChart } from './EvolucionFinancieraChart'
 import { formatPeriodo, formatUSD } from './formato'
+import { AlertBox } from '@/portal/components/AlertBox'
 import { Pagination } from '@/portal/components/Pagination'
 
 const ESTADO_BADGE: Record<RegistroFinanciero['estado'], string> = {
@@ -244,9 +245,9 @@ export function FinancieroScreen() {
               </div>
             ) : (
               alertas.map((a) => (
-                <div key={a} className="rounded-lg bg-amber-soft p-3">
+                <AlertBox key={a} icon={TriangleAlert} tono="atencion">
                   <p className="text-[13px] leading-relaxed text-ink-900">{a}</p>
-                </div>
+                </AlertBox>
               ))
             )}
           </div>
