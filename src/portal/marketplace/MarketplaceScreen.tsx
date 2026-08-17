@@ -126,25 +126,6 @@ export function MarketplaceScreen() {
           </div>
 
           <div>
-            <label htmlFor="marketplace-precio" className="mb-1.5 block text-[11.5px] font-semibold text-ink-500">
-              Precio máximo
-            </label>
-            <select
-              id="marketplace-precio"
-              value={filtros.tarifaMaxima ?? ''}
-              onChange={(event) => actualizarFiltros({
-                tarifaMaxima: event.target.value ? Number(event.target.value) : null,
-              })}
-              className="min-h-11 w-full rounded-lg border border-line bg-card px-3 text-[13.5px] focus:outline-none focus:ring-2 focus:ring-navy-500/40"
-            >
-              <option value="">Cualquier tarifa</option>
-              <option value="30">Hasta $30/h</option>
-              <option value="40">Hasta $40/h</option>
-              <option value="50">Hasta $50/h</option>
-            </select>
-          </div>
-
-          <div>
             <label htmlFor="marketplace-calificacion" className="mb-1.5 block text-[11.5px] font-semibold text-ink-500">
               Calificación mínima
             </label>
@@ -180,6 +161,26 @@ export function MarketplaceScreen() {
               <option value="AMBAS">Mixta</option>
             </select>
           </div>
+
+          <div>
+            <label htmlFor="marketplace-orden" className="mb-1.5 block text-[11.5px] font-semibold text-ink-500">
+              Ordenar por
+            </label>
+            <select
+              id="marketplace-orden"
+              value={filtros.orden}
+              onChange={(event) =>
+                actualizarFiltros({ orden: event.target.value as OrdenMarketplace }, false)
+              }
+              className="min-h-11 w-full rounded-lg border border-line bg-card px-3 text-[13.5px] focus:outline-none focus:ring-2 focus:ring-navy-500/40"
+            >
+              {OPCIONES_ORDEN.map((opcion) => (
+                <option key={opcion.value} value={opcion.value}>
+                  {opcion.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <button
@@ -199,38 +200,14 @@ export function MarketplaceScreen() {
       />
 
       <section aria-labelledby="marketplace-disponibles">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 id="marketplace-disponibles" className="text-[18px] font-semibold text-ink-900">
-              Profesionales disponibles
-            </h2>
-            <p className="mt-1 text-[13px] text-ink-500" aria-live="polite">
-              {resultado.total}{' '}
-              {resultado.total === 1 ? 'profesional encontrado' : 'profesionales encontrados'}
-            </p>
-          </div>
-          <div className="w-full sm:w-auto">
-            <label
-              htmlFor="marketplace-orden"
-              className="mb-1.5 block text-[11.5px] font-semibold text-ink-500 sm:text-right"
-            >
-              Ordenar por
-            </label>
-            <select
-              id="marketplace-orden"
-              value={filtros.orden}
-              onChange={(event) =>
-                actualizarFiltros({ orden: event.target.value as OrdenMarketplace }, false)
-              }
-              className="min-h-10 w-full rounded-lg border border-line bg-card px-3 text-[13px] focus:outline-none focus:ring-2 focus:ring-navy-500/40 sm:w-auto"
-            >
-              {OPCIONES_ORDEN.map((opcion) => (
-                <option key={opcion.value} value={opcion.value}>
-                  {opcion.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div>
+          <h2 id="marketplace-disponibles" className="text-[18px] font-semibold text-ink-900">
+            Profesionales disponibles
+          </h2>
+          <p className="mt-1 text-[13px] text-ink-500" aria-live="polite">
+            {resultado.total}{' '}
+            {resultado.total === 1 ? 'profesional encontrado' : 'profesionales encontrados'}
+          </p>
         </div>
 
         {resultado.total === 0 ? (
