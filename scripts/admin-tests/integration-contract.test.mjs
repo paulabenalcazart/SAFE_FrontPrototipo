@@ -145,10 +145,11 @@ test('ADMIN chart keeps zero-height bars when there is no monthly maximum', asyn
 })
 
 test('ADMIN user management is integrated through the guarded canonical route', async () => {
-  const [app, titles, catalogo, screen, drawer, review, registration] = await Promise.all([
+  const [app, titles, catalogo, screen, drawer, fullDetail, review, registration] = await Promise.all([
     source('src/App.tsx'), source('src/titulos.ts'), source('src/portal/admin/catalogo.ts'),
     source('src/portal/admin/usuarios/AdminUsersScreen.tsx'),
     source('src/portal/admin/usuarios/AdminUserDetailDrawer.tsx'),
+    source('src/portal/admin/usuarios/AdminUserFullDetail.tsx'),
     source('src/portal/admin/usuarios/AdminApplicationReviewDialog.tsx'),
     source('src/portal/admin/usuarios/AdminRegistrationDialog.tsx'),
   ])
@@ -164,17 +165,18 @@ test('ADMIN user management is integrated through the guarded canonical route', 
   assert.match(screen, /Colaboradores activos/)
   assert.match(screen, /Solicitudes pendientes/)
   assert.doesNotMatch(screen, /gridTemplateColumns|window\.location|localStorage|sessionStorage/)
-  assert.match(drawer, /setManagedUserState/)
   assert.match(drawer, /removeManagedCompany/)
-  assert.match(drawer, /removeManagedCollaborator/)
   assert.match(drawer, /<AdminDialog/)
+  assert.match(fullDetail, /setManagedUserState/)
+  assert.match(fullDetail, /removeManagedCollaborator/)
+  assert.match(fullDetail, /<AdminDialog/)
   assert.match(review, /reviewApplication\(application\.id, 'APROBADA'\)/)
   assert.match(review, /reason\.trim\(\)/)
   assert.match(review, /role="alert"/)
   assert.match(registration, /crypto\.randomUUID\(\)/)
   assert.match(registration, /AHORA_ADMIN/)
   assert.match(registration, /role="alert"/)
-  for (const text of [screen, drawer, review, registration]) assert.doesNotMatch(text, /Date\.now|new Date|#document|javascript:|data:|replaceAll|BrowserRouter|safe\.admin\.react/)
+  for (const text of [screen, drawer, fullDetail, review, registration]) assert.doesNotMatch(text, /Date\.now|new Date|#document|javascript:|data:|replaceAll|BrowserRouter|safe\.admin\.react/)
 })
 
 test('ADMIN users stay synchronized with valid URL tabs and source registration defaults', async () => {
@@ -197,7 +199,8 @@ test('ADMIN users stay synchronized with valid URL tabs and source registration 
   assert.match(registration, /requiredCompanyRelations/)
   assert.match(registration, /isValidAdminEmail/)
   assert.match(registration, /<form[^>]*onSubmit=\{save\}>/)
-  assert.match(registration, /checkValidity\(\)/)
+  assert.match(registration, /Stepper steps={steps} current={step}/)
+  assert.match(registration, /if \(firstField\) setStep\(stepFor\(kind, firstField\)\)/)
 
   assert.match(drawer, /min-h-11 inline-flex items-center/)
   assert.match(review, /min-h-11 inline-flex items-center/)
@@ -339,10 +342,12 @@ test('ADMIN settings keeps account, security, SMTP and legal sections in an audi
     source('src/portal/admin/configuracion/AdminEditAccountScreen.tsx'),
   ])
   for (const token of ['Cuenta', 'Editar cuenta', '/app/configuracion/cuenta', 'Seguridad', 'Notificaciones', 'Privacidad y legal', 'DOCUMENTOS_LEGALES', 'Accordion', 'strongPasswords', 'twoFactorAdmin', 'sessionMinutes', 'maxFailedAttempts', 'smtpServer', 'sender', 'remindersEnabled', 'updateSettings', 'role="status"', 'aria-live="polite"']) assert.match(settings, new RegExp(token.replace(/[?{}()/.]/g, '\\$&')))
-  assert.doesNotMatch(settings, /Identidad y localización|platformName|Plantillas de correo|Información del sistema|emailTemplates|URL\.createObjectURL|URL\.revokeObjectURL|OPERATIVO/)
+  assert.doesNotMatch(settings, /Identidad y localización|platformName|emailTemplates|URL\.createObjectURL|URL\.revokeObjectURL|OPERATIVO/)
+  assert.match(settings, /Plantillas de correo/)
+  assert.match(settings, /Información del sistema/)
   assert.match(settings, /min="5"/)
   assert.match(settings, /min="1"/)
-  assert.match(settings, /aria-pressed/)
+  assert.match(settings, /<Switch checked=/)
   assert.match(settings, /min-h-11/)
   assert.match(settings, /role="alert"/)
   assert.doesNotMatch(settings, /Date\.now|new Date|localStorage|sessionStorage|fetch\(|FileReader|base64|dangerouslySetInnerHTML|replaceAll|style=|BrowserRouter/)

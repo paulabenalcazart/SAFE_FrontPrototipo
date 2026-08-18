@@ -9,7 +9,7 @@ export interface AdminTableColumn<T> {
   className?: string
 }
 
-export function AdminDataTable<T>({ rows, columns, pageSize = 6, rowKey, emptyTitle, emptyDescription, caption = 'Resultados administrativos', renderActions, actionsLabel = 'Acciones' }: { rows: T[]; columns: AdminTableColumn<T>[]; pageSize?: number; rowKey: (row: T) => string; emptyTitle?: string; emptyDescription?: string; caption?: string; renderActions?: (row: T) => ReactNode; actionsLabel?: string }) {
+export function AdminDataTable<T>({ rows, columns, pageSize = 6, rowKey, emptyTitle, emptyDescription, caption = 'Resultados administrativos', renderActions, actionsLabel = 'Acciones', itemLabel }: { rows: T[]; columns: AdminTableColumn<T>[]; pageSize?: number; rowKey: (row: T) => string; emptyTitle?: string; emptyDescription?: string; caption?: string; renderActions?: (row: T) => ReactNode; actionsLabel?: string; itemLabel?: string }) {
   const [page, setPage] = useState(1)
   const accessibleActionsLabel = actionsLabel.trim() || 'Acciones'
   const rowIdentity = rows.map(rowKey).join('|')
@@ -20,5 +20,8 @@ export function AdminDataTable<T>({ rows, columns, pageSize = 6, rowKey, emptyTi
 
   if (!rows.length) return <AdminEmptyState title={emptyTitle} description={emptyDescription} />
 
-  return <div className="admin-table-shell"><div className="admin-table-scroll"><table className="admin-data-table"><caption className="sr-only">{caption}</caption><thead><tr>{columns.map((column) => <th key={column.id} scope="col" className={column.className}>{column.header}</th>)}{renderActions ? <th scope="col" className="admin-table-actions-heading">{accessibleActionsLabel}</th> : null}</tr></thead><tbody>{visibleRows.map((row) => <tr key={rowKey(row)}>{columns.map((column) => <td key={column.id} className={column.className}>{column.cell(row)}</td>)}{renderActions ? <td className="admin-table-actions">{renderActions(row)}</td> : null}</tr>)}</tbody></table></div><div className="admin-table-pagination"><Pagination paginaActual={page} totalPaginas={pageCount} onChange={setPage} ariaLabel="Paginación de resultados administrativos" /></div></div>
+  const from = rows.length ? (page - 1) * pageSize + 1 : 0
+  const to = Math.min(page * pageSize, rows.length)
+
+  return <div className="admin-table-shell"><div className="admin-table-scroll"><table className="admin-data-table"><caption className="sr-only">{caption}</caption><thead><tr>{columns.map((column) => <th key={column.id} scope="col" className={column.className}>{column.header}</th>)}{renderActions ? <th scope="col" className="admin-table-actions-heading">{accessibleActionsLabel}</th> : null}</tr></thead><tbody>{visibleRows.map((row) => <tr key={rowKey(row)}>{columns.map((column) => <td key={column.id} className={column.className}>{column.cell(row)}</td>)}{renderActions ? <td className="admin-table-actions"><div className="admin-table-actions__group">{renderActions(row)}</div></td> : null}</tr>)}</tbody></table></div><div className="admin-table-pagination admin-table-pagination-summary">{itemLabel ? <p className="admin-table-count">Mostrando {from} a {to} de {rows.length} {itemLabel}</p> : null}<Pagination paginaActual={page} totalPaginas={pageCount} onChange={setPage} ariaLabel="Paginación de resultados administrativos" /></div></div>
 }

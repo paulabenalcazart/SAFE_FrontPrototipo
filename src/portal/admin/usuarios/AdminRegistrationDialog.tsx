@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Stepper } from '@/components/Stepper'
 import { AHORA_ADMIN } from '@/portal/admin/catalogo'
 import { useAdminData } from '@/portal/admin/data/AdminDataContext'
 import type { CollaboratorRecord, CompanyRecord, UserRecord } from '@/portal/admin/types'
@@ -59,6 +60,16 @@ const collaboratorDefaults: FormState = {
 
 const requiredCompanyRelations = ['actividad_economica_id', 'cluster_id', 'estructura_societaria_id', 'tipo_contribuyente_id'] as const
 
+const companyAccountFields = new Set(['nombres', 'apellidos', 'correo', 'telefono'])
+const collaboratorAccountFields = new Set(['nombres', 'apellidos', 'correo', 'telefono', 'pais', 'ciudad'])
+const companySteps = ['Cuenta', 'Empresa']
+const collaboratorSteps = ['Cuenta', 'Perfil profesional']
+
+function stepFor(kind: AdminRegistrationKind, field: string): number {
+  const accountFields = kind === 'company' ? companyAccountFields : collaboratorAccountFields
+  return accountFields.has(field) ? 0 : 1
+}
+
 function nonNegative(value: string) {
   return Number(value) >= 0
 }
@@ -76,6 +87,7 @@ export function AdminRegistrationDialog({
   const [form, setForm] = useState<FormState>(companyDefaults)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
+  const [step, setStep] = useState(0)
   const baseId = useId().replace(/:/g, '')
   const formId = `${baseId}-form`
 
@@ -84,11 +96,14 @@ export function AdminRegistrationDialog({
       setForm({ ...(kind === 'company' ? companyDefaults : collaboratorDefaults) })
       setErrors({})
       setSaving(false)
+      setStep(0)
     }
   }, [kind, open])
 
   if (!kind) return null
 
+  const steps = kind === 'company' ? companySteps : collaboratorSteps
+  const isLastStep = step === steps.length - 1
   const set = (field: string, value: string) => setForm((current) => ({ ...current, [field]: value }))
   const idFor = (field: string) => `${baseId}-${field}`
 
@@ -114,12 +129,14 @@ export function AdminRegistrationDialog({
     if (kind === 'collaborator' && !nonNegative(form.tarifa_referencial)) next.tarifa_referencial = 'La tarifa no puede ser negativa.'
     if (kind === 'collaborator' && !nonNegative(form.anios_experiencia)) next.anios_experiencia = 'La experiencia no puede ser negativa.'
     setErrors(next)
+    const firstField = Object.keys(next)[0]
+    if (firstField) setStep(stepFor(kind, firstField))
     return Object.keys(next).length === 0
   }
 
   const save = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (saving || !event.currentTarget.checkValidity() || !validate()) return
+    if (saving || !validate()) return
     setSaving(true)
     const userId = crypto.randomUUID()
     const user: UserRecord = {
@@ -327,30 +344,44 @@ export function AdminRegistrationDialog({
           <AdminButton disabled={saving} onClick={onClose}>
             Cancelar
           </AdminButton>
-          <AdminButton variant="primary" type="submit" form={formId} disabled={saving}>
-            {saving ? 'Guardando…' : 'Guardar registro'}
-          </AdminButton>
+          {step > 0 && (
+            <AdminButton type="button" disabled={saving} onClick={() => setStep((current) => current - 1)}>
+              Anterior
+            </AdminButton>
+          )}
+          {isLastStep ? (
+            <AdminButton variant="primary" type="submit" form={formId} disabled={saving}>
+              {saving ? 'Guardando…' : 'Guardar registro'}
+            </AdminButton>
+          ) : (
+            <AdminButton variant="primary" type="button" disabled={saving} onClick={() => setStep((current) => current + 1)}>
+              Siguiente
+            </AdminButton>
+          )}
         </>
       }
     >
-      <form id={formId} className="flex flex-col gap-5" onSubmit={save}>
-        <div>
-          <h3 className="text-sm font-semibold text-navy-700">Cuenta</h3>
-          <div className="mt-3 grid grid-cols-1 gap-4.5 sm:grid-cols-2">
-            <TextField field="nombres" label="Nombres" />
-            <TextField field="apellidos" label="Apellidos" />
-            <TextField field="correo" label="Correo" type="email" />
-            <TextField field="telefono" label="Teléfono" />
-            {kind === 'collaborator' && (
-              <>
-                <TextField field="pais" label="País" />
-                <TextField field="ciudad" label="Ciudad" />
-              </>
-            )}
+      <Stepper steps={steps} current={step} />
+      <form id={formId} className="mt-6 flex flex-col gap-5" onSubmit={save}>
+        {step === 0 && (
+          <div>
+            <h3 className="text-sm font-semibold text-navy-700">Cuenta</h3>
+            <div className="mt-3 grid grid-cols-1 gap-4.5 sm:grid-cols-2">
+              <TextField field="nombres" label="Nombres" />
+              <TextField field="apellidos" label="Apellidos" />
+              <TextField field="correo" label="Correo" type="email" />
+              <TextField field="telefono" label="Teléfono" />
+              {kind === 'collaborator' && (
+                <>
+                  <TextField field="pais" label="País" />
+                  <TextField field="ciudad" label="Ciudad" />
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        {kind === 'company' ? (
+        {step === 1 && kind === 'company' ? (
           <div>
             <h3 className="text-sm font-semibold text-navy-700">Empresa</h3>
             <div className="mt-3 grid grid-cols-1 gap-4.5 sm:grid-cols-2">
@@ -378,7 +409,8 @@ export function AdminRegistrationDialog({
               <ToggleField field="declara_impuestos" label="Declara impuestos" />
             </div>
           </div>
-        ) : (
+        ) : null}
+        {step === 1 && kind === 'collaborator' ? (
           <div>
             <h3 className="text-sm font-semibold text-navy-700">Perfil profesional</h3>
             <div className="mt-3 grid grid-cols-1 gap-4.5 sm:grid-cols-2">
@@ -403,7 +435,7 @@ export function AdminRegistrationDialog({
               </div>
             </div>
           </div>
-        )}
+        ) : null}
       </form>
     </AdminDialog>
   )

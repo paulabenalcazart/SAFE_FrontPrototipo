@@ -1,7 +1,8 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
-import { CheckCircle2, KeyRound, Mail, Save, ScrollText, User, X } from 'lucide-react'
+import { CheckCircle2, Info, KeyRound, Mail, Pencil, Save, ScrollText, User, X } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { Switch } from '@/components/ui/switch'
 import { useAdminData } from '@/portal/admin/data/AdminDataContext'
 import { AdminButton } from '@/portal/admin/components/ui/AdminButton'
 import { AdminCard } from '@/portal/admin/components/ui/AdminCard'
@@ -13,7 +14,7 @@ type Errors = Record<string, string>
 const cloneSettings = (settings: AdminSettings) => JSON.parse(JSON.stringify(settings)) as AdminSettings
 
 function SwitchRow({ title, description, value, onChange }: { title: string; description: string; value: boolean; onChange: (value: boolean) => void }) {
-  return <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line py-3 last:border-0"><div><strong>{title}</strong><p>{description}</p></div><AdminButton className="min-h-11 min-w-11" variant={value ? 'primary' : 'ghost'} aria-pressed={value} onClick={() => onChange(!value)}>{value ? 'Activado' : 'Desactivado'}<span className="sr-only">: {title}</span></AdminButton></div>
+  return <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line py-3 last:border-0"><div><strong>{title}</strong><p>{description}</p></div><Switch checked={value} onCheckedChange={() => onChange(!value)} label={title} /></div>
 }
 
 export function AdminSettingsScreen() {
@@ -30,10 +31,9 @@ export function AdminSettingsScreen() {
   const resetSaved = () => setSaved(false)
   useEffect(() => { setForm(cloneSettings(data.settings)); setErrors({}); savingRef.current = false }, [data.settings])
   const set = (next: AdminSettings) => { setForm(next); resetSaved() }
+  const [editingSystem, setEditingSystem] = useState(false)
   const validate = () => {
     const next: Errors = {}
-    if (!form.notifications.smtpServer.trim()) next.smtpServer = 'El servidor SMTP es obligatorio.'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.notifications.sender.trim())) next.sender = 'Ingresa un correo remitente válido.'
     if (!Number.isFinite(Number(form.security.sessionMinutes)) || Number(form.security.sessionMinutes) < 5) next.sessionMinutes = 'La sesión debe durar al menos 5 minutos.'
     if (!Number.isFinite(Number(form.security.maxFailedAttempts)) || Number(form.security.maxFailedAttempts) < 1) next.maxFailedAttempts = 'Ingresa al menos 1 intento fallido.'
     setErrors(next)
@@ -45,10 +45,12 @@ export function AdminSettingsScreen() {
     event.preventDefault()
     if (savingRef.current || !validate()) return
     savingRef.current = true
-    updateSettings({ ...form, notifications: { ...form.notifications, smtpServer: form.notifications.smtpServer.trim(), sender: form.notifications.sender.trim() }, security: { ...form.security, sessionMinutes: Number(form.security.sessionMinutes), maxFailedAttempts: Number(form.security.maxFailedAttempts) } })
+    updateSettings({ ...form, security: { ...form.security, sessionMinutes: Number(form.security.sessionMinutes), maxFailedAttempts: Number(form.security.maxFailedAttempts) } })
+    setEditingSystem(false)
     setSaved(true)
   }
   const fieldError = (key: string) => errors[key] ? <p id={`${idFor(key)}-error`} role="alert">{errors[key]}</p> : null
+  const setSystem = (key: string, value: string) => set({ ...form, system: { ...form.system, [key]: value } })
 
   return (
     <>
@@ -100,17 +102,38 @@ export function AdminSettingsScreen() {
         <AdminCard className="p-4">
           <div className="flex items-start gap-3"><Mail aria-hidden="true" size={19} /><div><h2>Notificaciones</h2><p>Configura el servicio de correo y los recordatorios automáticos.</p></div></div>
           <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="form-field"><label htmlFor={idFor('smtpServer')}>Servidor SMTP</label><input id={idFor('smtpServer')} value={form.notifications.smtpServer} onChange={(event) => set({ ...form, notifications: { ...form.notifications, smtpServer: event.target.value } })} />{fieldError('smtpServer')}</div>
-              <div className="form-field"><label htmlFor={idFor('sender')}>Correo remitente</label><input id={idFor('sender')} type="email" value={form.notifications.sender} onChange={(event) => set({ ...form, notifications: { ...form.notifications, sender: event.target.value } })} />{fieldError('sender')}</div>
-            </div>
+            <dl className="detail-list">
+              <div className="detail-row"><dt>Servidor SMTP</dt><dd>{form.notifications.smtpServer}</dd></div>
+              <div className="detail-row"><dt>Correo remitente</dt><dd>{form.notifications.sender}</dd></div>
+            </dl>
             <div>
               <SwitchRow title="Recordatorios automáticos" description="Envía recordatorios asociados a vencimientos y eventos configurados." value={form.notifications.remindersEnabled} onChange={(value) => set({ ...form, notifications: { ...form.notifications, remindersEnabled: value } })} />
-              <Link to="/app/admin/alertas-contenido" className="admin-button admin-button--secondary admin-button--sm min-h-11">Ir a comunicaciones</Link>
+              <div className="flex flex-wrap items-center justify-between gap-3 py-3"><strong>Plantillas de correo</strong><Link to="/app/admin/alertas-contenido?tab=templates" className="admin-button admin-button--secondary admin-button--sm min-h-11">Gestionar plantillas</Link></div>
             </div>
           </div>
         </AdminCard>
       </form>
+
+      <AdminCard className="mt-5 p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex items-start gap-3"><Info aria-hidden="true" size={19} /><div><h2>Información del sistema</h2><p>Versión y estado operativo de la plataforma.</p></div></div>
+          <AdminButton size="icon" variant="ghost" onClick={() => setEditingSystem((current) => !current)} aria-label={editingSystem ? 'Cerrar edición de información del sistema' : 'Editar información del sistema'}><Pencil aria-hidden="true" size={16} /></AdminButton>
+        </div>
+        {editingSystem ? (
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="form-field"><label htmlFor={idFor('system-version')}>Versión</label><input id={idFor('system-version')} value={form.system.version ?? ''} onChange={(event) => setSystem('version', event.target.value)} /></div>
+            <div className="form-field"><label htmlFor={idFor('system-license')}>Licencia</label><input id={idFor('system-license')} value={form.system.license ?? ''} onChange={(event) => setSystem('license', event.target.value)} /></div>
+            <div className="md:col-span-2"><AdminButton variant="primary" onClick={() => { updateSettings(form); setEditingSystem(false); setSaved(true) }}><Save aria-hidden="true" size={16} />Guardar información del sistema</AdminButton></div>
+          </div>
+        ) : (
+          <dl className="detail-list mt-4">
+            <div className="detail-row"><dt>Versión</dt><dd>SAFE {form.system.version ?? '—'}</dd></div>
+            <div className="detail-row"><dt>Última actualización</dt><dd>{form.system.lastUpdate ?? '—'}</dd></div>
+            <div className="detail-row"><dt>Licencia</dt><dd>{form.system.license ?? '—'}</dd></div>
+            <div className="detail-row"><dt>Estado de servicios</dt><dd>{[form.system.api, form.system.database, form.system.mail].every((value) => value === 'Operativo' || value === 'Operativa') ? 'Todos los servicios operativos' : 'Revisar servicios con incidencias'}</dd></div>
+          </dl>
+        )}
+      </AdminCard>
 
       <AdminCard className="mt-5 overflow-hidden p-0">
         <div className="flex items-start gap-3 p-4"><ScrollText aria-hidden="true" size={19} /><div><h2>Privacidad y legal</h2><p>Documentos legales que rigen el uso de SAFE.</p></div></div>

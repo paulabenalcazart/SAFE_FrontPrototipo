@@ -986,7 +986,13 @@
       "descripcion_profesional": "Planificación financiera, presupuestos y control de gestión para empresas en crecimiento.",
       "modalidad_atencion": "VIRTUAL",
       "tarifa_referencial": 58,
-      "dias_disponibles": [1, 2, 3, 4, 5],
+      "dias_disponibles": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
       "hora_inicio_referencial": "08:00",
       "hora_fin_referencial": "17:00",
       "acepta_validacion": true,
@@ -1016,7 +1022,13 @@
       "descripcion_profesional": "Especialista en obligaciones tributarias y cierres mensuales para PYMES.",
       "modalidad_atencion": "AMBAS",
       "tarifa_referencial": 50,
-      "dias_disponibles": [1, 2, 3, 4, 5],
+      "dias_disponibles": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
       "hora_inicio_referencial": "08:00",
       "hora_fin_referencial": "17:00",
       "acepta_validacion": true,
@@ -1046,7 +1058,13 @@
       "descripcion_profesional": "Asesoría laboral para empleadores.",
       "modalidad_atencion": "PRESENCIAL",
       "tarifa_referencial": 70,
-      "dias_disponibles": [1, 2, 3, 4, 5],
+      "dias_disponibles": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
       "hora_inicio_referencial": "08:00",
       "hora_fin_referencial": "17:00",
       "acepta_validacion": true,
@@ -2442,6 +2460,8 @@
     {
       "id": "tpl-001",
       "name": "Bienvenida a SAFE",
+      "type": "CORREO",
+      "channel": "EMAIL",
       "event": "USUARIO_CREADO",
       "subject": "Bienvenido a SAFE, {{nombre}}",
       "status": "ACTIVA",
@@ -2451,6 +2471,8 @@
     {
       "id": "tpl-002",
       "name": "Obligación próxima",
+      "type": "RECORDATORIO",
+      "channel": "EMAIL",
       "event": "OBLIGACION_PROXIMA",
       "subject": "{{empresa}} tiene una obligación próxima",
       "status": "ACTIVA",
@@ -2460,6 +2482,8 @@
     {
       "id": "tpl-003",
       "name": "Solicitud profesional aprobada",
+      "type": "CORREO",
+      "channel": "EMAIL",
       "event": "POSTULACION_APROBADA",
       "subject": "Tu postulación a SAFE fue aprobada",
       "status": "ACTIVA",
@@ -2469,6 +2493,8 @@
     {
       "id": "tpl-004",
       "name": "Mantenimiento programado",
+      "type": "BANNER",
+      "channel": "WEB",
       "event": "MANTENIMIENTO",
       "subject": "Mantenimiento programado de SAFE",
       "status": "BORRADOR",

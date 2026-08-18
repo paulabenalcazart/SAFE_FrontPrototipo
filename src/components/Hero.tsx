@@ -106,11 +106,22 @@ export function Hero({ onVerPlanes }: { onVerPlanes?: () => void }) {
   const [textHeight, setTextHeight] = useState(300)
 
   useEffect(() => {
-    if (previewRef.current) {
-      setPreviewNaturalH(previewRef.current.offsetHeight)
-    }
-    if (textRef.current) {
-      setTextHeight(textRef.current.offsetHeight)
+    const previewEl = previewRef.current
+    const textEl = textRef.current
+    if (!previewEl || !textEl) return
+
+    const previewObserver = new ResizeObserver(([entry]) => {
+      setPreviewNaturalH(entry.contentRect.height)
+    })
+    const textObserver = new ResizeObserver(([entry]) => {
+      setTextHeight(entry.contentRect.height)
+    })
+    previewObserver.observe(previewEl)
+    textObserver.observe(textEl)
+
+    return () => {
+      previewObserver.disconnect()
+      textObserver.disconnect()
     }
   }, [])
 

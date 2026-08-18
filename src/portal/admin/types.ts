@@ -231,6 +231,8 @@ export interface TutorialRecord extends EntityRecord {
 export interface EmailTemplateRecord extends EntityRecord {
   id: string
   name: string
+  type: string
+  channel: string
   event: string
   subject: string
   status: string
