@@ -1,36 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/auth/AuthContext'
-import { assertNever } from '@/portal/navigation'
 
 export function AccountMenu({ onClose }: { onClose: () => void }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   if (!user) return null
-
-  const enlaces = (() => {
-    switch (user.role) {
-      case 'ADMIN':
-        return [
-          { label: 'Mi cuenta', to: '/app/configuracion/cuenta' },
-          { label: 'Configuración del sistema', to: '/app/configuracion' },
-          { label: 'Video tutoriales', to: '/app/tutoriales' },
-        ]
-      case 'COLABORADOR':
-        return [
-          { label: 'Mi cuenta', to: '/app/configuracion/cuenta' },
-          { label: 'Video tutoriales', to: '/app/tutoriales' },
-        ]
-      case 'EMPRESA':
-        return [
-          { label: 'Mi cuenta', to: '/app/configuracion/cuenta' },
-          { label: 'Mi plan', to: '/app/plan' },
-          { label: 'Video tutoriales', to: '/app/tutoriales' },
-        ]
-      default:
-        return assertNever(user.role)
-    }
-  })()
 
   return (
     <div
@@ -43,20 +18,17 @@ export function AccountMenu({ onClose }: { onClose: () => void }) {
         </div>
         <div className="break-all text-[12px] text-ink-500">{user.correo}</div>
       </div>
-      {enlaces.map((item) => (
-        <button
-          key={item.to}
-          type="button"
-          role="menuitem"
-          onClick={() => {
-            onClose()
-            navigate(item.to)
-          }}
-          className="block min-h-11 w-full rounded-lg px-2.5 text-left text-[13.5px] font-medium text-ink-900 hover:bg-surface"
-        >
-          {item.label}
-        </button>
-      ))}
+      <button
+        type="button"
+        role="menuitem"
+        onClick={() => {
+          onClose()
+          navigate('/app/configuracion/cuenta')
+        }}
+        className="block min-h-11 w-full rounded-lg px-2.5 text-left text-[13.5px] font-medium text-ink-900 hover:bg-surface"
+      >
+        Mi cuenta
+      </button>
       <button
         type="button"
         role="menuitem"

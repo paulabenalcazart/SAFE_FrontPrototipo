@@ -8,7 +8,6 @@ import {
   Landmark,
   LayoutDashboard,
   LineChart,
-  PlaySquare,
   Settings,
   ShieldCheck,
   Store,
@@ -144,7 +143,7 @@ export const navItemsColaborador: NavItem[] = [
   { key: 'perfil', label: 'Perfil profesional', path: '/app/perfil', icon: UserRound },
   { key: 'solicitudes', label: 'Solicitudes y citas', path: '/app/solicitudes', icon: ClipboardList },
   { key: 'configuracion', label: 'Configuración', path: '/app/configuracion', icon: Settings },
-  { key: 'tutoriales', label: 'Video tutoriales', path: '/app/tutoriales', icon: PlaySquare },
+  { key: 'tutoriales', label: 'Video tutoriales', path: '/app/tutoriales', icon: Video },
 ]
 
 export const kpis: Kpi[] = [
