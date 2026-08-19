@@ -1,5 +1,5 @@
 import { useAuth } from '@/auth/AuthContext'
-import { notificaciones, obligaciones } from '@/portal/data/mock-portal-data'
+import { notificaciones, obligaciones } from '@/portal/data/semilla-portal'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import type { PanelItem } from './NotificationsPanel'

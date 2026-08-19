@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatFecha } from '@/portal/obligaciones/formato'
-import { suscripcionSemilla } from '@/portal/data/mock-portal-data'
+import { suscripcionSemilla } from '@/portal/data/semilla-portal'
 import { useAccessibleDialog } from './useAccessibleDialog'
 
 export function CancelarSuscripcionModal({

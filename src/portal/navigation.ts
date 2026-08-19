@@ -1,5 +1,5 @@
 import type { AppRole } from '@/auth/AuthContext'
-import { navItemsColaborador, navItemsEmpresa } from '@/portal/data/mock-portal-data'
+import { navItemsColaborador, navItemsEmpresa } from '@/portal/data/semilla-portal'
 import { navItemsAdmin } from '@/portal/admin/catalogo'
 import type { NavItem } from '@/portal/types'
 

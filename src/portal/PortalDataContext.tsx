@@ -34,7 +34,7 @@ import {
   metodosPagoSemilla,
   historialPagosSemilla,
   preferenciaUsuarioSemilla,
-} from './data/mock-portal-data'
+} from './data/semilla-portal'
 import { HOY_OBLIGACIONES } from './obligaciones/calculo'
 import {
   COLABORADORES_MARKETPLACE,

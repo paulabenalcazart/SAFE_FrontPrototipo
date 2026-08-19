@@ -1,6 +1,6 @@
 import { useAuth } from '@/auth/AuthContext'
 import { KpiCard } from '@/portal/components/KpiCard'
-import { chartSeries, indicadores, kpis, obligaciones } from '@/portal/data/mock-portal-data'
+import { chartSeries, indicadores, kpis, obligaciones } from '@/portal/data/semilla-portal'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { FinancialChart } from './FinancialChart'
 import { IndicatorsTable } from './IndicatorsTable'

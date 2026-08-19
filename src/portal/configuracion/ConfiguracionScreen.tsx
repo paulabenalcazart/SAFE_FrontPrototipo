@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { useAuth } from '@/auth/AuthContext'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatFecha } from '@/portal/obligaciones/formato'
-import { suscripcionSemilla } from '@/portal/data/mock-portal-data'
+import { suscripcionSemilla } from '@/portal/data/semilla-portal'
 import { planPorCodigo } from '@/portal/plan/catalogo'
 import type { FrecuenciaResumen } from '@/portal/types'
 import { DOCUMENTOS_LEGALES } from './catalogo'

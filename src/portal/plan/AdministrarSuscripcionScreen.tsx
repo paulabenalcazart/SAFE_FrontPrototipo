@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatUSD } from '@/portal/financiero/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
-import { suscripcionSemilla } from '@/portal/data/mock-portal-data'
+import { suscripcionSemilla } from '@/portal/data/semilla-portal'
 import { planPorCodigo } from './catalogo'
 import { CancelarSuscripcionModal } from './CancelarSuscripcionModal'
 
