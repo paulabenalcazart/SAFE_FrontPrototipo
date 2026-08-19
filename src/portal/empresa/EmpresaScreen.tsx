@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { Card } from '@/portal/components/Card'
 import type { Empresa } from '@/portal/types'
 
 type TabKey = 'general' | 'fiscal' | 'contacto' | 'ubicacion' | 'representante'
@@ -96,25 +97,25 @@ export function EmpresaScreen() {
       </div>
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
-        <div className="rounded-xl border border-line bg-card p-4">
+        <Card>
           <p className="text-[12.5px] font-semibold text-ink-500">Régimen tributario</p>
           <p className="mt-2 text-[15px] font-semibold leading-snug">{empresaActiva.fiscal.regimenTributario}</p>
           <p className="mt-1.5 text-[12.5px] text-ink-500">
             Obligado a contabilidad: {empresaActiva.fiscal.obligadoContabilidad}
           </p>
-        </div>
-        <div className="rounded-xl border border-line bg-card p-4">
+        </Card>
+        <Card>
           <p className="text-[12.5px] font-semibold text-ink-500">Actividad económica</p>
           <p className="mt-2 text-[15px] font-semibold leading-snug">{empresaActiva.fiscal.actividadEconomica}</p>
           <p className="mt-1.5 text-[12.5px] text-ink-500">
             Agente de retención: {empresaActiva.fiscal.agenteRetencion}
           </p>
-        </div>
-        <div className="rounded-xl border border-line bg-card p-4">
+        </Card>
+        <Card>
           <p className="text-[12.5px] font-semibold text-ink-500">Representante legal</p>
           <p className="mt-2 text-[15px] font-semibold leading-snug">{empresaActiva.representante.nombre}</p>
           <p className="mt-1.5 text-[12.5px] text-ink-500">Cédula: {empresaActiva.representante.cedula}</p>
-        </div>
+        </Card>
       </div>
 
       <section className="overflow-hidden rounded-xl border border-line bg-card">
