@@ -5,6 +5,7 @@ import { formatFecha } from '@/portal/obligaciones/formato'
 import { escenarioPorCodigo, VARIABLES_POR_ESCENARIO } from './catalogo'
 import { NIVEL_RIESGO_BADGE, NIVEL_RIESGO_LABEL } from './estilo'
 import { formatValorVariable } from './formato'
+import { Card } from '@/portal/components/Card'
 
 export function DetalleSimulacionScreen() {
   const navigate = useNavigate()
@@ -51,7 +52,7 @@ export function DetalleSimulacionScreen() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Variables ingresadas</h2>
           <dl className="mt-3 flex flex-col gap-2.5">
             {variables.map((v) => (
@@ -63,8 +64,8 @@ export function DetalleSimulacionScreen() {
               </div>
             ))}
           </dl>
-        </section>
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        </Card>
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Resultados</h2>
           <dl className="mt-3 flex flex-col gap-2.5">
             {simulacion.resultado.cards.map((c) => (
@@ -92,7 +93,7 @@ export function DetalleSimulacionScreen() {
               Regresar al Simulador
             </button>
           </div>
-        </section>
+        </Card>
       </div>
     </section>
   )

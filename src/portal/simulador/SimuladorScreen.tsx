@@ -17,6 +17,7 @@ import {
 import { NIVEL_RIESGO_BADGE, NIVEL_RIESGO_LABEL } from './estilo'
 import { SimulacionChart } from './SimulacionChart'
 import { SeverityIcon } from '@/portal/components/SeverityIcon'
+import { Card } from '@/portal/components/Card'
 import { Building2, Landmark, TrendingUp, UserPlus } from 'lucide-react'
 
 const ESCENARIO_ICON: Record<string, typeof TrendingUp> = {
@@ -227,7 +228,7 @@ export function SimuladorScreen() {
       )}
 
       {step === 1 && (
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Historial de simulaciones</h2>
           <div className="mt-3 flex flex-col gap-2.5">
             {historial.length === 0 ? (
@@ -266,7 +267,7 @@ export function SimuladorScreen() {
               })
             )}
           </div>
-        </section>
+        </Card>
       )}
 
       {step === 2 && escenarioActivo && (
@@ -350,13 +351,13 @@ export function SimuladorScreen() {
         <section className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
             {resultadoActual.cards.map((c) => (
-              <div key={c.titulo} className="flex min-h-[130px] flex-col gap-2 rounded-xl border border-line bg-card p-4">
+              <Card key={c.titulo} className="flex min-h-[130px] flex-col gap-2">
                 <p className="text-[12.5px] font-semibold text-ink-500">{c.titulo}</p>
                 <p className="num mt-auto text-[26px] font-bold leading-none">
                   {c.formato === 'USD' ? formatUSD(c.valor) : `${c.valor.toFixed(1)}%`}
                 </p>
                 <p className="text-[12px] leading-snug text-ink-500">{c.sub}</p>
-              </div>
+              </Card>
             ))}
           </div>
 
@@ -370,7 +371,7 @@ export function SimuladorScreen() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <section className="rounded-xl border border-line bg-card p-4.5">
+            <Card as="section" padding="lg">
               <h2 className="text-[16px] font-semibold">Recomendaciones</h2>
               <ol className="mt-3 flex flex-col gap-2.5 pl-5 text-[13px] leading-relaxed text-ink-900">
                 {resultadoActual.recomendaciones.map((r) => (
@@ -379,9 +380,9 @@ export function SimuladorScreen() {
                   </li>
                 ))}
               </ol>
-            </section>
+            </Card>
             <div className="flex flex-col gap-4">
-              <section className="rounded-xl border border-line bg-card p-4.5">
+              <Card as="section" padding="lg">
                 <h2 className="text-[16px] font-semibold">Supuestos del escenario</h2>
                 <ul className="mt-3 flex flex-col gap-2 pl-5 text-[12.5px] leading-relaxed text-ink-700">
                   {resultadoActual.supuestos.map((s) => (
@@ -390,7 +391,7 @@ export function SimuladorScreen() {
                     </li>
                   ))}
                 </ul>
-              </section>
+              </Card>
               <section className="rounded-xl border border-line bg-surface p-4.5">
                 <h2 className="text-[16px] font-semibold">Limitaciones</h2>
                 <ul className="mt-3 flex flex-col gap-2 pl-5 text-[12.5px] leading-relaxed text-ink-700">

@@ -1,4 +1,5 @@
 import type { SerieMensualSimulacion } from '@/portal/types'
+import { Card } from '@/portal/components/Card'
 
 const CHART_HEIGHT = 220
 const CHART_WIDTH = 640
@@ -19,14 +20,14 @@ function buildPoints(values: number[], min: number, max: number) {
 export function SimulacionChart({ serie }: { serie: SerieMensualSimulacion[] }) {
   if (serie.length < 2) {
     return (
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[17px] font-semibold">Situación actual vs simulada</h2>
         <div className="mt-4 grid place-items-center rounded-lg border border-dashed border-line py-14">
           <p className="max-w-[32ch] text-center text-[13px] text-ink-500">
             Simula al menos 2 meses para ver la comparación en el tiempo.
           </p>
         </div>
-      </section>
+      </Card>
     )
   }
 
@@ -40,7 +41,7 @@ export function SimulacionChart({ serie }: { serie: SerieMensualSimulacion[] }) 
   const yTicks = [max, (max + min) / 2, min].map((v) => `$${Math.round(v / 1000)}k`)
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <h2 className="text-[17px] font-semibold">Situación actual vs simulada</h2>
 
       <div className="mt-3.5 flex gap-2.5">
@@ -89,6 +90,6 @@ export function SimulacionChart({ serie }: { serie: SerieMensualSimulacion[] }) 
           Utilidad proyectada
         </span>
       </div>
-    </section>
+    </Card>
   )
 }
