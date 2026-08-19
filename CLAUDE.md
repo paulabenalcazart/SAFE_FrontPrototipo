@@ -5,14 +5,14 @@
 - React 18 + TypeScript (strict mode) + Vite 5
 - Tailwind CSS v4, CSS-first theme in `src/index.css` (no `tailwind.config.*` file)
 - React Router v6
-- A small set of Radix UI-based primitives under `src/components/ui` (`button`, `card`, `select`, `checkbox`, `label`, `switch`, `textarea`, `accordion`, `input`) — not yet widely adopted outside the screens that already use them; see "UI conventions" below before adding new usages.
+- A small set of primitives under `src/components/ui` (`button`, `card`, `select`, `checkbox`, `label`, `switch`, `textarea`, `accordion`, `input`) — several Radix-backed (`select`, `checkbox`, `label`, `accordion`, `button`), the rest hand-rolled — not yet widely adopted outside the screens that already use them; see "UI conventions" below before adding new usages.
 - `lucide-react` for icons
 - `class-variance-authority` + `cn()` helper (`src/lib/utils.ts`) for conditional classnames
 
 ## Structure
 
 - **Marketing site** (public, unauthenticated): `src/components/*Page.tsx` and sections (`Hero.tsx`, `Navbar.tsx`, `Footer.tsx`, etc.), routed from `src/App.tsx`.
-- **Portal** (authenticated app): `src/portal/*`, one subdirectory per business module — `admin`, `colaborador`, `configuracion`, `dashboard`, `empresa`, `financiero`, `indicadores`, `marketplace`, `obligaciones`, `plan`, `simulador`, `tutoriales` — plus `src/portal/components` for widgets shared across modules (`Sidebar`, `Topbar`, `Pagination`, `AlertBox`, `SeverityIcon`, `KpiCard`, etc.).
+- **Portal** (authenticated app): `src/portal/*`, one subdirectory per business module — `admin`, `colaborador`, `configuracion`, `dashboard`, `empresa`, `financiero`, `indicadores`, `marketplace`, `obligaciones`, `plan`, `simulador`, `tutoriales` — plus `src/portal/components` for widgets shared across modules (`Sidebar`, `Topbar`, `Pagination`, `AlertBox`, `SeverityIcon`, `KpiCard`, etc.), and `src/portal/data` for the central cross-module seed file (see Data conventions below).
 - `src/portal/PortalDataContext.tsx` is the root data provider for the authenticated app; `src/portal/navigation.ts` builds the per-role nav item list.
 - `src/auth/` holds the auth context and route guard (`RequireAuth.tsx`) — this is a prototype with mocked auth, not a real backend integration.
 
@@ -23,7 +23,7 @@ This is a UI prototype: all data is mocked, and every module owns its data file(
 - **`catalogo.ts`** — static reference/configuration data: dropdown options, nav item lists, service catalogs. Read-only, never mutated at runtime. Used by `admin/catalogo.ts`, `colaborador/tutoriales/catalogo.ts`, `configuracion/catalogo.ts`, `marketplace/catalogo.ts`, `obligaciones/catalogo.ts`, `plan/catalogo.ts`, `simulador/catalogo.ts`, `tutoriales/catalogo.ts`.
 - **`semilla.ts` / `semilla.json` / `semilla-portal.ts`** — mock data simulating "live" transactional records for the demo (companies, requests, appointments, notifications, subscriptions). Used by `colaborador/semilla.ts`, `admin/data/semilla.json` (read directly by path in `scripts/admin-tests/seed.test.mjs` — update that reference if this file ever moves), and `portal/data/semilla-portal.ts` (the central cross-module seed, re-exported through `PortalDataContext`).
 
-When adding new mock data to an existing or new module, follow whichever of these two shapes fits — do not invent a third naming pattern (e.g. `mock-*.ts`, `fixtures.ts`).
+When adding new mock data to an existing or new module, follow whichever of these two shapes fits — do not invent a third naming pattern (e.g. `mock-*.ts`, `fixtures.ts`). (`src/lib/plans-data.ts` is a pre-existing exception shared between the marketing site and the portal — leave it as-is, don't fold it into `catalogo.ts`/`semilla` without a dedicated task.)
 
 ## Type conventions
 

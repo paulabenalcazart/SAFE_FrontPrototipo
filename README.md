@@ -87,7 +87,7 @@ Ver el spec completo en `docs/superpowers/specs/2026-08-06-portal-privado-fase1-
 - **Estructura:** `src/portal/` contiene el shell (`PortalLayout`, `Sidebar`, `Topbar` y sus
   dropdowns) y `src/portal/dashboard/` la primera pantalla (KPIs, gráfico de resumen financiero,
   tablas de indicadores y obligaciones). Todo el contenido viene de
-  `src/portal/data/mock-portal-data.ts` — datos de ejemplo, no hay backend conectado.
+  `src/portal/data/semilla-portal.ts` — datos de ejemplo, no hay backend conectado.
 - **Pendiente:** las otras 25 pantallas del portal (Mi Empresa, Financiero, Indicadores completos,
   Obligaciones, Simulador, Marketplace, Plan, Configuración, tutoriales) se implementan en fases
   posteriores, cada una con su propio spec y plan.
