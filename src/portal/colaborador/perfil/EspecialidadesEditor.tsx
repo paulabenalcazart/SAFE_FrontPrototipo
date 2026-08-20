@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card } from '@/portal/components/Card'
 import { validarEspecialidades } from '@/portal/colaborador/calculo'
 import { ESPECIALIDADES_PROFESIONALES, especialidadProfesionalPorId } from '@/portal/marketplace/catalogo'
 import type { EspecialidadColaboradorRelacion } from '@/portal/types'
@@ -52,7 +53,7 @@ export function EspecialidadesEditor({ value, onChange, headingRef }: Especialid
   }
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <h2 ref={headingRef} tabIndex={-1} className="text-[16px] font-semibold text-ink-900 outline-none">
         Especialidades
       </h2>
@@ -138,6 +139,6 @@ export function EspecialidadesEditor({ value, onChange, headingRef }: Especialid
           {mensajeError}
         </p>
       )}
-    </section>
+    </Card>
   )
 }

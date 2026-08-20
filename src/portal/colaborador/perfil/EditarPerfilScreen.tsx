@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card } from '@/portal/components/Card'
 import { formatEstadoDisponibilidad, formatModalidadEtiqueta } from '@/portal/colaborador/formato'
 import { inicialesDeNombre, validarEspecialidades } from '@/portal/colaborador/calculo'
 import { EspecialidadesEditor } from '@/portal/colaborador/perfil/EspecialidadesEditor'
@@ -425,9 +426,10 @@ export function EditarPerfilScreen() {
         <h1 className="mt-1.5 text-[28px] font-bold leading-tight">Editar perfil profesional</h1>
       </div>
 
-      <section
+      <Card
+        as="section"
         aria-labelledby="disponibilidad-solicitudes-titulo"
-        className="rounded-xl border border-line bg-card p-4 sm:p-5"
+        className="sm:p-5"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
@@ -461,7 +463,7 @@ export function EditarPerfilScreen() {
             className="h-11 w-[66px] [&>span]:left-1.5 [&>span]:top-[11px] [&[aria-checked=true]>span]:translate-x-7"
           />
         </div>
-      </section>
+      </Card>
 
       {hayCambiosSinGuardar && (
         <p
@@ -473,7 +475,7 @@ export function EditarPerfilScreen() {
       )}
 
       {/* 13.1 Foto */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Foto de perfil</h2>
         <div className="mt-3.5 flex flex-wrap items-center gap-4">
           <span
@@ -501,10 +503,10 @@ export function EditarPerfilScreen() {
             <FieldError message={errorFoto} />
           </div>
         </div>
-      </section>
+      </Card>
 
       {/* 13.2 Información personal */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2
           ref={informacionPersonalHeadingRef}
           tabIndex={-1}
@@ -590,10 +592,10 @@ export function EditarPerfilScreen() {
             </Select>
           </div>
         </div>
-      </section>
+      </Card>
 
       {/* 13.3 Información profesional */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2
           ref={informacionProfesionalHeadingRef}
           tabIndex={-1}
@@ -763,7 +765,7 @@ export function EditarPerfilScreen() {
             />
           </div>
         </div>
-      </section>
+      </Card>
 
       {/* 13.6 Especialidades */}
       <EspecialidadesEditor value={especialidades} onChange={setEspecialidades} headingRef={especialidadesHeadingRef} />
@@ -772,7 +774,7 @@ export function EditarPerfilScreen() {
       <ServiciosEditor />
 
       {/* 13.4 CV */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Hoja de vida (CV)</h2>
         <div className="mt-3.5 flex flex-wrap items-center gap-3 rounded-lg border border-line/70 bg-surface p-3.5">
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
@@ -795,10 +797,10 @@ export function EditarPerfilScreen() {
         </div>
         <p className="mt-1.5 text-[12px] text-ink-500">Solo PDF. Máx. 10 MB. No puede quedar vacío.</p>
         <FieldError message={errorCv} />
-      </section>
+      </Card>
 
       {/* 13.5 Credenciales */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Credenciales</h2>
         <div className="mt-3.5 grid grid-cols-1 gap-4.5 sm:grid-cols-2">
           <div>
@@ -867,7 +869,7 @@ export function EditarPerfilScreen() {
           <p className="mt-1.5 text-[12px] text-ink-500">PDF, JPG o PNG. Máx. 10 MB.</p>
           <FieldError message={errorCredencial} />
         </div>
-      </section>
+      </Card>
 
       {/* 13.8 Disponibilidad */}
       <DisponibilidadEditor

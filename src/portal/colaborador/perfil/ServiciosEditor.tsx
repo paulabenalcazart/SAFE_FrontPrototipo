@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/portal/components/Card'
 import { usePortalData } from '@/portal/PortalDataContext'
 import { formatMetaServicio } from '@/portal/marketplace/formato'
 import { ICONO_SERVICIO, type ServiceIconKey } from '@/portal/colaborador/iconos-servicio'
@@ -64,7 +65,7 @@ export function ServiciosEditor() {
   }
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-[16px] font-semibold text-ink-900">Servicios</h2>
         <Button type="button" onClick={abrirCreacion}>
@@ -129,6 +130,6 @@ export function ServiciosEditor() {
         onCerrar={cerrarDialog}
         onConfirmar={confirmarDialog}
       />
-    </section>
+    </Card>
   )
 }

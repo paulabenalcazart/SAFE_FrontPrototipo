@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowLeft, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { Card } from '@/portal/components/Card'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
 import { Pagination } from '@/portal/components/Pagination'
 import { RESENAS_COLABORADORES } from '@/portal/marketplace/catalogo'
@@ -63,7 +64,7 @@ export function TodasLasResenasScreen() {
       </div>
 
       {/* Cabecera: promedio, total y distribución */}
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <div className="flex flex-wrap items-center gap-2.5">
           <span
             role="img"
@@ -98,7 +99,7 @@ export function TodasLasResenasScreen() {
             )
           })}
         </div>
-      </section>
+      </Card>
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-2">

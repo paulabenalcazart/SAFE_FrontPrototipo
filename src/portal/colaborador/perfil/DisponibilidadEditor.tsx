@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
+import { Card } from '@/portal/components/Card'
 import { formatModalidadEtiqueta } from '@/portal/colaborador/formato'
 import { haySolapamientoHorario, modalidadesCompatibles, validarBloqueHorario } from '@/portal/colaborador/calculo'
 import type { HorarioDisponibilidad, ModalidadAtencion } from '@/portal/types'
@@ -157,7 +158,7 @@ export function DisponibilidadEditor({
   }
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <h2 ref={headingRef} tabIndex={-1} className="text-[16px] font-semibold text-ink-900 outline-none">
         Disponibilidad
       </h2>
@@ -278,6 +279,6 @@ export function DisponibilidadEditor({
           )
         })}
       </div>
-    </section>
+    </Card>
   )
 }
