@@ -3,6 +3,7 @@ import { Star } from 'lucide-react'
 import { Pagination } from '@/portal/components/Pagination'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
 import { formatFecha } from '@/portal/obligaciones/formato'
+import { Card } from '@/portal/components/Card'
 import type { ResenaColaborador } from '@/portal/types'
 
 const POR_PAGINA = 6
@@ -30,7 +31,7 @@ export function ResenasProfesionalPanel({ resenas }: { resenas: ResenaColaborado
   const visibles = filtradas.slice((paginaActual - 1) * POR_PAGINA, paginaActual * POR_PAGINA)
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4 sm:p-5" aria-labelledby="resenas-profesional-titulo">
+    <Card as="section" className="sm:p-5" aria-labelledby="resenas-profesional-titulo">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h2 id="resenas-profesional-titulo" className="text-[18px] font-semibold text-ink-900">
@@ -124,6 +125,6 @@ export function ResenasProfesionalPanel({ resenas }: { resenas: ResenaColaborado
           ariaLabel="Páginas de reseñas del profesional"
         />
       </div>
-    </section>
+    </Card>
   )
 }

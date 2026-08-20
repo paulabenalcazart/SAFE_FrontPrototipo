@@ -19,6 +19,7 @@ import {
 import { obtenerIniciales } from './calculo'
 import { esUrlDocumentoPermitida } from './documentos'
 import { ResenasProfesionalPanel } from './ResenasProfesionalPanel'
+import { Card } from '@/portal/components/Card'
 
 const DIAS_SEMANA: { dia: 1 | 2 | 3 | 4 | 5 | 6 | 7; label: string }[] = [
   { dia: 1, label: 'Lunes' },
@@ -181,7 +182,7 @@ export function PerfilProfesionalContenido({
         )}
       </header>
 
-      <section className="rounded-xl border border-line bg-card p-4 sm:p-5" aria-labelledby="informacion-publica-titulo">
+      <Card as="section" className="sm:p-5" aria-labelledby="informacion-publica-titulo">
         <h2 id="informacion-publica-titulo" className="text-[18px] font-semibold text-ink-900">
           Información profesional
         </h2>
@@ -196,10 +197,10 @@ export function PerfilProfesionalContenido({
         <p className="mt-4 rounded-lg bg-surface px-3.5 py-3 text-[13px] leading-relaxed text-ink-700">
           Los datos personales de contacto se mantienen protegidos y solo se comparten mediante el flujo seguro de SAFE.
         </p>
-      </section>
+      </Card>
 
       <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-12">
-        <section className="flex flex-col rounded-xl border border-line bg-card p-4 sm:p-5 lg:col-span-7" aria-labelledby="servicios-publicos-titulo">
+        <Card as="section" className="flex flex-col sm:p-5 lg:col-span-7" aria-labelledby="servicios-publicos-titulo">
           <h2 id="servicios-publicos-titulo" className="text-[18px] font-semibold text-ink-900">
             Servicios
           </h2>
@@ -223,10 +224,10 @@ export function PerfilProfesionalContenido({
               ))}
             </div>
           )}
-        </section>
+        </Card>
 
         <aside className="flex min-w-0 flex-col gap-4 lg:col-span-5" aria-label="Disponibilidad y documentos públicos">
-          <section className="rounded-xl border border-line bg-card p-4 sm:p-5" aria-labelledby="horarios-publicos-titulo">
+          <Card as="section" className="sm:p-5" aria-labelledby="horarios-publicos-titulo">
             <h2 id="horarios-publicos-titulo" className="flex items-center gap-2 text-[18px] font-semibold text-ink-900">
               <Clock className="h-5 w-5 text-navy-600" aria-hidden="true" />
               Horarios de disponibilidad
@@ -252,9 +253,9 @@ export function PerfilProfesionalContenido({
                 ))}
               </dl>
             )}
-          </section>
+          </Card>
 
-          <section className="rounded-xl border border-line bg-card p-4 sm:p-5" aria-labelledby="documentos-publicos-titulo">
+          <Card as="section" className="sm:p-5" aria-labelledby="documentos-publicos-titulo">
             <h2 id="documentos-publicos-titulo" className="text-[18px] font-semibold text-ink-900">
               Documentos públicos
             </h2>
@@ -313,7 +314,7 @@ export function PerfilProfesionalContenido({
                 </div>
               </article>
             </div>
-          </section>
+          </Card>
         </aside>
       </div>
 

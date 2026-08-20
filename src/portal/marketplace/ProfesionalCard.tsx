@@ -3,6 +3,7 @@ import { MapPin, Star } from 'lucide-react'
 import type { ColaboradorMarketplace, EspecialidadProfesional } from '@/portal/types'
 import { obtenerIniciales } from './calculo'
 import { formatModalidad, formatResumenCalificacion, formatTarifaHora } from './formato'
+import { Card } from '@/portal/components/Card'
 
 export type ProfesionalCardProps = {
   profesional: ColaboradorMarketplace
@@ -70,9 +71,10 @@ export function ProfesionalCard({
   }
 
   return (
-    <article
+    <Card
+      as="article"
       aria-labelledby={tituloId}
-      className="flex min-h-[330px] flex-col gap-2.5 rounded-xl border border-line bg-card p-4"
+      className="flex min-h-[330px] flex-col gap-2.5"
     >
       <div className="flex items-center gap-3">
         <span
@@ -152,6 +154,6 @@ export function ProfesionalCard({
           Este profesional no tiene servicios activos por el momento.
         </p>
       )}
-    </article>
+    </Card>
   )
 }

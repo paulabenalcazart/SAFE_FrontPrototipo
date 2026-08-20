@@ -18,6 +18,7 @@ import {
 import { DestacadosCarousel } from './DestacadosCarousel'
 import { ProfesionalCard } from './ProfesionalCard'
 import { ReservaModal } from './ReservaModal'
+import { Card } from '@/portal/components/Card'
 
 const OPCIONES_ORDEN: { value: OrdenMarketplace; label: string }[] = [
   { value: 'RELEVANCIA', label: 'Relevancia' },
@@ -93,7 +94,7 @@ export function MarketplaceScreen() {
         </p>
       </div>
 
-      <section aria-labelledby="marketplace-filtros" className="rounded-xl border border-line bg-card p-4">
+      <Card as="section" aria-labelledby="marketplace-filtros">
         <h2 id="marketplace-filtros" className="sr-only">Buscar y filtrar profesionales</h2>
         <label htmlFor="marketplace-busqueda" className="sr-only">
           Buscar por nombre, especialidad o palabra clave
@@ -191,7 +192,7 @@ export function MarketplaceScreen() {
         >
           Limpiar filtros
         </button>
-      </section>
+      </Card>
 
       <DestacadosCarousel
         profesionales={destacados}
