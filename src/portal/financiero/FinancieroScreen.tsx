@@ -7,6 +7,8 @@ import { activoCorriente, balanceCuadrado, gastosTotales, pasivoCorriente, utili
 import { EvolucionFinancieraChart } from './EvolucionFinancieraChart'
 import { formatPeriodo, formatUSD } from './formato'
 import { AlertBox } from '@/portal/components/AlertBox'
+import { Badge } from '@/portal/components/Badge'
+import { Card } from '@/portal/components/Card'
 import { Pagination } from '@/portal/components/Pagination'
 
 const ESTADO_BADGE: Record<RegistroFinanciero['estado'], string> = {
@@ -83,7 +85,7 @@ export function FinancieroScreen() {
       </div>
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
-        <div className="rounded-xl border border-line bg-card p-4">
+        <Card>
           <div className="flex items-center gap-2.5 text-ink-500">
             <span className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
               <TrendingUp className="h-[17px] w-[17px]" strokeWidth={1.7} aria-hidden="true" />
@@ -93,8 +95,8 @@ export function FinancieroScreen() {
           <p className="num mt-2 font-display text-2xl font-bold">
             {ultimoVigente ? formatUSD(ultimoVigente.ingresosOperacionales) : '—'}
           </p>
-        </div>
-        <div className="rounded-xl border border-line bg-card p-4">
+        </Card>
+        <Card>
           <div className="flex items-center gap-2.5 text-ink-500">
             <span className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
               <Wallet className="h-[17px] w-[17px]" strokeWidth={1.7} aria-hidden="true" />
@@ -104,8 +106,8 @@ export function FinancieroScreen() {
           <p className="num mt-2 font-display text-2xl font-bold">
             {ultimoVigente ? formatUSD(utilidadNeta(ultimoVigente)) : '—'}
           </p>
-        </div>
-        <div className="rounded-xl border border-line bg-card p-4">
+        </Card>
+        <Card>
           <div className="flex items-center gap-2.5 text-ink-500">
             <span className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-lg bg-navy-100 text-navy-700">
               <Landmark className="h-[17px] w-[17px]" strokeWidth={1.7} aria-hidden="true" />
@@ -115,7 +117,7 @@ export function FinancieroScreen() {
           <p className="num mt-2 font-display text-2xl font-bold">
             {ultimoVigente ? formatUSD(activoCorriente(ultimoVigente) - pasivoCorriente(ultimoVigente)) : '—'}
           </p>
-        </div>
+        </Card>
       </div>
 
       <section className="overflow-hidden rounded-xl border border-line bg-card">
@@ -170,9 +172,9 @@ export function FinancieroScreen() {
                   <td className="px-3.5 py-2.5 font-semibold whitespace-nowrap">{formatPeriodo(r.periodo)}</td>
                   <td className="num px-3.5 py-2.5 text-ink-700">v{r.version}</td>
                   <td className="px-3.5 py-2.5">
-                    <span className={`inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${ESTADO_BADGE[r.estado]}`}>
+                    <Badge className={ESTADO_BADGE[r.estado]}>
                       {r.estado}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="num px-3.5 py-2.5 text-right">{formatUSD(r.ingresosOperacionales)}</td>
                   <td className="num px-3.5 py-2.5 text-right">{formatUSD(gastosTotales(r))}</td>
@@ -234,7 +236,7 @@ export function FinancieroScreen() {
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <EvolucionFinancieraChart registros={registros} />
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg">
           <h2 className="text-[17px] font-semibold">Alertas, validaciones y recomendaciones</h2>
           <div className="mt-3.5 flex flex-col gap-2.5">
             {alertas.length === 0 ? (
@@ -251,7 +253,7 @@ export function FinancieroScreen() {
               ))
             )}
           </div>
-        </section>
+        </Card>
       </div>
     </section>
   )

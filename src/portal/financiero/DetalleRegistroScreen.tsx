@@ -1,5 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { Badge } from '@/portal/components/Badge'
+import { Card } from '@/portal/components/Card'
 import type { FactorIndicador, SemaforoIndicador } from '@/portal/types'
 import { activoTotal, calcularDiagnostico, calcularIndicadores, patrimonio, pasivoTotal, utilidadNeta } from './calculo'
 import { formatPeriodo, formatUSD } from './formato'
@@ -90,7 +92,7 @@ export function DetalleRegistroScreen() {
       </div>
 
       {GRUPOS_BLOQUE.map((grupo) => (
-        <section key={grupo.titulo} className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" key={grupo.titulo} padding="lg">
           <h2 className="text-[16px] font-semibold">{grupo.titulo}</h2>
           <dl className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {grupo.pasos.flatMap((paso) => PASOS_CAMPOS[paso]).map((campo) => (
@@ -100,10 +102,10 @@ export function DetalleRegistroScreen() {
               </div>
             ))}
           </dl>
-        </section>
+        </Card>
       ))}
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold">Indicadores calculados</h2>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-[13px]">
@@ -124,19 +126,19 @@ export function DetalleRegistroScreen() {
                   <td className="px-2 py-2 text-ink-700">{FACTOR_LABEL[i.factor]}</td>
                   <td className="num px-2 py-2 text-right font-semibold">{i.valorFormateado}</td>
                   <td className="px-2 py-2 text-right">
-                    <span className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${SEMAFORO_BADGE[i.semaforo]}`}>
+                    <Badge size="xs" className={SEMAFORO_BADGE[i.semaforo]}>
                       {i.semaforo}
-                    </span>
+                    </Badge>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </section>
+      </Card>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Diagnóstico</h2>
           <ul className="mt-3 flex flex-col gap-2">
             {diagnostico.map((linea) => (
@@ -159,8 +161,8 @@ export function DetalleRegistroScreen() {
               <dd className="num text-[13.5px] font-semibold">{formatUSD(utilidadNeta(registro))}</dd>
             </div>
           </dl>
-        </section>
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        </Card>
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Historial de versiones</h2>
           {otrasVersiones.length === 0 ? (
             <p className="mt-3 text-[13px] text-ink-500">No hay otras versiones para este periodo.</p>
@@ -188,7 +190,7 @@ export function DetalleRegistroScreen() {
               ))}
             </ol>
           )}
-        </section>
+        </Card>
       </div>
     </section>
   )

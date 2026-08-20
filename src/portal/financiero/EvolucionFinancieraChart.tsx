@@ -1,3 +1,4 @@
+import { Card } from '@/portal/components/Card'
 import type { RegistroFinanciero } from '@/portal/types'
 import { utilidadNeta, gastosTotales } from './calculo'
 import { formatPeriodo } from './formato'
@@ -24,7 +25,7 @@ export function EvolucionFinancieraChart({ registros }: { registros: RegistroFin
     .slice(-12)
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <h2 className="text-[17px] font-semibold">Evolución financiera</h2>
       <p className="mt-1 text-[12.5px] text-ink-500">Últimos {ordenados.length || 0} periodos vigentes</p>
 
@@ -94,6 +95,6 @@ export function EvolucionFinancieraChart({ registros }: { registros: RegistroFin
           </div>
         </>
       )}
-    </section>
+    </Card>
   )
 }

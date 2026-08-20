@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { IndicadorCalculado, RegistroFinanciero } from '@/portal/types'
 import { activoTotal, calcularIndicadores, gastosTotales, utilidadNeta } from './calculo'
+import { Card } from '@/portal/components/Card'
 import { formatPeriodo, formatUSD } from './formato'
 import { PASOS_CAMPOS } from './wizard-steps'
 
@@ -109,7 +110,7 @@ export function CompararPeriodosScreen() {
         </p>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4">
+      <Card as="section">
         <div className="grid grid-cols-1 gap-4.5 sm:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-[12.5px] font-semibold text-ink-700">Periodo A</label>
@@ -145,13 +146,13 @@ export function CompararPeriodosScreen() {
             Selecciona dos periodos distintos para comparar.
           </p>
         )}
-      </section>
+      </Card>
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
         {kpisResumen.map((k) => {
           const { dif, fg } = variacion(k.a, k.b, k.mejorSiMayor)
           return (
-            <div key={k.titulo} className="rounded-xl border border-line bg-card p-4">
+            <Card key={k.titulo}>
               <div className="flex items-center gap-1.5 text-ink-500">
                 <k.icon className="h-3.5 w-3.5" aria-hidden="true" />
                 <p className="text-[12.5px] font-semibold text-ink-700">{k.titulo}</p>
@@ -165,12 +166,12 @@ export function CompararPeriodosScreen() {
                 {dif >= 0 ? '+' : ''}
                 {formatUSD(dif)}
               </p>
-            </div>
+            </Card>
           )
         })}
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold">Indicadores principales</h2>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-[13px]">
@@ -194,10 +195,10 @@ export function CompararPeriodosScreen() {
             </tbody>
           </table>
         </div>
-      </section>
+      </Card>
 
       {SECCIONES_CONCEPTO.map((seccion) => (
-        <section key={seccion.titulo} className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" key={seccion.titulo} padding="lg">
           <h2 className="text-[16px] font-semibold">{seccion.titulo}</h2>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[560px] border-collapse text-[13px]">
@@ -233,7 +234,7 @@ export function CompararPeriodosScreen() {
               </tbody>
             </table>
           </div>
-        </section>
+        </Card>
       ))}
     </section>
   )
