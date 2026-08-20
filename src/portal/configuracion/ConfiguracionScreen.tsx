@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useAuth } from '@/auth/AuthContext'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { Card } from '@/portal/components/Card'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { suscripcionSemilla } from '@/portal/data/semilla-portal'
 import { planPorCodigo } from '@/portal/plan/catalogo'
@@ -73,7 +74,7 @@ export function ConfiguracionScreen() {
         </p>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-[16px] font-semibold text-ink-900">Cuenta</h2>
           <Button variant="outline" onClick={() => navigate('/app/configuracion/cuenta')}>
@@ -96,9 +97,9 @@ export function ConfiguracionScreen() {
             <dd className="mt-1 break-all text-[13.5px] text-ink-900">{user.correo}</dd>
           </div>
         </dl>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Seguridad</h2>
         <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-line-soft pb-3.5">
           <div className="min-w-0">
@@ -167,9 +168,9 @@ export function ConfiguracionScreen() {
             )}
           </Button>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Notificaciones</h2>
         <div className="mt-3.5 flex flex-col gap-3.5">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-soft pb-3.5">
@@ -233,9 +234,9 @@ export function ConfiguracionScreen() {
             </Select>
           </div>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Preferencias</h2>
         <div className="mt-3.5 flex flex-wrap items-end gap-5">
           <div>
@@ -263,9 +264,9 @@ export function ConfiguracionScreen() {
             />
           </div>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-[16px] font-semibold text-ink-900">Suscripción</h2>
           <Button variant="outline" onClick={() => navigate('/app/plan')}>
@@ -284,7 +285,7 @@ export function ConfiguracionScreen() {
             <dd className="mt-1 text-[13.5px] text-ink-900">{formatFecha(suscripcionSemilla.proximaRenovacion)}</dd>
           </div>
         </dl>
-      </section>
+      </Card>
 
       <section className="overflow-hidden rounded-xl border border-line bg-card">
         <h2 className="border-b border-line-soft px-4.5 py-4 text-[16px] font-semibold text-ink-900">
