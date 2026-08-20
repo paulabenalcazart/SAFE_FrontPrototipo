@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Pagination } from '@/portal/components/Pagination'
+import { Badge } from '@/portal/components/Badge'
 import { buscarSolicitudesPorEmpresa } from '@/portal/colaborador/calculo'
 import { empresaSolicitantePorId } from '@/portal/colaborador/semilla'
 import { formatFecha } from '@/portal/obligaciones/formato'
@@ -187,11 +188,9 @@ export function HistorialSolicitudes({
                     </td>
                     <td className="num whitespace-nowrap px-2 py-2.5">{formatFecha(solicitud.fechaPreferida)}</td>
                     <td className="px-2 py-2.5">
-                      <span
-                        className={`inline-block rounded-full px-2.5 py-0.5 text-[12px] font-semibold ${TONE_BADGE_CLASSES[ESTADO_TONO[solicitud.estado]]}`}
-                      >
+                      <Badge size="md" className={TONE_BADGE_CLASSES[ESTADO_TONO[solicitud.estado]]}>
                         {ESTADO_LABEL[solicitud.estado]}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="num hidden whitespace-nowrap px-2 py-2.5 sm:table-cell">
                       {solicitud.fechaRespuesta ? formatFecha(solicitud.fechaRespuesta.slice(0, 10)) : 'Sin acción'}

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
+import { Card } from '@/portal/components/Card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -79,7 +80,7 @@ export function CollaboratorSettingsScreen() {
         </p>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-[16px] font-semibold text-ink-900">Cuenta</h2>
           <Button variant="outline" onClick={() => navigate('/app/configuracion/cuenta')}>
@@ -102,9 +103,9 @@ export function CollaboratorSettingsScreen() {
             <dd className="mt-1 break-all text-[13.5px] text-ink-900">{user.correo}</dd>
           </div>
         </dl>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Seguridad</h2>
         <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-line-soft pb-3.5">
           <div className="min-w-0">
@@ -173,9 +174,9 @@ export function CollaboratorSettingsScreen() {
             )}
           </Button>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Notificaciones</h2>
         <div className="mt-3.5 hidden grid-cols-[1fr_140px_180px] gap-3 border-b border-line-soft pb-2.5 sm:grid">
           <span className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-500">
@@ -224,9 +225,9 @@ export function CollaboratorSettingsScreen() {
             )
           })}
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold text-ink-900">Preferencias</h2>
         <div className="mt-3.5 flex flex-wrap items-end gap-5">
           <div>
@@ -254,7 +255,7 @@ export function CollaboratorSettingsScreen() {
             />
           </div>
         </div>
-      </section>
+      </Card>
 
       <section className="overflow-hidden rounded-xl border border-line bg-card">
         <h2 className="border-b border-line-soft px-4.5 py-4 text-[16px] font-semibold text-ink-900">

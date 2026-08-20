@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Card } from '@/portal/components/Card'
 import type { MetricaRendimiento } from '@/portal/colaborador/calculo'
 
 export function RendimientoMensualPanel({ metricas }: { metricas: MetricaRendimiento[] }) {
@@ -8,7 +9,7 @@ export function RendimientoMensualPanel({ metricas }: { metricas: MetricaRendimi
   const maximo = Math.max(1, ...valores)
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <h2 className="text-[16px] font-semibold text-ink-900">Rendimiento del mes</h2>
       <div className="mt-3.5 flex flex-wrap gap-2" role="tablist" aria-label="Métrica de rendimiento">
         {metricas.map((m) => (
@@ -89,6 +90,6 @@ export function RendimientoMensualPanel({ metricas }: { metricas: MetricaRendimi
           </tbody>
         </table>
       </div>
-    </section>
+    </Card>
   )
 }

@@ -2,6 +2,8 @@ import { CalendarCheck, CheckCircle2, Inbox, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/auth/AuthContext'
 import { usePortalData } from '@/portal/PortalDataContext'
+import { Card } from '@/portal/components/Card'
+import { Badge } from '@/portal/components/Badge'
 import { KpiCard } from '@/portal/components/KpiCard'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
 import { formatFecha } from '@/portal/obligaciones/formato'
@@ -88,7 +90,7 @@ export function CollaboratorDashboardScreen() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
-        <section className="rounded-xl border border-line bg-card p-4.5 xl:col-span-7">
+        <Card as="section" padding="lg" className="xl:col-span-7">
           <h2 className="text-[16px] font-semibold text-ink-900">Disponibilidad</h2>
           <div className="mt-3.5 overflow-x-auto">
             <table className="w-full min-w-[480px] border-collapse text-[13px]">
@@ -115,13 +117,11 @@ export function CollaboratorDashboardScreen() {
                         : Array.from(new Set(dia.bloques.map((b) => b.modalidad))).join(' / ')}
                     </td>
                     <td className="py-2.5">
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${
-                          dia.bloques.length > 0 ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'
-                        }`}
+                      <Badge
+                        className={dia.bloques.length > 0 ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'}
                       >
                         {dia.bloques.length > 0 ? 'Disponible' : 'No disponible'}
-                      </span>
+                      </Badge>
                     </td>
                   </tr>
                 ))}
@@ -135,9 +135,9 @@ export function CollaboratorDashboardScreen() {
           >
             Administrar disponibilidad
           </button>
-        </section>
+        </Card>
 
-        <section className="rounded-xl border border-line bg-card p-4.5 xl:col-span-5">
+        <Card as="section" padding="lg" className="xl:col-span-5">
           <h2 className="text-[16px] font-semibold text-ink-900">Solicitudes nuevas</h2>
           {solicitudReciente === null ? (
             <p className="mt-3.5 rounded-lg border border-dashed border-line p-5 text-center text-[13px] text-ink-500">
@@ -177,7 +177,7 @@ export function CollaboratorDashboardScreen() {
           >
             Revisar solicitudes
           </button>
-        </section>
+        </Card>
       </div>
 
       <RendimientoMensualPanel metricas={rendimiento} />

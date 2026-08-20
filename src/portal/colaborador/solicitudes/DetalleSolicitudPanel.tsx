@@ -7,6 +7,7 @@ import { formatUSD } from '@/portal/financiero/formato'
 import { formatDuracion, formatModalidad } from '@/portal/marketplace/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { CompanyIdentity } from '@/portal/components/CompanyIdentity'
+import { Badge } from '@/portal/components/Badge'
 import { TONE_BADGE_CLASSES } from '@/portal/tone'
 import { acquireBodyScrollLock, acquireDialogLayer } from './dialogScrollLock'
 import { ESTADO_LABEL, ESTADO_TONO } from './estado'
@@ -213,11 +214,9 @@ export function DetalleSolicitudPanel({
                   <div className="flex items-center justify-between gap-3 px-4 py-3">
                     <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">Estado</dt>
                     <dd>
-                      <span
-                        className={`inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${TONE_BADGE_CLASSES[ESTADO_TONO[solicitud.estado]]}`}
-                      >
+                      <Badge className={TONE_BADGE_CLASSES[ESTADO_TONO[solicitud.estado]]}>
                         {ESTADO_LABEL[solicitud.estado]}
-                      </span>
+                      </Badge>
                     </dd>
                   </div>
                   {solicitud.fechaRespuesta && (
