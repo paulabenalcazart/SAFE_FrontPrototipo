@@ -120,7 +120,7 @@ test('shared mobile drawer meets the role-aware accessible shell contract', asyn
   assert.match(layout, /MobileNavigationDrawer/)
 })
 
-test('ADMIN account navigation, dashboard and titles use integrated routes', async () => {
+test('shared account navigation, ADMIN dashboard and titles use integrated routes', async () => {
   const [account, app, titles, dashboard, activity] = await Promise.all([
     source('src/portal/components/AccountMenu.tsx'),
     source('src/App.tsx'),
@@ -128,15 +128,37 @@ test('ADMIN account navigation, dashboard and titles use integrated routes', asy
     source('src/portal/admin/dashboard/AdminDashboardScreen.tsx'),
     source('src/portal/admin/dashboard/AdminRecentActivity.tsx'),
   ])
-  assert.match(account, /case 'ADMIN'/)
-  const accountSwitch = blockAfter(account, 'switch (user.role)')
-  const adminCase = accountSwitch.slice(accountSwitch.indexOf("case 'ADMIN'"), accountSwitch.indexOf("case 'COLABORADOR'"))
-  assert.doesNotMatch(adminCase, /Mi plan/)
+  assert.match(account, /Mi cuenta/)
+  assert.match(account, /Volver a inicio/)
+  assert.match(account, /Cerrar sesión/)
+  assert.doesNotMatch(account, /Mi plan|Video tutoriales|Configuración del sistema/)
   assert.match(blockAfter(app, 'function DashboardResolver'), /case 'ADMIN': return <AdminDashboardScreen \/>/)
   for (const title of ['Usuarios SAFE Admin', 'Parámetros normativos SAFE', 'Planes y permisos SAFE', 'Alertas y contenido SAFE', 'Incidencias y auditoría SAFE', 'Alertas de seguridad SAFE']) assert.match(titles, new RegExp(title))
   assert.match(dashboard, /AdminPlatformChart/)
   assert.match(activity, /\/app\/admin\/usuarios\?tab=companies/)
   assert.match(activity, /\/app\/admin\/usuarios\?tab=applications/)
+})
+
+test('company financial indicators use a compact readable KPI card hierarchy', async () => {
+  const indicators = await source('src/portal/indicadores/IndicadoresScreen.tsx')
+  assert.match(indicators, /min-h-\[168px\]/)
+  assert.match(indicators, /<h3 className="truncate text-base font-semibold leading-tight">/)
+  assert.match(indicators, /text-\[32px\] font-bold leading-none/)
+  assert.match(indicators, /className=\{`text-\[13px\] font-semibold text-ink-700`\}/)
+  assert.match(indicators, /className="mt-2 w-fit text-\[13px\] font-semibold/)
+})
+
+test('company tax recommendations align each action with its recommendation text', async () => {
+  const obligations = await source('src/portal/obligaciones/ObligacionesScreen.tsx')
+  assert.match(obligations, /grid grid-cols-\[auto_minmax\(0,1fr\)_auto\] items-center gap-3/)
+  assert.match(obligations, /<p className="min-w-0 text-\[13px\] leading-snug">\{r\.texto\}<\/p>/)
+})
+
+test('company plan benefits give the decorative trophy balanced visual presence', async () => {
+  const plan = await source('src/portal/plan/PlanScreen.tsx')
+  assert.match(plan, /-bottom-6 -right-5/)
+  assert.match(plan, /h-32 w-32/)
+  assert.match(plan, /sm:h-44 sm:w-44/)
 })
 
 test('ADMIN chart keeps zero-height bars when there is no monthly maximum', async () => {

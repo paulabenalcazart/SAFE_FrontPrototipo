@@ -357,20 +357,16 @@ export function ObligacionesScreen() {
               <p className="text-[13px] text-ink-500">Sin recomendaciones por ahora.</p>
             ) : (
               recomendacionesProximas.map((r) => (
-                <div key={r.id} className="flex items-start gap-3 rounded-lg border border-line/70 bg-surface p-3">
-                  <SeverityIcon nivel="media" className="mt-0.5" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[13px] leading-snug">{r.texto}</p>
-                    <div className="mt-2 flex justify-end">
-                      <button
-                        type="button"
-                        onClick={() => irADetalle(r.id)}
-                        className="min-h-8.5 rounded-lg bg-navy-600 px-3 text-[12px] font-semibold text-white"
-                      >
-                        Ver detalle
-                      </button>
-                    </div>
-                  </div>
+                <div key={r.id} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-line/70 bg-surface p-3">
+                  <SeverityIcon nivel="media" />
+                  <p className="min-w-0 text-[13px] leading-snug">{r.texto}</p>
+                  <button
+                    type="button"
+                    onClick={() => irADetalle(r.id)}
+                    className="min-h-8.5 rounded-lg bg-navy-600 px-3 text-[12px] font-semibold text-white"
+                  >
+                    Ver detalle
+                  </button>
                 </div>
               ))
             )}

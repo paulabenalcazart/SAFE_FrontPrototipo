@@ -162,11 +162,11 @@ export function IndicadoresScreen() {
           const numeroColor =
             i.semaforo === 'VERDE' ? 'text-emerald-deep' : i.semaforo === 'AMARILLO' ? 'text-amber-deep' : 'text-destructive'
           return (
-            <Card key={i.codigo} padding="lg" className="flex min-h-[216px] flex-col gap-2">
+            <Card key={i.codigo} padding="lg" className="flex min-h-[168px] flex-col gap-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-2">
                   <FactorIcon className="h-4.5 w-4.5 shrink-0 text-navy-600" aria-hidden="true" />
-                  <h3 className="truncate text-[14.5px] font-semibold leading-tight">{i.nombre}</h3>
+                  <h3 className="truncate text-base font-semibold leading-tight">{i.nombre}</h3>
                 </div>
                 <button
                   type="button"
@@ -177,14 +177,14 @@ export function IndicadoresScreen() {
                   <HelpCircle className="h-4 w-4" aria-hidden="true" />
                 </button>
               </div>
-              <span className={`num font-display text-[28px] font-bold leading-none ${numeroColor}`}>
+              <span className={`num font-display text-[32px] font-bold leading-none ${numeroColor}`}>
                 {i.valorFormateado}
               </span>
-              <span className={`text-[12px] font-semibold text-ink-700`}>{variacion.texto}</span>
+              <span className={`text-[13px] font-semibold text-ink-700`}>{variacion.texto}</span>
               <button
                 type="button"
                 onClick={() => navigate('/app/indicadores/todos')}
-                className="mt-auto w-fit text-[12.5px] font-semibold text-navy-700 underline"
+                className="mt-2 w-fit text-[13px] font-semibold text-navy-700 underline"
               >
                 Ver más
               </button>

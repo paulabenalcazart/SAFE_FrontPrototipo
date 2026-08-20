@@ -126,7 +126,7 @@ export function PlanScreen() {
           </ul>
           <Trophy
             aria-hidden="true"
-            className="pointer-events-none absolute -bottom-3 -right-3 h-20 w-20 text-ink-300 opacity-15"
+            className="pointer-events-none absolute -bottom-6 -right-5 h-32 w-32 text-ink-300 opacity-15 sm:h-44 sm:w-44"
           />
         </Card>
         <div className="flex flex-row gap-2.5 lg:w-56 lg:flex-col">
