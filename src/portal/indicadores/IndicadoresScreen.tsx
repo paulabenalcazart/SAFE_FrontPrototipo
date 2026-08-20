@@ -10,6 +10,7 @@ import { LiquidezHistoricaChart } from './LiquidezHistoricaChart'
 import { Droplet, Gauge, HelpCircle, ShieldCheck, TrendingUp, TriangleAlert } from 'lucide-react'
 import { AlertBox } from '@/portal/components/AlertBox'
 import { SeverityIcon } from '@/portal/components/SeverityIcon'
+import { Card } from '@/portal/components/Card'
 
 const FACTOR_LABEL: Record<FactorIndicador, string> = {
   LIQUIDEZ: 'Liquidez',
@@ -161,7 +162,7 @@ export function IndicadoresScreen() {
           const numeroColor =
             i.semaforo === 'VERDE' ? 'text-emerald-deep' : i.semaforo === 'AMARILLO' ? 'text-amber-deep' : 'text-destructive'
           return (
-            <div key={i.codigo} className="flex min-h-[216px] flex-col gap-2 rounded-xl border border-line bg-card p-4.5">
+            <Card key={i.codigo} padding="lg" className="flex min-h-[216px] flex-col gap-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-2">
                   <FactorIcon className="h-4.5 w-4.5 shrink-0 text-navy-600" aria-hidden="true" />
@@ -187,7 +188,7 @@ export function IndicadoresScreen() {
               >
                 Ver más
               </button>
-            </div>
+            </Card>
           )
         })}
       </div>
@@ -197,7 +198,7 @@ export function IndicadoresScreen() {
         <LiquidezHistoricaChart registros={registros} />
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <div className="flex flex-wrap items-baseline gap-3">
           <h2 className="text-[16px] font-semibold">Salud financiera</h2>
           <span className="num font-display text-[26px] font-bold">{Math.round(salud.puntaje)}</span>
@@ -215,10 +216,10 @@ export function IndicadoresScreen() {
             </div>
           ))}
         </div>
-      </section>
+      </Card>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Alertas financieras</h2>
           <div className="mt-3 flex flex-col gap-2.5">
             {rojos.length === 0 ? (
@@ -236,8 +237,8 @@ export function IndicadoresScreen() {
               ))
             )}
           </div>
-        </section>
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        </Card>
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Recomendaciones</h2>
           <div className="mt-3 flex flex-col gap-2.5">
             {amarillos.length === 0 ? (
@@ -264,7 +265,7 @@ export function IndicadoresScreen() {
               ))
             )}
           </div>
-        </section>
+        </Card>
       </div>
     </section>
   )

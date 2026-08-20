@@ -1,6 +1,7 @@
 import type { RegistroFinanciero } from '@/portal/types'
 import { calcularIndicadores } from '@/portal/financiero/calculo'
 import { formatPeriodo } from '@/portal/financiero/formato'
+import { Card } from '@/portal/components/Card'
 
 const CHART_HEIGHT = 200
 const CHART_WIDTH = 560
@@ -20,7 +21,7 @@ export function RentabilidadHistoricaChart({ registros }: { registros: RegistroF
     .slice(-12)
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <h2 className="text-[16px] font-semibold">Rentabilidad histórica</h2>
       <p className="mt-1 text-[12px] text-ink-500">Margen neto (REN_04) y ROE (REN_08) · 12 periodos</p>
 
@@ -82,6 +83,6 @@ export function RentabilidadHistoricaChart({ registros }: { registros: RegistroF
           </div>
         </>
       )}
-    </section>
+    </Card>
   )
 }

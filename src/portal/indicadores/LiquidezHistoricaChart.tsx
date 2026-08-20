@@ -1,6 +1,7 @@
 import type { RegistroFinanciero } from '@/portal/types'
 import { calcularIndicadores } from '@/portal/financiero/calculo'
 import { BENCHMARKS_SECTORIALES } from './benchmarks'
+import { Card } from '@/portal/components/Card'
 
 const CHART_HEIGHT = 200
 const CHART_WIDTH = 560
@@ -21,7 +22,7 @@ export function LiquidezHistoricaChart({ registros }: { registros: RegistroFinan
   const benchmark = BENCHMARKS_SECTORIALES.LIQ_01
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <h2 className="text-[16px] font-semibold">Liquidez histórica</h2>
       <p className="mt-1 text-[12px] text-ink-500">Liquidez corriente (LIQ_01) contra la mediana del clúster</p>
 
@@ -73,6 +74,6 @@ export function LiquidezHistoricaChart({ registros }: { registros: RegistroFinan
           </div>
         </>
       )}
-    </section>
+    </Card>
   )
 }

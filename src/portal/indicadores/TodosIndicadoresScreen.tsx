@@ -6,6 +6,7 @@ import type { FactorIndicador, SemaforoIndicador } from '@/portal/types'
 import { calcularIndicadores } from '@/portal/financiero/calculo'
 import { formatPeriodo } from '@/portal/financiero/formato'
 import { BENCHMARKS_SECTORIALES } from './benchmarks'
+import { Badge } from '@/portal/components/Badge'
 
 const FACTOR_LABEL: Record<FactorIndicador, string> = {
   LIQUIDEZ: 'Liquidez',
@@ -176,7 +177,7 @@ export function TodosIndicadoresScreen() {
                           )}
                         </td>
                         <td className="px-2 py-2.5">
-                          <span className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${SEMAFORO_BADGE[i.semaforo]}`}>{i.semaforo}</span>
+                          <Badge size="xs" className={SEMAFORO_BADGE[i.semaforo]}>{i.semaforo}</Badge>
                         </td>
                         <td className="num px-4.5 py-2.5 text-right text-ink-700">{formatBenchmark(i.codigo, i.unidad)}</td>
                       </tr>

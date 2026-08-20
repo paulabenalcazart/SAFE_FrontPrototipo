@@ -5,6 +5,7 @@ import { usePortalData } from '@/portal/PortalDataContext'
 import type { FactorIndicador } from '@/portal/types'
 import { listarIndicadores } from '@/portal/financiero/calculo'
 import { DESCRIPCION_INDICADOR } from './descripciones'
+import { Card } from '@/portal/components/Card'
 
 const FACTOR_LABEL: Record<FactorIndicador, string> = {
   LIQUIDEZ: 'Liquidez',
@@ -59,7 +60,7 @@ export function IndicadoresPrincipalesScreen() {
         <p className="mt-1.5 text-[14.5px] text-ink-700">Elige exactamente cuatro indicadores. Se guardan por empresa.</p>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold">Seleccionados</h2>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {seleccion.map((codigo, index) => {
@@ -94,9 +95,9 @@ export function IndicadoresPrincipalesScreen() {
             Guardar
           </button>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-[16px] font-semibold">Todos los indicadores MVP</h2>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {CATALOGO.map((ind) => {
@@ -129,7 +130,7 @@ export function IndicadoresPrincipalesScreen() {
             )
           })}
         </div>
-      </section>
+      </Card>
     </section>
   )
 }
