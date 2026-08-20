@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePortalData } from '@/portal/PortalDataContext'
 import type { MetodoPago } from '@/portal/types'
+import { Card } from '@/portal/components/Card'
 import { formatExpiracion } from './formato'
 import { MetodoPagoModal } from './MetodoPagoModal'
 
@@ -45,7 +46,7 @@ export function MetodosPagoScreen() {
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
         {metodosPago.map((m) => (
-          <div key={m.id} className="flex flex-col gap-2 rounded-xl border border-line bg-card p-4">
+          <Card key={m.id} className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <strong className="num text-[15px] font-bold text-ink-900">
                 {m.marca} ···· {m.ultimosCuatro}
@@ -79,7 +80,7 @@ export function MetodosPagoScreen() {
                 Eliminar
               </Button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

@@ -5,6 +5,8 @@ import { usePortalData } from '@/portal/PortalDataContext'
 import { formatUSD } from '@/portal/financiero/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { suscripcionSemilla } from '@/portal/data/semilla-portal'
+import { Card } from '@/portal/components/Card'
+import { Badge } from '@/portal/components/Badge'
 import { planPorCodigo } from './catalogo'
 import { paginarPagos } from './calculo'
 import { formatExpiracion } from './formato'
@@ -43,7 +45,7 @@ export function HistorialPagosScreen() {
         <h1 className="mt-1.5 text-2xl font-bold text-ink-900">Historial de pagos</h1>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <p className="text-[12.5px] font-semibold text-ink-500">Tu próximo pago</p>
         <p className="mt-1.5 text-[15px] font-semibold text-ink-900">
           <span className="num text-xl font-bold text-navy-600">{formatUSD(plan.precio)}</span>
@@ -65,7 +67,7 @@ export function HistorialPagosScreen() {
             Cambiar método de pago
           </button>
         </div>
-      </section>
+      </Card>
 
       {items.length === 0 ? (
         <p className="text-sm text-ink-700">Sin pagos registrados.</p>
@@ -85,15 +87,15 @@ export function HistorialPagosScreen() {
                     {formatFecha(pago.fecha)}
                   </span>
                   <span className="num text-sm font-bold text-ink-900">{formatUSD(pago.monto)}</span>
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${
+                  <Badge
+                    className={
                       pago.estado === 'PAGADO'
                         ? 'bg-emerald-soft text-emerald-deep'
                         : 'bg-danger-soft text-destructive'
-                    }`}
+                    }
                   >
                     {pago.estado}
-                  </span>
+                  </Badge>
                   <ChevronDown
                     className={`ml-auto h-4 w-4 text-ink-500 transition-transform ${
                       expandido ? 'rotate-180' : ''

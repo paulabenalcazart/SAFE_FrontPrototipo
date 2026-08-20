@@ -12,6 +12,8 @@ import { formatUSD } from '@/portal/financiero/formato'
 import { formatFecha } from '@/portal/obligaciones/formato'
 import { listarIndicadores } from '@/portal/financiero/calculo'
 import { suscripcionSemilla } from '@/portal/data/semilla-portal'
+import { Card } from '@/portal/components/Card'
+import { Badge } from '@/portal/components/Badge'
 import { PREGUNTAS_PLAN, planPorCodigo } from './catalogo'
 import { estadisticasDeUso, modulosDelPlan } from './calculo'
 import { formatExpiracion } from './formato'
@@ -69,13 +71,12 @@ export function PlanScreen() {
             <Crown className="h-6.5 w-6.5" aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <span
-              className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${
-                suscripcionCancelada ? 'bg-surface text-ink-500' : 'bg-emerald-soft text-emerald-deep'
-              }`}
+            <Badge
+              size="xs"
+              className={`font-bold uppercase tracking-wide ${suscripcionCancelada ? 'bg-surface text-ink-500' : 'bg-emerald-soft text-emerald-deep'}`}
             >
               {suscripcionCancelada ? 'Cancelada' : 'Activa'}
-            </span>
+            </Badge>
             <h2 className="mt-1.5 text-xl font-bold text-ink-900">{plan.nombre}</h2>
             <p className="mt-1 text-[13px] text-ink-700">
               {metodoPredeterminado
@@ -113,7 +114,7 @@ export function PlanScreen() {
       </section>
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
-        <section className="relative flex-1 overflow-hidden rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg" className="relative flex-1 overflow-hidden">
           <h2 className="text-base font-semibold text-ink-900">Beneficios de tu plan</h2>
           <ul className="mt-3 space-y-2">
             {plan.beneficios.map((b) => (
@@ -127,7 +128,7 @@ export function PlanScreen() {
             aria-hidden="true"
             className="pointer-events-none absolute -bottom-3 -right-3 h-20 w-20 text-ink-300 opacity-15"
           />
-        </section>
+        </Card>
         <div className="flex flex-row gap-2.5 lg:w-56 lg:flex-col">
           <Button variant="outline" onClick={() => navigate('/app/plan/metodos-pago')} className="flex-1 justify-start gap-2 lg:flex-none">
             <CreditCard className="h-4 w-4" aria-hidden="true" />
@@ -140,19 +141,18 @@ export function PlanScreen() {
         </div>
       </div>
 
-      <section className="rounded-xl border border-line bg-card p-4.5">
+      <Card as="section" padding="lg">
         <h2 className="text-base font-semibold text-ink-900">Módulos y límites</h2>
         <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
           {modulos.map((m) => (
             <div key={m.nombre} className="flex items-center justify-between gap-2.5">
               <span className="text-[13px] text-ink-700">{m.nombre}</span>
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
-                  m.incluido ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'
-                }`}
+              <Badge
+                size="xs"
+                className={m.incluido ? 'bg-emerald-soft text-emerald-deep' : 'bg-surface text-ink-500'}
               >
                 {m.incluido ? 'Incluido' : 'No incluido'}
-              </span>
+              </Badge>
             </div>
           ))}
         </div>
@@ -170,7 +170,7 @@ export function PlanScreen() {
             <dd className="text-right font-semibold text-ink-900">{plan.soporte}</dd>
           </div>
         </dl>
-      </section>
+      </Card>
 
       <section>
         <h2 className="text-lg font-semibold text-ink-900">Estadísticas de uso</h2>
@@ -178,16 +178,16 @@ export function PlanScreen() {
           {stats.map((s) => {
             const StatIcon = STAT_ICON[s.titulo] ?? Calculator
             return (
-              <div
+              <Card
                 key={s.titulo}
-                className="flex min-h-[110px] flex-col justify-center gap-2 rounded-xl border border-line bg-card p-4"
+                className="flex min-h-[110px] flex-col justify-center gap-2"
               >
                 <div className="flex items-center gap-2.5">
                   <StatIcon className="h-6 w-6 shrink-0 text-navy-600" aria-hidden="true" />
                   <span className="num font-display text-3xl font-bold text-ink-900">{s.valor}</span>
                 </div>
                 <p className="text-[12.5px] font-semibold leading-tight text-ink-500">{s.titulo}</p>
-              </div>
+              </Card>
             )
           })}
         </div>
