@@ -1,6 +1,7 @@
 import { TrendingDown, TrendingUp } from 'lucide-react'
 import type { Indicador } from '@/portal/types'
 import { TONE_BADGE_CLASSES } from '@/portal/tone'
+import { Badge } from '@/portal/components/Badge'
 
 export function IndicatorsTable({ indicadores }: { indicadores: Indicador[] }) {
   return (
@@ -43,11 +44,9 @@ export function IndicatorsTable({ indicadores }: { indicadores: Indicador[] }) {
                 )}
               </td>
               <td className="px-4.5 py-2.5 text-right">
-                <span
-                  className={`inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${TONE_BADGE_CLASSES[ind.tono]}`}
-                >
+                <Badge className={TONE_BADGE_CLASSES[ind.tono]}>
                   {ind.estado}
-                </span>
+                </Badge>
               </td>
             </tr>
           ))}

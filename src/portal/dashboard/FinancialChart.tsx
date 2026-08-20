@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ChartSeriesPoint } from '@/portal/types'
+import { Card } from '@/portal/components/Card'
 
 type ChartView = 'tendencia' | 'mensual' | 'comparativo'
 
@@ -29,7 +30,7 @@ export function FinancialChart({ data }: { data: ChartSeriesPoint[] }) {
   const yTicks = [max, max / 2, 0].map((value) => `$${Math.round(value)}k`)
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4.5">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-[19px] font-semibold">Resumen financiero</h2>
         <div className="flex flex-wrap gap-1.5">
@@ -133,6 +134,6 @@ export function FinancialChart({ data }: { data: ChartSeriesPoint[] }) {
           Gastos
         </span>
       </div>
-    </section>
+    </Card>
   )
 }

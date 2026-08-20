@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import type { Obligacion } from '@/portal/types'
 import { TONE_BADGE_CLASSES } from '@/portal/tone'
+import { Badge } from '@/portal/components/Badge'
 
 export function ObligationsTable({ obligaciones }: { obligaciones: Obligacion[] }) {
   const navigate = useNavigate()
@@ -44,11 +45,9 @@ export function ObligationsTable({ obligaciones }: { obligaciones: Obligacion[] 
               <td className="num whitespace-nowrap px-2 py-2.5">{o.vence}</td>
               <td className="num px-2 py-2.5 text-right">{o.monto}</td>
               <td className="px-4.5 py-2.5 text-right">
-                <span
-                  className={`inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${TONE_BADGE_CLASSES[o.tono]}`}
-                >
+                <Badge className={TONE_BADGE_CLASSES[o.tono]}>
                   {o.estado}
-                </span>
+                </Badge>
               </td>
             </tr>
           ))}
