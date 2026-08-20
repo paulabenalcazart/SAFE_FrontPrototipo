@@ -11,6 +11,8 @@ import { construirCeldasMes, diasSemanaLabels } from './calendario'
 import { formatDias, formatFecha } from './formato'
 import { AlertBox } from '@/portal/components/AlertBox'
 import { SeverityIcon } from '@/portal/components/SeverityIcon'
+import { Card } from '@/portal/components/Card'
+import { Badge } from '@/portal/components/Badge'
 
 type ObligacionVista = {
   obligacion: ObligacionEmpresa
@@ -130,16 +132,16 @@ export function ObligacionesScreen() {
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
         {kpis.map((k) => (
-          <div key={k.titulo} className="flex min-h-[122px] flex-col gap-2 rounded-xl border border-line bg-card p-4">
+          <Card key={k.titulo} className="flex min-h-[122px] flex-col gap-2">
             <p className="text-[12.5px] font-semibold text-ink-500">{k.titulo}</p>
             <p className="num mt-auto text-[26px] font-bold leading-none">{k.valor}</p>
             <p className="text-[12px] leading-snug text-ink-500">{k.sub}</p>
-          </div>
+          </Card>
         ))}
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[2fr_1fr]">
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-[17px] font-semibold">Calendario de vencimientos</h2>
             <div className="flex gap-1.5">
@@ -265,9 +267,9 @@ export function ObligacionesScreen() {
                     <span className="num text-[13.5px] font-semibold">
                       {i.obligacion.montoEstimado !== undefined ? formatUSD(i.obligacion.montoEstimado) : '—'}
                     </span>
-                    <span className={`rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold ${ESTADO_OBLIGACION_BADGE[i.estado]}`}>
+                    <Badge className={ESTADO_OBLIGACION_BADGE[i.estado]}>
                       {ESTADO_OBLIGACION_LABEL[i.estado]}
-                    </span>
+                    </Badge>
                     <button
                       type="button"
                       onClick={() => irADetalle(i.obligacion.id)}
@@ -280,10 +282,10 @@ export function ObligacionesScreen() {
               )}
             </div>
           )}
-        </section>
+        </Card>
 
         <div className="flex flex-1 flex-col gap-4">
-          <section className="flex flex-1 flex-col rounded-xl border border-line bg-card p-4.5">
+          <Card as="section" padding="lg" className="flex flex-1 flex-col">
             <h2 className="text-[16px] font-semibold">Atención prioritaria</h2>
             <div className="mt-3 flex flex-1 flex-col justify-center gap-2.5">
               {prioridad.length === 0 ? (
@@ -307,9 +309,9 @@ export function ObligacionesScreen() {
                 })
               )}
             </div>
-          </section>
+          </Card>
 
-          <section className="flex flex-1 flex-col rounded-xl border border-line bg-card p-4.5">
+          <Card as="section" padding="lg" className="flex flex-1 flex-col">
             <h2 className="text-[16px] font-semibold">Acciones rápidas</h2>
             <div className="mt-3 flex flex-col gap-2">
               <button type="button" onClick={() => cambiarAListaFiltrada('CUMPLIDA')} className="min-h-11 rounded-lg border border-line bg-card px-3.5 text-left text-[13.5px] font-semibold text-ink-900">
@@ -322,12 +324,12 @@ export function ObligacionesScreen() {
                 Buscar asesor tributario
               </button>
             </div>
-          </section>
+          </Card>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Alertas</h2>
           <div className="mt-3 flex flex-col gap-2.5">
             {alertasVencidas.length === 0 ? (
@@ -347,8 +349,8 @@ export function ObligacionesScreen() {
               ))
             )}
           </div>
-        </section>
-        <section className="rounded-xl border border-line bg-card p-4.5">
+        </Card>
+        <Card as="section" padding="lg">
           <h2 className="text-[16px] font-semibold">Recomendaciones</h2>
           <div className="mt-3 flex flex-col gap-2.5">
             {recomendacionesProximas.length === 0 ? (
@@ -373,7 +375,7 @@ export function ObligacionesScreen() {
               ))
             )}
           </div>
-        </section>
+        </Card>
       </div>
     </section>
   )

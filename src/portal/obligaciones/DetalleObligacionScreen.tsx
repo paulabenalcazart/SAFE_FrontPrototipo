@@ -8,6 +8,7 @@ import { ESTADO_OBLIGACION_BADGE, ESTADO_OBLIGACION_LABEL } from './estado-estil
 import { capitalizar, formatDias, formatFecha } from './formato'
 import { ConfigurarRecordatorioDialog } from './ConfigurarRecordatorioDialog'
 import { DesactivarRecordatorioDialog } from './DesactivarRecordatorioDialog'
+import { Card } from '@/portal/components/Card'
 
 export function DetalleObligacionScreen() {
   const navigate = useNavigate()
@@ -148,7 +149,7 @@ export function DetalleObligacionScreen() {
       </div>
 
       {grupos.map((g) => (
-        <section key={g.titulo} className="rounded-xl border border-line bg-card p-4.5">
+        <Card as="section" key={g.titulo} padding="lg">
           <h2 className="text-[16px] font-semibold">{g.titulo}</h2>
           <dl className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {g.items.map((i) => (
@@ -158,7 +159,7 @@ export function DetalleObligacionScreen() {
               </div>
             ))}
           </dl>
-        </section>
+        </Card>
       ))}
 
       <ConfigurarRecordatorioDialog
